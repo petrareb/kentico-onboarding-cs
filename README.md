@@ -1,9 +1,9 @@
-# Travis CI
+# AppVeyor CI
 Master: 
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/petrareb/kentico-onboarding-cs?branch=master)](https://ci.appveyor.com/project/petrareb/kentico-onboarding-cs)
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/petrareb/kentico-onboarding-cs?branch=master&svg=true)](https://ci.appveyor.com/project/petrareb/kentico-onboarding-cs)
 
 Develop: 
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/petrareb/kentico-onboarding-cs?branch=develop)](https://ci.appveyor.com/project/petrareb/kentico-onboarding-cs)
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/petrareb/kentico-onboarding-cs?branch=develop&svg=true)](https://ci.appveyor.com/project/petrareb/kentico-onboarding-cs)
 
 #### Summary
 Create a Web API that will provide persistence to your JavaScript application (from task 5) using the latest .NET Framework (not .NET Core).
