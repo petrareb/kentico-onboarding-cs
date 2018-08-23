@@ -1,0 +1,8 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+clone_folder: C:\Users\petrar\onboarding-cs\kentico-onboarding-cs
+install:
+- cmd: nuget restore C:\Users\petrar\onboarding-cs\kentico-onboarding-cs\MyOnboarding\MyOnboarding.sln
+build:
+  project: C:\Users\petrar\onboarding-cs\kentico-onboarding-cs\MyOnboarding\MyOnboarding.sln
+  verbosity: minimal
