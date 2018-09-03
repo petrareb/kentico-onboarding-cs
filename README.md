@@ -1,4 +1,4 @@
-# AppVeyor CI
+# kentico-ongboarding-cs
 Master: 
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/petrareb/kentico-onboarding-cs?branch=master&svg=true)](https://ci.appveyor.com/project/petrareb/kentico-onboarding-cs)
 
