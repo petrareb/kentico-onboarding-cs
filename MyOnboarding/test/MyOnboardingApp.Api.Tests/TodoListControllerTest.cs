@@ -1,5 +1,7 @@
-﻿using MyOnboardingApp.Api.Controllers;
-using MyOnboardingApp.Api.Entities;
+﻿using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using MyOnboardingApp.Api.Controllers;
+using MyOnboardingApp.Api.Models;
 using NUnit.Framework;
 
 namespace MyOnboardingApp.Tests
@@ -7,20 +9,26 @@ namespace MyOnboardingApp.Tests
     [TestFixture]
     public class TodoListControllerTest
     {
-        private TodoListController controller = new TodoListController();
-        public TodoListItem TestItem = new TodoListItem("coffee first");
+        private readonly TodoListController _controller = new TodoListController();
+        public TodoListItem TestItem { get; set; }
 
         [SetUp]
         public void SetUp()
         {
-            controller.Items.Add(TestItem);
+            TestItem = new TodoListItem("coffee first");
+            _controller.Items.Add(TestItem);
         }
 
         [Test]
         public void GetItemById()
         {
-            var expected = TestItem;
-            var result = controller.Get(TestItem.Id);
+            //var expected = TestItem;
+            //var result = _controller.Get(TestItem.Id);
+            //Assert.That(result, Is.EqualTo(expected));
+            
+            // returns predefined value
+            var expected = TodoListController.DefaultItem;
+            var result = _controller.Get(TestItem.Id);
 
             Assert.That(result, Is.EqualTo(expected));
         }
@@ -28,33 +36,31 @@ namespace MyOnboardingApp.Tests
         [Test]
         public void DeleteItemById()
         {
-            controller.Delete(TestItem.Id);
+            _controller.Delete(TestItem.Id);
 
-            Assert.That(controller.Items, Has.No.Member(TestItem));
+            Assert.That(_controller.Items, Has.No.Member(TestItem));
         }
 
         [Test]
         public void GetAllItems()
         {
-            var expected = controller.Items;
-            var result = controller.Get();
+            var expected = _controller.Items;
+            var result = _controller.Get();
 
             Assert.That(result, Is.EqualTo(expected));
         }
 
-        //[Test]
-        //public void EditItemById()
-        //{
-        //    TestItem.Text = "aloha";
+        [Test]
+        public void EditItemById()
+        {
+            var editedItem = _controller.Items.First();
+            var newText = "aloha";
+            editedItem.Text = newText;
 
-        //}
+            _controller.Put(editedItem.Id, new TodoListItem(newText));
 
-        //[Test]
-        //public void AddNewItem()
-        //{
-
-
-        //}
+            Assert.That(_controller.Items, Has.Member(editedItem));
+        }
     }
 
 }

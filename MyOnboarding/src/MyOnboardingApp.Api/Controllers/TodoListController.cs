@@ -2,64 +2,65 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using MyOnboardingApp.Api.Entities;
+using Microsoft.Web.Http;
+using MyOnboardingApp.Api.Models;
 
 namespace MyOnboardingApp.Api.Controllers
 {
+    [ApiVersion("1.0")]
+    [RoutePrefix("api/v{version:apiVersion}/todolist")]
+    [Route("")]
     public class TodoListController : ApiController
     {
         public List<TodoListItem> Items = new List<TodoListItem>();
 
-        public TodoListController(List<TodoListItem> items = null)
+        public static TodoListItem DefaultItem =
+            new TodoListItem("Default Item", new Guid("b301b12e-6014-42cd-baad-37cee56fe932"));
+
+        public TodoListController()
         {
-            if (items != null) {
-                Items.AddRange(items);
-            }
+            Items.Add(DefaultItem);
         }
 
-  
-        // GET: api/TodoList
+        // GET: api/v{version}/TodoList
         public IEnumerable<TodoListItem> Get()
         {
             return Items;
         }
 
-        // GET: api/TodoList/5
-        // should return default
+        // GET: api/v{version}/TodoList/5
+        [Route("{id}")]
         public TodoListItem Get(Guid id)
         {
-            //return Items.Find(i => i.Id == id);
-            return new TodoListItem("Default item");
+            //return Items.FirstOrDefault(i => i.Id == id);
+            return DefaultItem;
         }
 
-        // POST: api/TodoList
-        // == ADD NEW!
-        public void Post([FromBody]string text)
+         //POST: api/v{version}/TodoList
+        public IEnumerable<TodoListItem> Post([FromBody]TodoListItem newItem)
         {
-            Items.Add(new TodoListItem(text));
+            Items.Add(newItem);
+            return Items;
         }
 
-        // PUT: api/TodoList/5
-        // == UPDATE!
-        public void Put(Guid id, [FromBody]string newText)
+        // PUT: api/v{version}/TodoList/5
+        [Route("{id}")]
+        public IEnumerable<TodoListItem> Put(Guid id, [FromBody]TodoListItem item)
         {
-            //var item = Items.Find(i => i.Id == id);
-            //if (item != null)
-            //{
-            //    item.Text = newText;
-            //    Items.
-            //} 
-            Items.Where(item => item.Id == id).Select(item =>
+            Items.Where(it => it.Id == id).Select(it =>
             {
-                item.Text = newText;
-                return item;
+                it.Text = item.Text;
+                return it;
             });
+            return Items;
         }
 
-        // DELETE: api/TodoList/5
-        public void Delete(Guid id)
+        // DELETE: api/v{version}/TodoList/5
+        [Route("{id}")]
+        public IEnumerable<TodoListItem> Delete(Guid id)
         {
             Items.RemoveAll(item => item.Id == id);
+            return Items;
         }
     }
 }

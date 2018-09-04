@@ -1,19 +1,20 @@
 ﻿using System;
-using System.EnterpriseServices.Internal;
-using System.Linq;
+using System.Runtime.Serialization;
 
-namespace MyOnboardingApp.Api.Entities
+namespace MyOnboardingApp.Api.Models
 {
+    [DataContract]
     public class TodoListItem
     {
+        [DataMember]
         public Guid Id { get; set; }
+        [DataMember]
         public string Text { get; set; }
 
-        // KA-310 new Guid generates just empty Guid, try Guid.NewGuid
         public TodoListItem(string text, Guid id = new Guid())
         {
             Text = text;
-            Id = id;
+            Id = (id == Guid.Empty) ? Guid.NewGuid() : id;
         }
     }
 }
