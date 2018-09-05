@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Runtime.Remoting.Messaging;
+using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Results;
 using Microsoft.Web.Http;
 using MyOnboardingApp.Api.Models;
 
@@ -21,6 +25,10 @@ namespace MyOnboardingApp.Api.Controllers
         {
             return Items;
         }
+        //public async Task<IEnumerable<TodoListItem>> Get()
+        //{
+        //    return Items;
+        //}
 
         // GET: api/v{version}/TodoList/5
         [Route("{id}")]
@@ -28,31 +36,50 @@ namespace MyOnboardingApp.Api.Controllers
         {
             return DefaultItem;
         }
+        //public async Task<TodoListItem> Get(Guid id)
+        //{
+        //    return DefaultItem;
+        //}
 
-         //POST: api/v{version}/TodoList
-        public IEnumerable<TodoListItem> Post([FromBody]TodoListItem newItem)
+        //POST: api/v{version}/TodoList
+        public void Post([FromBody]TodoListItem newItem)
         {
             Items.Add(newItem);
-            return Items;
         }
+        //public async Task<IHttpActionResult> Post([FromBody]TodoListItem newItem)
+        //{
+        //    Items.Add(newItem);
+        //    return Created("api/v{version}/todolist", newItem);
+        //}
 
         // PUT: api/v{version}/TodoList/5
         [Route("{id}")]
-        public IEnumerable<TodoListItem> Put(Guid id, [FromBody]TodoListItem item)
+        public void Put(Guid id, [FromBody]TodoListItem item)
         {
             Items.ForEach(i =>
             {
                 if (i.Id == id) i.Text = item.Text;
             });
-            return Items;
         }
+        //public async Task<IHttpActionResult> Put(Guid id, [FromBody]TodoListItem item)
+        //{
+        //    Items.ForEach(i =>
+        //    {
+        //        if (i.Id == id) i.Text = item.Text;
+        //    });
+        //    return Ok();
+        //}
 
         // DELETE: api/v{version}/TodoList/5
+        //[Route("{id}")]
+        //public async Task Delete(Guid id)
+        //{
+        //    Items.RemoveAll(item => item.Id == id);
+        //}
         [Route("{id}")]
-        public IEnumerable<TodoListItem> Delete(Guid id)
+        public void Delete(Guid id)
         {
             Items.RemoveAll(item => item.Id == id);
-            return Items;
         }
     }
 }
