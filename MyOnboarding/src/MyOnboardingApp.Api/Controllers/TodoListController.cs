@@ -12,15 +12,9 @@ namespace MyOnboardingApp.Api.Controllers
     [Route("")]
     public class TodoListController : ApiController
     {
-        public List<TodoListItem> Items = new List<TodoListItem>();
-
         public static TodoListItem DefaultItem =
             new TodoListItem("Default Item", new Guid("b301b12e-6014-42cd-baad-37cee56fe932"));
-
-        public TodoListController()
-        {
-            Items.Add(DefaultItem);
-        }
+        public static List<TodoListItem> Items = new List<TodoListItem>(){ DefaultItem };
 
         // GET: api/v{version}/TodoList
         public IEnumerable<TodoListItem> Get()
@@ -32,7 +26,6 @@ namespace MyOnboardingApp.Api.Controllers
         [Route("{id}")]
         public TodoListItem Get(Guid id)
         {
-            //return Items.FirstOrDefault(i => i.Id == id);
             return DefaultItem;
         }
 
@@ -47,11 +40,13 @@ namespace MyOnboardingApp.Api.Controllers
         [Route("{id}")]
         public IEnumerable<TodoListItem> Put(Guid id, [FromBody]TodoListItem item)
         {
-            Items.Where(it => it.Id == id).Select(it =>
+            foreach (var i in Items)
             {
-                it.Text = item.Text;
-                return it;
-            });
+                if (i.Id == id)
+                {
+                    i.Text = item.Text;
+                }
+            }
             return Items;
         }
 
