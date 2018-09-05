@@ -40,13 +40,10 @@ namespace MyOnboardingApp.Api.Controllers
         [Route("{id}")]
         public IEnumerable<TodoListItem> Put(Guid id, [FromBody]TodoListItem item)
         {
-            foreach (var i in Items)
+            Items.ForEach(i =>
             {
-                if (i.Id == id)
-                {
-                    i.Text = item.Text;
-                }
-            }
+                if (i.Id == id) i.Text = item.Text;
+            });
             return Items;
         }
 
