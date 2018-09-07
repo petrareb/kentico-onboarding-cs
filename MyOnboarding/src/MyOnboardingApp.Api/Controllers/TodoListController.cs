@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -13,9 +14,9 @@ namespace MyOnboardingApp.Api.Controllers
     [Route("")]
     public class TodoListController : ApiController
     {
-        public static TodoListItem DefaultItem =
-            new TodoListItem{ Text = "Default Item", Id = new Guid("b301b12e-6014-42cd-baad-37cee56fe932") };
-        public static List<TodoListItem> Items = new List<TodoListItem>{ DefaultItem };
+        public static readonly TodoListItem S_defaultItem =
+            new TodoListItem{ Text = "Default Item", Id = Guid.NewGuid() };
+        private static readonly List<TodoListItem> s_items = new List<TodoListItem>{ S_defaultItem };
 
 
         public TodoListController()
@@ -24,43 +25,22 @@ namespace MyOnboardingApp.Api.Controllers
             Configuration = new HttpConfiguration();
         }
 
-        // GET: api/v{version}/TodoList
-        public async Task<IHttpActionResult> GetAsync()
-        {
-            return await Task.FromResult((IHttpActionResult)Ok(Items));
-        }
+        public async Task<IHttpActionResult> GetAsync() => 
+            await Task.FromResult(Ok(s_items));
 
-        // GET: api/v{version}/TodoList/5
         [Route("{id}")]
-        public async Task<IHttpActionResult> GetAsync(Guid id)
-        {
-            return await Task.FromResult((IHttpActionResult)Ok(DefaultItem));
-        }
+        public async Task<IHttpActionResult> GetAsync(Guid id) => 
+            await Task.FromResult(Ok(S_defaultItem));
 
-        //POST: api/v{version}/TodoList
-        public async Task<IHttpActionResult> PostAsync([FromBody]TodoListItem newItem)
-        {
-            Items.Add(newItem);
-            return await Task.FromResult((IHttpActionResult)Created("api/v{version}/todolist", newItem));
-        }
+        public async Task<IHttpActionResult> PostAsync([FromBody]TodoListItem newItem) => 
+            await Task.FromResult(Created("api/v{version}/todolist", newItem));
 
-        // PUT: api/v{version}/TodoList/5
         [Route("{id}")]
-        public async Task<IHttpActionResult> PutAsync(Guid id, [FromBody]TodoListItem item)
-        {
-            Items.ForEach(i =>
-            {
-                if (i.Id == id) i.Text = item.Text;
-            });
-            return await Task.FromResult((IHttpActionResult)Ok());
-        }
+        public async Task<IHttpActionResult> PutAsync(Guid id, [FromBody]TodoListItem item) =>
+            await Task.FromResult(StatusCode(HttpStatusCode.NoContent));
 
-        // DELETE: api/v{version}/TodoList/5
         [Route("{id}")]
-        public async Task<IHttpActionResult> DeleteAsync(Guid id)
-        {
-            await Task.FromResult(Items.RemoveAll(item => item.Id == id));
-            return await Task.FromResult((IHttpActionResult)Ok());
-        }
+        public async Task<IHttpActionResult> DeleteAsync(Guid id) =>
+            await Task.FromResult(Ok(S_defaultItem));
     }
 }
