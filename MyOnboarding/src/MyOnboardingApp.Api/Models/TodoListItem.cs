@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace MyOnboardingApp.Api.Models
 {
@@ -7,11 +8,5 @@ namespace MyOnboardingApp.Api.Models
     {
         public Guid Id { get; set; }
         public string Text { get; set; }
-
-        public TodoListItem(string text, Guid id = new Guid())
-        {
-            Text = text;
-            Id = (id == Guid.Empty) ? Guid.NewGuid() : id;
-        }
     }
 }
