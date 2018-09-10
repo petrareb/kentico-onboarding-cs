@@ -13,6 +13,7 @@ namespace MyOnboardingApp.Tests
     public class TodoListControllerTest
     {
         private readonly TodoListController _controller = new TodoListController();
+        private readonly Guid _expectedId = Guid.Empty;
 
         [Test]
         public async Task Get_NoIdSpecified_ReturnsCorrectResponse()
@@ -25,36 +26,30 @@ namespace MyOnboardingApp.Tests
         [Test]
         public async Task Get_IdSpecified_ReturnsCorrectResponse()
         {
-            var expectedItem = TodoListController.S_defaultItem;
-
-            var msg = await _controller.GetMessageFromAction(controller => controller.GetAsync(expectedItem.Id));
+            var msg = await _controller.GetMessageFromAction(controller => controller.GetAsync(_expectedId));
             TodoListItem itemFromMsg;
             msg.TryGetContentValue(out itemFromMsg);
 
             Assert.That(msg.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(expectedItem.Id, Is.EqualTo(itemFromMsg.Id));
+            Assert.That(itemFromMsg.Id, Is.EqualTo(_expectedId));
         }
 
         [Test]
         public async Task Delete_IdSpecified_ReturnsOkStatusCode()
         {
-            var idToDelete = TodoListController.S_defaultItem.Id;
-
-            var msg = await _controller.GetMessageFromAction(controller => controller.DeleteAsync(idToDelete));
+            var msg = await _controller.GetMessageFromAction(controller => controller.DeleteAsync(_expectedId));
             var statusCode = msg.StatusCode;
             TodoListItem itemFromMsg;
             msg.TryGetContentValue(out itemFromMsg);
 
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(itemFromMsg.Id, Is.EqualTo(idToDelete));
+            Assert.That(itemFromMsg.Id, Is.EqualTo(_expectedId));
         }
 
         [Test]
         public async Task Put_IdSpecifiedTextSpecified_ReturnsOkStatusCode()
         {
-            var editedItem = TodoListController.S_defaultItem;
-
-            var msg = await _controller.GetMessageFromAction(controller => controller.PutAsync(editedItem.Id, new TodoListItem { Text = "newText" }));
+            var msg = await _controller.GetMessageFromAction(controller => controller.PutAsync(_expectedId, new TodoListItem { Text = "newText" }));
             var statusCode = msg.StatusCode;
 
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.NoContent));
@@ -63,14 +58,12 @@ namespace MyOnboardingApp.Tests
         [Test]
         public async Task Post_NewTextSpecifiedInRequestBody_ReturnsCorrectResponse()
         {
-            var newId = Guid.NewGuid();
-
-            var msg = await _controller.GetMessageFromAction(controller => controller.PostAsync(new TodoListItem { Id = newId, Text = "newText" }));
+            var msg = await _controller.GetMessageFromAction(controller => controller.PostAsync(new TodoListItem { Id = _expectedId, Text = "newText" }));
             TodoListItem itemFromMsg;
             msg.TryGetContentValue(out itemFromMsg);
 
             Assert.That(msg.StatusCode, Is.EqualTo(HttpStatusCode.Created));
-            Assert.That(itemFromMsg.Id, Is.EqualTo(newId));
+            Assert.That(itemFromMsg.Id, Is.EqualTo(_expectedId));
         }
     }
 }

@@ -14,9 +14,9 @@ namespace MyOnboardingApp.Api.Controllers
     [Route("")]
     public class TodoListController : ApiController
     {
-        public static readonly TodoListItem S_defaultItem =
+        private static readonly TodoListItem s_defaultItem =
             new TodoListItem { Text = "Default Item", Id = Guid.Empty };
-        private static readonly List<TodoListItem> s_items = new List<TodoListItem> { S_defaultItem };
+        private static readonly List<TodoListItem> s_items = new List<TodoListItem> { s_defaultItem };
 
 
         public TodoListController()
@@ -31,7 +31,7 @@ namespace MyOnboardingApp.Api.Controllers
 
         [Route("{id}")]
         public async Task<IHttpActionResult> GetAsync(Guid id) => 
-            await Task.FromResult(Ok(S_defaultItem));
+            await Task.FromResult(Ok(s_defaultItem));
 
 
         public async Task<IHttpActionResult> PostAsync([FromBody]TodoListItem newItem) => 
@@ -45,6 +45,6 @@ namespace MyOnboardingApp.Api.Controllers
 
         [Route("{id}")]
         public async Task<IHttpActionResult> DeleteAsync(Guid id) =>
-            await Task.FromResult(Ok(S_defaultItem));
+            await Task.FromResult(Ok(s_defaultItem));
     }
 }
