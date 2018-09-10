@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using MyOnboardingApp.Api.Controllers;
-using MyOnboardingApp.Api.Models;
+using MyOnboardingApp.Content.Models;
 using MyOnboardingApp.Tests.Utils;
 using NUnit.Framework;
 

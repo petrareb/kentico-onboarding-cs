@@ -69,6 +69,10 @@
     <Compile Include="Utils\TodoListControllerExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MyOnboardingApp.Content\MyOnboardingApp.Contracts.csproj">
+      <Project>{94287D69-6747-474A-B4B8-50BE736EEE6F}</Project>
+      <Name>MyOnboardingApp.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\MyOnboardingApp.Api\MyOnboardingApp.Api.csproj">
       <Project>{D34DA1D7-8B0F-4D0F-A0E2-5B8D789065A7}</Project>
       <Name>MyOnboardingApp.Api</Name>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MyOnboardingApp.Api.Models
+namespace MyOnboardingApp.Content.Models
 {
     public class TodoListItem
     {
