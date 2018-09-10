@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace MyOnboardingApp.Api.Models
 {
