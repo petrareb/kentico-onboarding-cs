@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using MyOnboardingApp.Content.Models;
+
+namespace MyOnboardingApp.Content.Repository
+{
+    public interface ITodoListRepository//<T> where T: new()
+    {
+        Task<IEnumerable<TodoListItem>> GetAllItemsAsync();
+
+        Task<TodoListItem> GetItemByIdAsync(Guid id);
+
+        Task<TodoListItem> AddNewItemAsync(TodoListItem newItem);
+
+        Task EditItemAsync(Guid id, TodoListItem item);
+
+        Task<TodoListItem> DeleteItemAsync(Guid id);
+    }
+}
