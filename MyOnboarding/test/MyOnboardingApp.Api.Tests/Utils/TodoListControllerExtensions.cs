@@ -9,10 +9,10 @@ namespace MyOnboardingApp.Tests.Utils
 {
     public static class TodoListControllerExtensions
     {
-        public static async Task<HttpResponseMessage> GetResponseFromAction(this TodoListController controller, Func<TodoListController, Task<IHttpActionResult>> action)
+        public static async Task<HttpResponseMessage> GetMessageFromAction(this TodoListController controller, Func<TodoListController, Task<IHttpActionResult>> action)
         {
-            var response = await action(controller);
-            return await response.ExecuteAsync(CancellationToken.None);
+            var result = await action(controller);
+            return await result.ExecuteAsync(CancellationToken.None);
         }
     }
 }
