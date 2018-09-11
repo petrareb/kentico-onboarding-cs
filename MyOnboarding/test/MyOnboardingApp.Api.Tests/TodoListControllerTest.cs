@@ -4,7 +4,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using MyOnboardingApp.Api.Controllers;
 using MyOnboardingApp.Content.Models;
+using MyOnboardingApp.Content.Repository;
 using MyOnboardingApp.Tests.Utils;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace MyOnboardingApp.Tests
@@ -12,13 +14,16 @@ namespace MyOnboardingApp.Tests
     [TestFixture]
     public class TodoListControllerTest
     {
-        private readonly TodoListController _controller = new TodoListController();
+        private readonly ITodoListRepository _repository = Substitute.For<ITodoListRepository>();
         private readonly Guid _expectedId = Guid.Empty;
+
 
         [Test]
         public async Task Get_NoIdSpecified_ReturnsCorrectResponse()
         {
-            var msg = await _controller.GetMessageFromAction(controller => controller.GetAsync());
+            var controller = new TodoListController(_repository);
+            
+            var msg = await controller.GetMessageFromAction(control => control.GetAsync());
 
             Assert.That(msg.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         }
@@ -26,7 +31,11 @@ namespace MyOnboardingApp.Tests
         [Test]
         public async Task Get_IdSpecified_ReturnsCorrectResponse()
         {
-            var msg = await _controller.GetMessageFromAction(controller => controller.GetAsync(_expectedId));
+            _repository.GetItemByIdAsync(_expectedId)
+                .Returns(new TodoListItem { Text = "Default Item", Id = _expectedId });
+            var controller = new TodoListController(_repository);
+            
+            var msg = await controller.GetMessageFromAction(control => control.GetAsync(_expectedId));
             TodoListItem itemFromMsg;
             msg.TryGetContentValue(out itemFromMsg);
 
@@ -37,7 +46,11 @@ namespace MyOnboardingApp.Tests
         [Test]
         public async Task Delete_IdSpecified_ReturnsOkStatusCode()
         {
-            var msg = await _controller.GetMessageFromAction(controller => controller.DeleteAsync(_expectedId));
+            _repository.DeleteItemAsync(_expectedId)
+                .Returns(new TodoListItem {Text = "Default Item", Id = _expectedId});
+            var controller = new TodoListController(_repository);
+
+            var msg = await controller.GetMessageFromAction(control => control.DeleteAsync(_expectedId));
             var statusCode = msg.StatusCode;
             TodoListItem itemFromMsg;
             msg.TryGetContentValue(out itemFromMsg);
@@ -49,7 +62,9 @@ namespace MyOnboardingApp.Tests
         [Test]
         public async Task Put_IdSpecifiedTextSpecified_ReturnsOkStatusCode()
         {
-            var msg = await _controller.GetMessageFromAction(controller => controller.PutAsync(_expectedId, new TodoListItem { Text = "newText" }));
+            var controller = new TodoListController(_repository);
+
+            var msg = await controller.GetMessageFromAction(control => control.PutAsync(_expectedId, new TodoListItem { Text = "newText" }));
             var statusCode = msg.StatusCode;
 
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.NoContent));
@@ -58,7 +73,11 @@ namespace MyOnboardingApp.Tests
         [Test]
         public async Task Post_NewTextSpecifiedInRequestBody_ReturnsCorrectResponse()
         {
-            var msg = await _controller.GetMessageFromAction(controller => controller.PostAsync(new TodoListItem { Id = _expectedId, Text = "newText" }));
+            var itemToAdd = new TodoListItem {Id = _expectedId, Text = "newText"};
+            _repository.AddNewItemAsync(itemToAdd).Returns(new TodoListItem {Id = _expectedId, Text = "newText"});
+            var controller = new TodoListController(_repository);
+
+            var msg = await controller.GetMessageFromAction(control => control.PostAsync(itemToAdd));
             TodoListItem itemFromMsg;
             msg.TryGetContentValue(out itemFromMsg);
 

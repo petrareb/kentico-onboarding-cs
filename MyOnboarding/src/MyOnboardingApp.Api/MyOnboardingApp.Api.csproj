@@ -116,9 +116,11 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\DependencyResolverConfig.cs" />
     <Compile Include="App_Start\JsonSerializerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\TodoListController.cs" />
+    <Compile Include="DependencyResolvers\DependencyResolver.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -140,6 +142,10 @@
     <ProjectReference Include="..\..\MyOnboardingApp.Content\MyOnboardingApp.Contracts.csproj">
       <Project>{94287D69-6747-474A-B4B8-50BE736EEE6F}</Project>
       <Name>MyOnboardingApp.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MyOnboardingApp.Database\MyOnboardingApp.Database.csproj">
+      <Project>{7ae74b5b-86a4-4fda-a19b-d406ebfbe72a}</Project>
+      <Name>MyOnboardingApp.Database</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
