@@ -14,7 +14,7 @@ namespace MyOnboardingApp.Api.Controllers
     [Route("")]
     public class TodoListController : ApiController
     {
-        private ITodoListRepository _repository;
+        private readonly ITodoListRepository _repository;
 
         public TodoListController(ITodoListRepository repository)
         {
@@ -23,26 +23,17 @@ namespace MyOnboardingApp.Api.Controllers
             Configuration = new HttpConfiguration();
         }
 
-        public async Task<IHttpActionResult> GetAsync()
-        {
-            var items = await _repository.GetAllItemsAsync();
-            return await Task.FromResult(Ok(items));
-        }
+        public async Task<IHttpActionResult> GetAsync() =>
+            await Task.FromResult(Ok(await _repository.GetAllItemsAsync()));
 
 
         [Route("{id}")]
-        public async Task<IHttpActionResult> GetAsync(Guid id)
-        {
-            var item = await _repository.GetItemByIdAsync(id);
-            return await Task.FromResult(Ok(item));
-        }
+        public async Task<IHttpActionResult> GetAsync(Guid id) =>
+            await Task.FromResult(Ok(await _repository.GetItemByIdAsync(id)));
 
 
-        public async Task<IHttpActionResult> PostAsync([FromBody] TodoListItem newItem)
-        {
-            var item = await _repository.AddNewItemAsync(newItem);
-            return await Task.FromResult(Created("api/v{version}/todolist", item));
-        }
+        public async Task<IHttpActionResult> PostAsync([FromBody] TodoListItem newItem) =>
+            await Task.FromResult(Created("api/v{version}/todolist", await _repository.AddNewItemAsync(newItem)));
             
 
         [Route("{id}")]
@@ -54,11 +45,7 @@ namespace MyOnboardingApp.Api.Controllers
             
 
         [Route("{id}")]
-        public async Task<IHttpActionResult> DeleteAsync(Guid id)
-        {
-            var item = await _repository.DeleteItemAsync(id);
-            return await Task.FromResult(Ok(item));
-        }
-            
+        public async Task<IHttpActionResult> DeleteAsync(Guid id) =>
+            await Task.FromResult(Ok(await _repository.DeleteItemAsync(id)));
     }
 }

@@ -5,7 +5,7 @@ using MyOnboardingApp.Content.Models;
 
 namespace MyOnboardingApp.Content.Repository
 {
-    public interface ITodoListRepository//<T> where T: new()
+    public interface ITodoListRepository
     {
         Task<IEnumerable<TodoListItem>> GetAllItemsAsync();
 

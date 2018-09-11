@@ -6,7 +6,7 @@ using MyOnboardingApp.Content.Repository;
 
 namespace MyOnboardingApp.Database.Repository
 {
-    class TodoListRepository: ITodoListRepository
+    internal class TodoListRepository: ITodoListRepository
     {
         private static readonly TodoListItem s_defaultItem =
             new TodoListItem { Text = "Default Item", Id = Guid.Empty };
@@ -25,9 +25,8 @@ namespace MyOnboardingApp.Database.Repository
             await Task.FromResult(newItem);
 
 
-        public async Task EditItemAsync(Guid id, TodoListItem item)
-        {
-        }
+        public async Task EditItemAsync(Guid id, TodoListItem item) { }
+
 
         public async Task<TodoListItem> DeleteItemAsync(Guid id) => 
             await Task.FromResult(s_defaultItem);
