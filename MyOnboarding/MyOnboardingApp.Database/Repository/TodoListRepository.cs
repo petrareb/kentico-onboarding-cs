@@ -13,22 +13,23 @@ namespace MyOnboardingApp.Database.Repository
         private static readonly List<TodoListItem> s_items = new List<TodoListItem> { s_defaultItem };
 
 
-        public async Task<IEnumerable<TodoListItem>> GetAllItemsAsync() =>
-            await Task.FromResult(s_items);
+        public async Task<IEnumerable<TodoListItem>> GetAllItemsAsync() 
+            => await Task.FromResult(s_items);
         
 
-        public async Task<TodoListItem> GetItemByIdAsync(Guid id) =>
-            await Task.FromResult(s_defaultItem);
+        public async Task<TodoListItem> GetItemByIdAsync(Guid id) 
+            => await Task.FromResult(s_defaultItem);
         
 
-        public async Task<TodoListItem> AddNewItemAsync(TodoListItem newItem) =>
-            await Task.FromResult(newItem);
+        public async Task<TodoListItem> AddNewItemAsync(TodoListItem newItem) 
+            => await Task.FromResult(newItem);
 
 
-        public async Task EditItemAsync(Guid id, TodoListItem item) { }
+        public async Task EditItemAsync(Guid id, TodoListItem item)
+            => await Task.CompletedTask;
 
 
-        public async Task<TodoListItem> DeleteItemAsync(Guid id) => 
-            await Task.FromResult(s_defaultItem);
+        public async Task<TodoListItem> DeleteItemAsync(Guid id) 
+            => await Task.FromResult(s_defaultItem);
     }
 }
