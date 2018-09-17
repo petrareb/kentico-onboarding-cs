@@ -147,9 +147,9 @@
       <Project>{7ae74b5b-86a4-4fda-a19b-d406ebfbe72a}</Project>
       <Name>MyOnboardingApp.Database</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MyOnboardingApp.UrlLocation\MyOnboardingApp.ApiServices.csproj">
+    <ProjectReference Include="..\MyOnboardingApp.UrlLocation\MyOnboardingApp.UrlLocation.csproj">
       <Project>{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}</Project>
-      <Name>MyOnboardingApp.ApiServices</Name>
+      <Name>MyOnboardingApp.UrlLocation</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
