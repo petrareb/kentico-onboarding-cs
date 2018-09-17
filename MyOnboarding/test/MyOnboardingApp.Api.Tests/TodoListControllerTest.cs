@@ -7,6 +7,7 @@ using System.Web.Http.Routing;
 using MyOnboardingApp.Api.Controllers;
 using MyOnboardingApp.Content.Models;
 using MyOnboardingApp.Content.Repository;
+using MyOnboardingApp.Contracts.UrlLocation;
 using MyOnboardingApp.Tests.Utils;
 using NSubstitute;
 using NUnit.Framework;
@@ -19,12 +20,14 @@ namespace MyOnboardingApp.Tests
         private ITodoListRepository _repository; 
         private readonly Guid _expectedId = Guid.Empty;
         private TodoListController _controller;
+        private IUrlLocator _itemUrlLocator;
 
         [SetUp]
         public async Task SetUp()
         {
+            _itemUrlLocator = Substitute.For<IUrlLocator>();
             _repository = Substitute.For<ITodoListRepository>();
-            _controller = new TodoListController(_repository)
+            _controller = new TodoListController(_repository, _itemUrlLocator)
             {
                 Request = new HttpRequestMessage(),
                 Configuration = new HttpConfiguration(),
@@ -45,7 +48,6 @@ namespace MyOnboardingApp.Tests
         {
             _repository.GetItemByIdAsync(_expectedId)
                 .Returns(new TodoListItem { Text = "Default Item", Id = _expectedId });
-            //var controller = new TodoListController(_repository);
 
             var msg = await _controller.GetMessageFromAction(control => control.GetAsync(_expectedId));
             msg.TryGetContentValue(out TodoListItem itemFromMsg);
@@ -59,7 +61,6 @@ namespace MyOnboardingApp.Tests
         {
             _repository.DeleteItemAsync(_expectedId)
                 .Returns(new TodoListItem { Text = "Default Item", Id = _expectedId });
-            //var controller = new TodoListController(_repository);
 
             var msg = await _controller.GetMessageFromAction(control => control.DeleteAsync(_expectedId));
             var statusCode = msg.StatusCode;
@@ -72,8 +73,6 @@ namespace MyOnboardingApp.Tests
         [Test]
         public async Task Put_IdSpecifiedTextSpecified_ReturnsOkStatusCode()
         {
-            //var controller = new TodoListController(_repository);
-
             var msg = await _controller.GetMessageFromAction(control => control.PutAsync(_expectedId, new TodoListItem { Text = "newText" }));
             var statusCode = msg.StatusCode;
 
@@ -85,7 +84,6 @@ namespace MyOnboardingApp.Tests
         {
             var itemToAdd = new TodoListItem { Id = _expectedId, Text = "newText" };
             _repository.AddNewItemAsync(itemToAdd).Returns(new TodoListItem { Id = _expectedId, Text = "newText" });
-            //var controller = new TodoListController(_repository);
 
             var msg = await _controller.GetMessageFromAction(control => control.PostAsync(itemToAdd));
             msg.TryGetContentValue(out TodoListItem itemFromMsg);

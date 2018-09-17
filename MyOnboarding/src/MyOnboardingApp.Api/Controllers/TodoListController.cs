@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
-using System.Web.Http.Routing;
 using Microsoft.Web.Http;
+using MyOnboardingApp.ApiServices.UrlLocation;
 using MyOnboardingApp.Content.Models;
 using MyOnboardingApp.Content.Repository;
+using MyOnboardingApp.Contracts.UrlLocation;
 
 namespace MyOnboardingApp.Api.Controllers
 {
@@ -17,20 +16,19 @@ namespace MyOnboardingApp.Api.Controllers
     public class TodoListController : ApiController
     {
         private readonly ITodoListRepository _repository;
-        private readonly IUrlLocator _url;
+        private readonly IUrlLocator _urlLocator;
 
-        // TODO DI
-        public TodoListController(ITodoListRepository repository, IUrlLocator url)
+        public TodoListController(ITodoListRepository repository, IUrlLocator urlLocator)
         {
             _repository = repository;
-            _url = url;
+            _urlLocator = urlLocator;
         }
 
         public async Task<IHttpActionResult> GetAsync() 
             => Ok(await _repository.GetAllItemsAsync());
 
 
-        [Route("{id}", Name = DummyUrlLocator.TodoListRouteName)]
+        [Route("{id}", Name = ItemUrlLocator.TodoListRouteName)]
         public async Task<IHttpActionResult> GetAsync(Guid id) 
             => Ok(await _repository.GetItemByIdAsync(id));
 
@@ -38,13 +36,13 @@ namespace MyOnboardingApp.Api.Controllers
         public async Task<IHttpActionResult> PostAsync([FromBody] TodoListItem newItem)
         {
             var storedItem = await _repository.AddNewItemAsync(newItem);
-            var location = _url.GetTodoListItemUrl(storedItem.Id);//"api/v{version}/todolist/{id}"; //Request.RequestUri.ToString();
-            var location2 = this.Url.Route(DummyUrlLocator.TodoListRouteName, new {id = storedItem.Id});
+            //var location = Url.Route(ItemUrlLocator.TodoListRouteName, new { id = storedItem.Id });
+            var location = _urlLocator.GetTodoListItemUrl(storedItem.Id);
+
             return Created(location, storedItem);
         } 
             
             
-
         [Route("{id}")]
         public async Task<IHttpActionResult> PutAsync(Guid id, [FromBody] TodoListItem item)
         {
@@ -56,25 +54,5 @@ namespace MyOnboardingApp.Api.Controllers
         [Route("{id}")]
         public async Task<IHttpActionResult> DeleteAsync(Guid id) 
             => Ok(await _repository.DeleteItemAsync(id));
-    }
-
-    public interface IUrlLocator
-    {
-        string GetTodoListItemUrl(Guid id);
-    }
-
-    public class DummyUrlLocator: IUrlLocator
-    {
-        private readonly UrlHelper _url;
-        public const string TodoListRouteName = "myRoute";
-
-        public DummyUrlLocator(UrlHelper url)
-        {
-            _url = url;
-        }
-        public string GetTodoListItemUrl(Guid id)
-        {
-            return _url.Route(TodoListRouteName, new { id });
-        }
     }
 }

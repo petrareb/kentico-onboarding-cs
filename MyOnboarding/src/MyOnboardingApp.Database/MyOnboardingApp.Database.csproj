@@ -87,7 +87,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MyOnboardingApp.Content\MyOnboardingApp.Contracts.csproj">
+    <ProjectReference Include="..\MyOnboardingApp.Contracts\MyOnboardingApp.Contracts.csproj">
       <Project>{94287D69-6747-474A-B4B8-50BE736EEE6F}</Project>
       <Name>MyOnboardingApp.Contracts</Name>
     </ProjectReference>
