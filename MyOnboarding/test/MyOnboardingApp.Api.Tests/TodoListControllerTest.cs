@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Routing;
 using MyOnboardingApp.Api.Controllers;
-using MyOnboardingApp.Content.Models;
-using MyOnboardingApp.Content.Repository;
+using MyOnboardingApp.Contracts.Models;
+using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Contracts.UrlLocation;
 using MyOnboardingApp.Tests.Utils;
 using NSubstitute;
@@ -21,6 +22,7 @@ namespace MyOnboardingApp.Tests
         private readonly Guid _expectedId = Guid.Empty;
         private TodoListController _controller;
         private IUrlLocator _itemUrlLocator;
+        private IEqualityComparer<TodoListItem> _comparer;
 
         [SetUp]
         public async Task SetUp()
@@ -33,6 +35,8 @@ namespace MyOnboardingApp.Tests
                 Configuration = new HttpConfiguration(),
                 Url = new UrlHelper()
             };
+            _comparer = new ItemEqualityComparer();
+            await Task.CompletedTask;
         }
 
         [Test]
@@ -82,14 +86,15 @@ namespace MyOnboardingApp.Tests
         [Test]
         public async Task Post_NewTextSpecifiedInRequestBody_ReturnsCorrectResponse()
         {
-            var itemToAdd = new TodoListItem { Id = _expectedId, Text = "newText" };
-            _repository.AddNewItemAsync(itemToAdd).Returns(new TodoListItem { Id = _expectedId, Text = "newText" });
+            var itemToAdd = new TodoListItem { Text = "newText" };
+            var expectedItem = new TodoListItem { Id = _expectedId, Text = "newText" };
+            _repository.AddNewItemAsync(itemToAdd).Returns(expectedItem);
 
             var msg = await _controller.GetMessageFromAction(control => control.PostAsync(itemToAdd));
             msg.TryGetContentValue(out TodoListItem itemFromMsg);
 
             Assert.That(msg.StatusCode, Is.EqualTo(HttpStatusCode.Created));
-            Assert.That(itemFromMsg.Id, Is.EqualTo(_expectedId));
+            Assert.That(itemFromMsg, Is.EqualTo(expectedItem).Using(_comparer));
         }
     }
 }

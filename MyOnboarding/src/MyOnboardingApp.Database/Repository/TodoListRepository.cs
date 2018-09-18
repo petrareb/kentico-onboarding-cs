@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MyOnboardingApp.Content.Models;
-using MyOnboardingApp.Content.Repository;
+using MyOnboardingApp.Contracts.Models;
+using MyOnboardingApp.Contracts.Repository;
 
 namespace MyOnboardingApp.Database.Repository
 {

@@ -3,8 +3,8 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Web.Http;
-using MyOnboardingApp.Content.Models;
-using MyOnboardingApp.Content.Repository;
+using MyOnboardingApp.Contracts.Models;
+using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Contracts.UrlLocation;
 
 namespace MyOnboardingApp.Api.Controllers
@@ -27,7 +27,7 @@ namespace MyOnboardingApp.Api.Controllers
             => Ok(await _repository.GetAllItemsAsync());
 
 
-        [Route("{id}", Name = "ListItemUrl" /*ItemUrlLocator.TodoListRouteName*/)]
+        [Route("{id}", Name = "ListItemUrl")]
         public async Task<IHttpActionResult> GetAsync(Guid id) 
             => Ok(await _repository.GetItemByIdAsync(id));
 
@@ -36,7 +36,6 @@ namespace MyOnboardingApp.Api.Controllers
         {
             var storedItem = await _repository.AddNewItemAsync(newItem);
             var location = _urlLocator.GetTodoListItemUrl(storedItem.Id);
-
             return Created(location, storedItem);
         } 
             

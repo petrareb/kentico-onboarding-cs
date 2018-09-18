@@ -1,5 +1,5 @@
-﻿using MyOnboardingApp.Content.Repository;
-using MyOnboardingApp.Contracts.Configuration;
+﻿using MyOnboardingApp.Contracts.Configuration;
+using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Database.Repository;
 using Unity;
 using Unity.Lifetime;
