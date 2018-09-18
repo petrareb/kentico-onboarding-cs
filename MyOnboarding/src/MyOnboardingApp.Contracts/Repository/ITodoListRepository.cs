@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MyOnboardingApp.Content.Models;
+using MyOnboardingApp.Contracts.Models;
 
-namespace MyOnboardingApp.Content.Repository
+namespace MyOnboardingApp.Contracts.Repository
 {
     public interface ITodoListRepository
     {
