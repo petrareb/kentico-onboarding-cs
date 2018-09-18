@@ -125,6 +125,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\UnityContainerExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -147,7 +148,7 @@
       <Project>{7ae74b5b-86a4-4fda-a19b-d406ebfbe72a}</Project>
       <Name>MyOnboardingApp.Database</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MyOnboardingApp.UrlLocation\MyOnboardingApp.UrlLocation.csproj">
+    <ProjectReference Include="..\MyOnboardingApp.UrlLocation\MyOnboardingApp.ApiServices.csproj">
       <Project>{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}</Project>
       <Name>MyOnboardingApp.UrlLocation</Name>
     </ProjectReference>
