@@ -81,7 +81,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\TodoListRepository.cs" />
-    <Compile Include="Repository\TodoListRepositoryConfig.cs" />
+    <Compile Include="DatabaseBootstraper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -4,10 +4,10 @@ using MyOnboardingApp.Contracts.UrlLocation;
 
 namespace MyOnboardingApp.ApiServices.UrlLocation
 {
-    public class ItemUrlLocator: IUrlLocator
+    internal class ItemUrlLocator: IUrlLocator
     {
         private readonly UrlHelper _url;
-        public const string TodoListRouteName = "myRoute";
+        private const string TodoListRouteName = "myRoute";
 
         public ItemUrlLocator(UrlHelper url)
         {

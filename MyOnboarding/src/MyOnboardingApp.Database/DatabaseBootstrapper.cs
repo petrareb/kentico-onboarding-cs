@@ -5,7 +5,7 @@ using Unity.Lifetime;
 
 namespace MyOnboardingApp.Database.Repository
 {
-    public static class TodoListRepositoryConfig
+    public static class DatabaseBootstrapper
     {
         public static void Register(UnityContainer container, HttpConfiguration config)
         {
