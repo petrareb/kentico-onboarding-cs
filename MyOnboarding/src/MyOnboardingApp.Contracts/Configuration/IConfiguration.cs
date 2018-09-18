@@ -1,9 +1,9 @@
-﻿using System.Web.Http;
+﻿using Unity;
 
 namespace MyOnboardingApp.Contracts.Configuration
 {
     public interface IConfiguration
     {
-        void Register(HttpConfiguration config);
+        void Register(IUnityContainer container);
     }
 }

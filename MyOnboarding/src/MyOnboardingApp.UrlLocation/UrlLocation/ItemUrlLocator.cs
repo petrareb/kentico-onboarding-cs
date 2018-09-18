@@ -7,15 +7,15 @@ namespace MyOnboardingApp.ApiServices.UrlLocation
     internal class ItemUrlLocator: IUrlLocator
     {
         private readonly UrlHelper _url;
-        private const string TodoListRouteName = "myRoute";
+        private const string TodoListRouteName = "ListItemUrl";
 
         public ItemUrlLocator(UrlHelper url)
         {
             _url = url;
         }
-        public string GetTodoListItemUrl(Guid id)
-        {
-            return _url.Route(TodoListRouteName, new { id });
-        }
+
+        public string GetTodoListItemUrl(Guid id) => _url.Route(TodoListRouteName, new { id });
+
+
     }
 }

@@ -1,16 +1,26 @@
-﻿using System.Web.Http;
+﻿using System.Net.Http;
+using System.Web;
 using MyOnboardingApp.ApiServices.UrlLocation;
+using MyOnboardingApp.Contracts.Configuration;
 using MyOnboardingApp.Contracts.UrlLocation;
 using Unity;
+using Unity.Injection;
 using Unity.Lifetime;
 
 namespace MyOnboardingApp.ApiServices
 {
-    public static class ApiServicesBootstrapper
+    public class ApiServicesBootstrapper: IConfiguration
     {
-        public static void Register(UnityContainer container, HttpConfiguration config)
+        public void Register(IUnityContainer container)
         {
-            container.RegisterType<IUrlLocator, ItemUrlLocator>(new HierarchicalLifetimeManager());
+            container
+                .RegisterType<HttpRequestMessage>(new InjectionFactory(_ => GetHttpRequestMessage()))
+                .RegisterType<IUrlLocator, ItemUrlLocator>(new HierarchicalLifetimeManager());
+        }
+
+        private static HttpRequestMessage GetHttpRequestMessage()
+        {
+            return HttpContext.Current.Items["MS_HttpRequestMessage"] as HttpRequestMessage;
         }
     }
 }
