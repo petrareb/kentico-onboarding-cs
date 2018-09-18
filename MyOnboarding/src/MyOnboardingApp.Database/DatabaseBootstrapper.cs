@@ -1,15 +1,17 @@
-﻿using System.Web.Http;
-using MyOnboardingApp.Content.Repository;
+﻿using MyOnboardingApp.Content.Repository;
+using MyOnboardingApp.Contracts.Configuration;
+using MyOnboardingApp.Database.Repository;
 using Unity;
 using Unity.Lifetime;
 
-namespace MyOnboardingApp.Database.Repository
+namespace MyOnboardingApp.Database
 {
-    public static class DatabaseBootstrapper
+    public class DatabaseBootstrapper: IConfiguration
     {
-        public static void Register(UnityContainer container, HttpConfiguration config)
+        public void Register(IUnityContainer container)
         {
             container.RegisterType<ITodoListRepository, TodoListRepository>(new HierarchicalLifetimeManager());
         }
+
     }
 }
