@@ -2,7 +2,7 @@
 using MyOnboardingApp.Api.DependencyResolvers;
 using MyOnboardingApp.Api.Utils;
 using MyOnboardingApp.ApiServices;
-using MyOnboardingApp.Database.Repository;
+using MyOnboardingApp.Database;
 using Unity;
 
 namespace MyOnboardingApp.Api
