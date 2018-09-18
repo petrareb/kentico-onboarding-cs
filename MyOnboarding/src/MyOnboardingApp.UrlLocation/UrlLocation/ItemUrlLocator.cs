@@ -14,7 +14,7 @@ namespace MyOnboardingApp.ApiServices.UrlLocation
             _url = url;
         }
 
-        public string GetTodoListItemUrl(Guid id) => _url.Route(TodoListRouteName, new { id });
+        public string GetListItemUrl(Guid id) => _url.Route(TodoListRouteName, new { id });
 
 
     }
