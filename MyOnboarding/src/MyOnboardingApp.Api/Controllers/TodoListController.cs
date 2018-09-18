@@ -35,7 +35,7 @@ namespace MyOnboardingApp.Api.Controllers
         public async Task<IHttpActionResult> PostAsync([FromBody] TodoListItem newItem)
         {
             var storedItem = await _repository.AddNewItemAsync(newItem);
-            var location = _urlLocator.GetTodoListItemUrl(storedItem.Id);
+            var location = _urlLocator.GetListItemUrl(storedItem.Id);
             return Created(location, storedItem);
         } 
             

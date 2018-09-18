@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Routing;
 using MyOnboardingApp.Api.Controllers;
@@ -89,12 +90,30 @@ namespace MyOnboardingApp.Tests
             var itemToAdd = new TodoListItem { Text = "newText" };
             var expectedItem = new TodoListItem { Id = _expectedId, Text = "newText" };
             _repository.AddNewItemAsync(itemToAdd).Returns(expectedItem);
+            const string expectedUrl = "expectedUrl";
+            _itemUrlLocator.GetListItemUrl(itemToAdd.Id).Returns(expectedUrl);
+
+            _controller.Configuration = new HttpConfiguration();
+            _controller.Configuration.Routes.MapHttpRoute(
+                name: "ListItemUrl",
+                routeTemplate: "api/v{version:apiVersion}/todolist",
+                defaults: new { id = RouteParameter.Optional });
 
             var msg = await _controller.GetMessageFromAction(control => control.PostAsync(itemToAdd));
             msg.TryGetContentValue(out TodoListItem itemFromMsg);
-
+            var a = msg.Headers.Location.AbsoluteUri;
             Assert.That(msg.StatusCode, Is.EqualTo(HttpStatusCode.Created));
             Assert.That(itemFromMsg, Is.EqualTo(expectedItem).Using(_comparer));
+
+            //var itemToAdd = new TodoListItem { Text = "newText" };
+            //var expectedItem = new TodoListItem { Id = _expectedId, Text = "newText" };
+            //_repository.AddNewItemAsync(itemToAdd).Returns(expectedItem);
+
+            //var msg = await _controller.GetMessageFromAction(control => control.PostAsync(itemToAdd));
+            //msg.TryGetContentValue(out TodoListItem itemFromMsg);
+
+            //Assert.That(msg.StatusCode, Is.EqualTo(HttpStatusCode.Created));
+            //Assert.That(itemFromMsg, Is.EqualTo(expectedItem).Using(_comparer));
         }
     }
 }
