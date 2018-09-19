@@ -4,11 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Api", "src\MyOnboardingApp.Api\MyOnboardingApp.Api.csproj", "{D34DA1D7-8B0F-4D0F-A0E2-5B8D789065A7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Api.Tests", "test\MyOnboardingApp.Api.Tests\MyOnboardingApp.Api.Tests.csproj", "{9559849D-AF53-4FE4-8424-060F7BDAFA64}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB} = {EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Api.Tests", "test\MyOnboardingApp.Api.Tests\MyOnboardingApp.Api.Tests.csproj", "{9559849D-AF53-4FE4-8424-060F7BDAFA64}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{26D61547-AD3B-4558-A308-8E8085470281}"
 EndProject
@@ -21,6 +21,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.ApiServices", "src\MyOnboardingApp.ApiServices\MyOnboardingApp.ApiServices.csproj", "{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.ApiServices.Tests", "test\MyOnboardingApp.ApiServices.Tests\MyOnboardingApp.ApiServices.Tests.csproj", "{1A978F69-9E79-4653-8378-79394648D9B0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB} = {EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
