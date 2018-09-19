@@ -49,6 +49,9 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MSTest.TestFramework.1.2.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="MyOnboardingApp.ApiServices">
+      <HintPath>..\..\src\MyOnboardingApp.ApiServices\bin\Debug\MyOnboardingApp.ApiServices.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -84,10 +87,6 @@
     <ProjectReference Include="..\..\src\MyOnboardingApp.Contracts\MyOnboardingApp.Contracts.csproj">
       <Project>{94287D69-6747-474A-B4B8-50BE736EEE6F}</Project>
       <Name>MyOnboardingApp.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\MyOnboardingApp.UrlLocation\MyOnboardingApp.ApiServices.csproj">
-      <Project>{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}</Project>
-      <Name>MyOnboardingApp.ApiServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
