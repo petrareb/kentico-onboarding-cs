@@ -14,20 +14,21 @@ Create a Web API that will provide persistence to your JavaScript application (f
  * Controllers have only and single responsibility – they react to user calls
  * Dependency injection is a must (since you favor TDD, right)
  * It is a simple application, so some simplifications are allowed (some are not):
-(OK) having a single assembly for all contracts and (single) DTO is perfectly OK
-(OK) dependency injection framework is referenced in all assemblies
-(BAD) having a public implementation of a contract is NOT OK → their implementation must be internal
-(BAD) having single assembly is NOT OK → (Web) API, (intra-assembly) contracts and database assemblies should emerge by now
+   - (OK) having a single assembly for all contracts and (single) DTO is perfectly OK
+   - (OK) dependency injection framework is referenced in all assemblies
+   - (BAD) having a public implementation of a contract is NOT OK → their implementation must be internal
+   - (BAD) having single assembly is NOT OK → (Web) API, (intra-assembly) contracts and database assemblies should emerge by now
+
 
 ##### Technology stack
  * be [as async as possible](https://msdn.microsoft.com/en-us/magazine/dn802603.aspx) in controllers and services and repositories
  * use [Mongo DB as NoSQL](http://docs.mlab.com/languages/) storage provider. [mLab](https://mlab.com/) is at your service (and for free) – `single assembly reference expected`
  * use [Unity as Dependency Injection container](https://docs.microsoft.com/en-us/aspnet/web-api/overview/advanced/dependency-injection) – `all contract-implementing assemblies and API assembly reference expected`
  * use [NUnit as test automation framework](https://kentico.atlassian.net/wiki/display/TEST/NUnit) and [NSubstitute](http://nsubstitute.github.io/help/getting-started/) as mocking framework – `only test assemblies reference expected`
- * do not use [AutoMapper](https://github.com/AutoMapper/AutoMapper/wiki/Getting-started) as this is not necessary for API of this size, however, get to know it at least theoretically
+ * do not use [AutoMapper](http://docs.automapper.org/en/stable/Getting-started.html) as this is not necessary for API of this size, however, get to know it at least theoretically
 
 ##### Tooling
- * Use newest (RC is permissible) version of [Visual Studio](https://kentico.atlassian.net/wiki/display/KA/Visual<ins>Studio) – check out the link to ensure you are set-up correctly and leverage your [R#](https://kentico.atlassian.net/wiki/display/KA/ReSharper) license.
+ * Use newest (RC is permissible) version of [Visual Studio](https://kentico.atlassian.net/wiki/spaces/KA/pages/120324187/Visual+Studio) – check out the link to ensure you are set-up correctly and leverage your [R#](https://kentico.atlassian.net/wiki/display/KA/ReSharper) license.
  * Use [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop) to tune (and debug) API calls
 
 ##### Way of work
@@ -37,10 +38,10 @@ Create a Web API that will provide persistence to your JavaScript application (f
 
 ##### Create a new GitHub repository 
  * *kentico-onboarding-cs* sounds like a good name for the repository of yours (it is a terrible name for a solution, though ;-))
- * Use readme.txt in the attachment of this story as readme for your repository
+ * Use this file as README of your repository
  * Give write access to your peer and possible reviewers
  * Commit correct [.gitignore](https://github.com/github/gitignore)
- * Use [GitFlow workflow](https://kentico.atlassian.net/wiki/display/KA/03</ins>-<ins>Git)
+ * Use [GitFlow workflow](https://kentico.atlassian.net/wiki/spaces/KA/pages/201097293/03+-+Git)
  * Commit to a feature branch (<sub> features/task-0 in this case)
  * There will be no upstream repository in this case
 
@@ -63,7 +64,7 @@ Create a Web API that will provide persistence to your JavaScript application (f
 
 #### TASK 1 - Create dummy controller
 
-##### Learn what is [REST](https://kentico.atlassian.net/wiki/display/KA/REST)
+##### Learn what is [REST](https://kentico.atlassian.net/wiki/x/zlyoD)
 ##### Learn what is [NUnit](https://kentico.atlassian.net/wiki/display/TEST/NUnit)
  * motivation on [constraint asserts](http://tddaddict.blogspot.cz/2015/11/nunit-assertions-constraint-model-and.html) (already familiart *jest* tests)
 
@@ -92,7 +93,7 @@ Create a Web API that will provide persistence to your JavaScript application (f
 ##### Learn what [dependency injection or inversion of control or Holywood principle](http://www.javaworld.com/article/2071914/excellent-explanation-of-dependency-injection--inversion-of-control-.html) principles refer to and what [Unity](https://docs.microsoft.com/en-us/aspnet/web-api/overview/advanced/dependency-injection) is
 ##### Learn what is [NSubstitute](http://nsubstitute.github.io/help/getting-started/) 
 ##### Extend your API with a dummy repository (database layer) that will be injected into controller (along with any other current dependencies)
- * One might encounter problems with [obtaining an instance of *HttpRequestMessage* outside API controller](http://www.jamienordmeyer.net/2014/11/23/getting-the-current-httprequestmessage-outside-of-apicontroller-2/)
+ * One might encounter problems with [obtaining an instance of *HttpRequestMessage* outside API controller](https://stackoverflow.com/questions/16670329/how-to-access-the-current-httprequestmessage-object-globally) 
  * Repository itself and routing does not have to be covered by tests
 
 #### TASK 3 - Connect mongoDB and finish GET</ins>POST+DELETE
@@ -118,7 +119,7 @@ Create a Web API that will provide persistence to your JavaScript application (f
 
 #### (optional) TASK 4 - Finish remaining HTTP verbs
 
-##### Finish remaining [CRUD](https://en.wikipedia.org/wiki/Create,*read,_update_and*delete) operations (update) and eventually (extra optional) patch
+##### Finish remaining [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) operations (update) and eventually (extra optional) patch
 ##### Finish interconnecting with your JS application
 
 #### (optional) TASK 5 - Publish CS apps online
@@ -135,4 +136,3 @@ Create a Web API that will provide persistence to your JavaScript application (f
 ##### Implement Continuous Deployment
  * extend CI set-up of your CS repository so each push to the *master* branch triggers release
  * alternatively set-up deployment options of the service plan for your CS repository on the Azure portal so each push to the *master* branch triggers release
-
