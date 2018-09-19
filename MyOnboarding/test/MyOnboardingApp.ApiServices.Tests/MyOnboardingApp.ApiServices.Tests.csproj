@@ -85,7 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\MyOnboardingApp.Contracts\MyOnboardingApp.Contracts.csproj">
-      <Project>{94287D69-6747-474A-B4B8-50BE736EEE6F}</Project>
+      <Project>{94287d69-6747-474a-b4b8-50be736eee6f}</Project>
       <Name>MyOnboardingApp.Contracts</Name>
     </ProjectReference>
   </ItemGroup>
