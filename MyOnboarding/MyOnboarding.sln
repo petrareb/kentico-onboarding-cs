@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Api", "src\MyOnboardingApp.Api\MyOnboardingApp.Api.csproj", "{D34DA1D7-8B0F-4D0F-A0E2-5B8D789065A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Api.Tests", "test\MyOnboardingApp.Api.Tests\MyOnboardingApp.Api.Tests.csproj", "{9559849D-AF53-4FE4-8424-060F7BDAFA64}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB} = {EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{26D61547-AD3B-4558-A308-8E8085470281}"
 EndProject
@@ -16,6 +19,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Database", "src\MyOnboardingApp.Database\MyOnboardingApp.Database.csproj", "{7AE74B5B-86A4-4FDA-A19B-D406EBFBE72A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.ApiServices", "src\MyOnboardingApp.UrlLocation\MyOnboardingApp.ApiServices.csproj", "{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.ApiServices.Tests", "test\MyOnboardingApp.ApiServices.Tests\MyOnboardingApp.ApiServices.Tests.csproj", "{1A978F69-9E79-4653-8378-79394648D9B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +48,10 @@ Global
 		{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A978F69-9E79-4653-8378-79394648D9B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A978F69-9E79-4653-8378-79394648D9B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A978F69-9E79-4653-8378-79394648D9B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A978F69-9E79-4653-8378-79394648D9B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +62,7 @@ Global
 		{94287D69-6747-474A-B4B8-50BE736EEE6F} = {26D61547-AD3B-4558-A308-8E8085470281}
 		{7AE74B5B-86A4-4FDA-A19B-D406EBFBE72A} = {26D61547-AD3B-4558-A308-8E8085470281}
 		{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB} = {26D61547-AD3B-4558-A308-8E8085470281}
+		{1A978F69-9E79-4653-8378-79394648D9B0} = {EB6A548A-AA87-4F46-A7E4-7F696639446D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {54079897-BE8D-4E0C-AB3F-2923612B2927}

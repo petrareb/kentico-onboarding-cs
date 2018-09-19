@@ -12,6 +12,5 @@ namespace MyOnboardingApp.Database
         {
             container.RegisterType<ITodoListRepository, TodoListRepository>(new HierarchicalLifetimeManager());
         }
-
     }
 }

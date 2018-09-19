@@ -50,28 +50,30 @@ namespace MyOnboardingApp.Tests
         [Test]
         public async Task Get_IdSpecified_ReturnsCorrectResponse()
         {
+            var expectedItem = new TodoListItem { Text = "Default Item", Id = _expectedId };
             _repository.GetItemByIdAsync(_expectedId)
-                .Returns(new TodoListItem { Text = "Default Item", Id = _expectedId });
+                .Returns(expectedItem);
 
             var msg = await _controller.GetMessageFromAction(control => control.GetAsync(_expectedId));
             msg.TryGetContentValue(out TodoListItem itemFromMsg);
 
             Assert.That(msg.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(itemFromMsg.Id, Is.EqualTo(_expectedId));
+            Assert.That(itemFromMsg, Is.EqualTo(expectedItem).Using(_comparer));
         }
 
         [Test]
         public async Task Delete_IdSpecified_ReturnsOkStatusCode()
         {
+            var expectedItem = new TodoListItem {Text = "Default Item", Id = _expectedId};
             _repository.DeleteItemAsync(_expectedId)
-                .Returns(new TodoListItem { Text = "Default Item", Id = _expectedId });
+                .Returns(expectedItem);
 
             var msg = await _controller.GetMessageFromAction(control => control.DeleteAsync(_expectedId));
             var statusCode = msg.StatusCode;
             msg.TryGetContentValue(out TodoListItem itemFromMsg);
 
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(itemFromMsg.Id, Is.EqualTo(_expectedId));
+            Assert.That(itemFromMsg, Is.EqualTo(expectedItem).Using(_comparer));
         }
 
         [Test]
@@ -103,7 +105,7 @@ namespace MyOnboardingApp.Tests
                 values: new HttpRouteValueDictionary{{"version", "1.0"}, {"controller", "todolist"}});
         
 
-        var msg = await _controller.GetMessageFromAction(control => control.PostAsync(itemToAdd));
+            var msg = await _controller.GetMessageFromAction(control => control.PostAsync(itemToAdd));
             msg.TryGetContentValue(out TodoListItem itemFromMsg);
             Assert.That(msg.StatusCode, Is.EqualTo(HttpStatusCode.Created));
             Assert.That(itemFromMsg, Is.EqualTo(expectedItem).Using(_comparer));
