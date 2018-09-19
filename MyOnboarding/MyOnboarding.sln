@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Contracts",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Database", "src\MyOnboardingApp.Database\MyOnboardingApp.Database.csproj", "{7AE74B5B-86A4-4FDA-A19B-D406EBFBE72A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.ApiServices", "src\MyOnboardingApp.UrlLocation\MyOnboardingApp.ApiServices.csproj", "{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.ApiServices", "src\MyOnboardingApp.ApiServices\MyOnboardingApp.ApiServices.csproj", "{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.ApiServices.Tests", "test\MyOnboardingApp.ApiServices.Tests\MyOnboardingApp.ApiServices.Tests.csproj", "{1A978F69-9E79-4653-8378-79394648D9B0}"
 EndProject
