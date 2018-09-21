@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Http.Routing;
+using MyOnboardingApp.Api.UrlLocation;
 using MyOnboardingApp.ApiServices.UrlLocation;
 using MyOnboardingApp.Contracts.UrlLocation;
 using NSubstitute;
@@ -17,7 +18,8 @@ namespace MyOnboardingApp.ApiServices.Tests
         public void SetUp()
         {
             _urlHelper = Substitute.For<UrlHelper>();
-            _locator = new ItemUrlLocator(_urlHelper);
+            var itemLocatorConfig = new UrlLocatorConfig(/*"ListItemUrl"*/);
+            _locator = new ItemUrlLocator(_urlHelper, itemLocatorConfig);
         }
 
         [Test]

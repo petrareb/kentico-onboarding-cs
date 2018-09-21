@@ -84,6 +84,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\MyOnboardingApp.Api\MyOnboardingApp.Api.csproj">
+      <Project>{D34DA1D7-8B0F-4D0F-A0E2-5B8D789065A7}</Project>
+      <Name>MyOnboardingApp.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\MyOnboardingApp.Contracts\MyOnboardingApp.Contracts.csproj">
       <Project>{94287d69-6747-474a-b4b8-50be736eee6f}</Project>
       <Name>MyOnboardingApp.Contracts</Name>
