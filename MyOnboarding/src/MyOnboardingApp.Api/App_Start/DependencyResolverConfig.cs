@@ -1,9 +1,12 @@
 ﻿using System.Web.Http;
 using MyOnboardingApp.Api.DependencyResolvers;
+using MyOnboardingApp.Api.UrlLocation;
 using MyOnboardingApp.Api.Utils;
 using MyOnboardingApp.ApiServices;
+using MyOnboardingApp.Contracts.UrlLocation;
 using MyOnboardingApp.Database;
 using Unity;
+using Unity.Lifetime;
 
 namespace MyOnboardingApp.Api
 {
@@ -13,7 +16,8 @@ namespace MyOnboardingApp.Api
         {
             var container = new UnityContainer()
                 .RegisterDependency<ApiServicesBootstrapper>()
-                .RegisterDependency<DatabaseBootstrapper>();
+                .RegisterDependency<DatabaseBootstrapper>()
+                .RegisterType<IUrlLocatorConfig, UrlLocatorConfig>(new HierarchicalLifetimeManager());
 
             config.DependencyResolver = new DependencyResolver(container);
         }

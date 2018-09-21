@@ -128,6 +128,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UrlLocation\UrlLocatorConfig.cs" />
     <Compile Include="Utils\UnityContainerExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
