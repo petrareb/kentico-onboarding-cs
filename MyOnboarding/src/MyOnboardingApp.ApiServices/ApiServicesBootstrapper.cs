@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Web;
 using MyOnboardingApp.ApiServices.UrlLocation;
-using MyOnboardingApp.Contracts.Configuration;
+using MyOnboardingApp.Contracts.Registration;
 using MyOnboardingApp.Contracts.UrlLocation;
 using Unity;
 using Unity.Injection;
@@ -9,7 +9,7 @@ using Unity.Lifetime;
 
 namespace MyOnboardingApp.ApiServices
 {
-    public class ApiServicesBootstrapper: IConfiguration
+    public class ApiServicesBootstrapper: IRegistration
     {
         public void Register(IUnityContainer container)
         {

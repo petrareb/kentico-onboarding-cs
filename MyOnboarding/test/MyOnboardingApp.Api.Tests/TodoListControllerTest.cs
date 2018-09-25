@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -9,6 +9,7 @@ using MyOnboardingApp.Api.Controllers;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Contracts.UrlLocation;
+using MyOnboardingApp.Tests.Extensions;
 using MyOnboardingApp.Tests.Utils;
 using NSubstitute;
 using NUnit.Framework;
@@ -22,10 +23,9 @@ namespace MyOnboardingApp.Tests
         private readonly Guid _expectedId = new Guid("00112233-4455-6677-8899-aabbccddeeff");
         private TodoListController _controller;
         private IUrlLocator _itemUrlLocator;
-        private IEqualityComparer<TodoListItem> _comparer;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             _itemUrlLocator = Substitute.For<IUrlLocator>();
             _repository = Substitute.For<ITodoListRepository>();
@@ -35,52 +35,59 @@ namespace MyOnboardingApp.Tests
                 Configuration = new HttpConfiguration(),
                 Url = new UrlHelper()
             };
-            _comparer = new ItemEqualityComparer();
-            await Task.CompletedTask;
+            //_comparer = new ItemEqualityComparer();
         }
 
         [Test]
         public async Task Get_NoIdSpecified_ReturnsCorrectResponse()
         {
-            var msg = await _controller.GetMessageFromAction(control => control.GetAsync());
+            var expectedItems = new[]
+            {
+                new TodoListItem {Text = "1st Todo Item", Id = new Guid("11111111-1111-1111-1111-aabbccddeeff")},
+                new TodoListItem {Text = "2nd Todo Item", Id = new Guid("22222222-2222-2222-2222-aabbccddeeff")}
+            };
+            _repository.GetAllItemsAsync().Returns(expectedItems);
+            var message = await _controller.GetMessageFromAction(controller => controller.GetAsync());
+            message.TryGetContentValue(out TodoListItem[] itemsFromMessage);
 
-            Assert.That(msg.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(itemsFromMessage, Is.SameAs(expectedItems));
         }
+
 
         [Test]
         public async Task Get_IdSpecified_ReturnsCorrectResponse()
         {
             var expectedItem = new TodoListItem { Text = "Default Item", Id = _expectedId };
-            _repository.GetItemByIdAsync(_expectedId)
-                .Returns(expectedItem);
+            _repository.GetItemByIdAsync(_expectedId).Returns(expectedItem);
 
-            var msg = await _controller.GetMessageFromAction(control => control.GetAsync(_expectedId));
-            msg.TryGetContentValue(out TodoListItem itemFromMsg);
+            var message = await _controller.GetMessageFromAction(controller => controller.GetAsync(_expectedId));
+            message.TryGetContentValue(out TodoListItem itemFromMsg);
 
-            Assert.That(msg.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(itemFromMsg, Is.EqualTo(expectedItem).Using(_comparer));
+            Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(_controller.CheckTodoListItemsEquality(itemFromMsg, expectedItem));
         }
 
         [Test]
         public async Task Delete_IdSpecified_ReturnsOkStatusCode()
         {
             var expectedItem = new TodoListItem {Text = "Default Item", Id = _expectedId};
-            _repository.DeleteItemAsync(_expectedId)
-                .Returns(expectedItem);
+            _repository.DeleteItemAsync(_expectedId).Returns(expectedItem);
 
-            var msg = await _controller.GetMessageFromAction(control => control.DeleteAsync(_expectedId));
-            var statusCode = msg.StatusCode;
-            msg.TryGetContentValue(out TodoListItem itemFromMsg);
+            var message = await _controller.GetMessageFromAction(controller => controller.DeleteAsync(_expectedId));
+            var statusCode = message.StatusCode;
+            message.TryGetContentValue(out TodoListItem itemFromMsg);
 
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(itemFromMsg, Is.EqualTo(expectedItem).Using(_comparer));
+            //Assert.That(itemFromMsg, Is.EqualTo(expectedItem).Using(_comparer));
+            Assert.That(_controller.CheckTodoListItemsEquality(itemFromMsg, expectedItem));
         }
 
         [Test]
-        public async Task Put_IdSpecifiedTextSpecified_ReturnsOkStatusCode()
+        public async Task Put_IdSpecifiedTextSpecified_ReturnsCorrectStatusCode()
         {
-            var msg = await _controller.GetMessageFromAction(control => control.PutAsync(_expectedId, new TodoListItem { Text = "newText" }));
-            var statusCode = msg.StatusCode;
+            var message = await _controller.GetMessageFromAction(controller => controller.PutAsync(_expectedId, new TodoListItem { Text = "newText" }));
+            var statusCode = message.StatusCode;
 
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.NoContent));
         }
@@ -92,23 +99,13 @@ namespace MyOnboardingApp.Tests
             var expectedItem = new TodoListItem {Id = _expectedId, Text = "newText"};
             _repository.AddNewItemAsync(itemToAdd).Returns(expectedItem);
             const string expectedUrl = "expected/Url";
-            _itemUrlLocator.GetListItemUrl(Arg.Any<Guid>()).Returns(expectedUrl);
+            _itemUrlLocator.GetListItemUrl(itemToAdd.Id).Returns(expectedUrl);
 
-            _controller.Configuration = new HttpConfiguration();
-            _controller.Configuration.Routes.MapHttpRoute(
-                name: "ListItemUrl",
-                routeTemplate: "api/v{version}/{controller}/{id}",
-                defaults: new {id = RouteParameter.Optional});
+            var message = await _controller.GetMessageFromAction(controller => controller.PostAsync(itemToAdd));
+            message.TryGetContentValue(out TodoListItem itemFromMsg);
 
-            _controller.RequestContext.RouteData = new HttpRouteData(
-                route: new HttpRoute(),
-                values: new HttpRouteValueDictionary{{"version", "1.0"}, {"controller", "todolist"}});
-        
-
-            var msg = await _controller.GetMessageFromAction(control => control.PostAsync(itemToAdd));
-            msg.TryGetContentValue(out TodoListItem itemFromMsg);
-            Assert.That(msg.StatusCode, Is.EqualTo(HttpStatusCode.Created));
-            Assert.That(itemFromMsg, Is.EqualTo(expectedItem).Using(_comparer));
+            Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.Created));
+            Assert.That(_controller.CheckTodoListItemsEquality(itemFromMsg, expectedItem));
         }
     }
 }

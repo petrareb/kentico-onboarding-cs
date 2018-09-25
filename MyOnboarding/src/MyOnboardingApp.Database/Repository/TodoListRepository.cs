@@ -8,21 +8,22 @@ namespace MyOnboardingApp.Database.Repository
 {
     internal class TodoListRepository: ITodoListRepository
     {
-        private static readonly TodoListItem s_defaultItem =
-            new TodoListItem { Text = "Default Item", Id = new Guid("00112233-4455-6677-8899-aabbccddeeff") };
-        private static readonly List<TodoListItem> s_items = new List<TodoListItem> { s_defaultItem };
-
+        private static readonly TodoListItem[] s_items = {
+            new TodoListItem{ Text = "1st Todo Item", Id = new Guid("00000000-0000-0000-0000-aabbccddeeff") },
+            new TodoListItem{ Text = "2nd Todo Item", Id = new Guid("11111111-1111-1111-1111-aabbccddeeff") },
+            new TodoListItem{ Text = "3rd Todo Item", Id = new Guid("22222222-2222-2222-2222-aabbccddeeff") }
+        };
 
         public async Task<IEnumerable<TodoListItem>> GetAllItemsAsync() 
             => await Task.FromResult(s_items);
         
 
         public async Task<TodoListItem> GetItemByIdAsync(Guid id) 
-            => await Task.FromResult(s_defaultItem);
+            => await Task.FromResult(s_items[0]);
         
 
         public async Task<TodoListItem> AddNewItemAsync(TodoListItem newItem) 
-            => await Task.FromResult(newItem);
+            => await Task.FromResult(s_items[2]);
 
 
         public async Task<TodoListItem> ReplaceItemAsync(TodoListItem item)
@@ -30,6 +31,6 @@ namespace MyOnboardingApp.Database.Repository
 
 
         public async Task<TodoListItem> DeleteItemAsync(Guid id) 
-            => await Task.FromResult(s_defaultItem);
+            => await Task.FromResult(s_items[0]);
     }
 }
