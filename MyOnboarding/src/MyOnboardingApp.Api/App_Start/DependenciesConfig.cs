@@ -2,7 +2,7 @@
 using MyOnboardingApp.Api.DependencyResolvers;
 using MyOnboardingApp.Api.UrlLocation;
 using MyOnboardingApp.ApiServices;
-using MyOnboardingApp.Contracts.Configuration;
+using MyOnboardingApp.Contracts.Registration;
 using MyOnboardingApp.Contracts.UrlLocation;
 using MyOnboardingApp.Database;
 using Unity;
@@ -10,7 +10,7 @@ using Unity.Lifetime;
 
 namespace MyOnboardingApp.Api
 {
-    public static class DependenciesConfig /*DependencyResolverConfig*/
+    public static class DependenciesConfig
     {
         public static void Register(HttpConfiguration config)
         {
@@ -21,20 +21,13 @@ namespace MyOnboardingApp.Api
 
             config.DependencyResolver = new DependencyResolver(container);
         }
-
-        //public static IUnityContainer RegisterDependency<T>(this IUnityContainer container) where T : IConfiguration, new()
-        //{
-        //    var dependency = new T();
-        //    dependency.Register(container);
-        //    return container;
-        //}
     }
 
-    public static class UnityContainerExtensions
+    public static class UnityContainerExtension
     {
-        public static IUnityContainer RegisterDependency<T>(this IUnityContainer container) where T : IConfiguration, new()
+        public static IUnityContainer RegisterDependency<TDependency>(this IUnityContainer container) where TDependency : IRegistration, new()
         {
-            var dependency = new T();
+            var dependency = new TDependency();
             dependency.Register(container);
             return container;
         }
