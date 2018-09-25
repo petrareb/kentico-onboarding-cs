@@ -14,13 +14,13 @@ namespace MyOnboardingApp.ApiServices
         public void Register(IUnityContainer container)
         {
             container
-                .RegisterType<HttpRequestMessage>(new InjectionFactory(_ => GetHttpRequestMessage()))
+                .RegisterType<HttpRequestMessage>(
+                    new HierarchicalLifetimeManager(), 
+                    new InjectionFactory(GetHttpRequestMessage))
                 .RegisterType<IUrlLocator, ItemUrlLocator>(new HierarchicalLifetimeManager());
         }
 
-        private static HttpRequestMessage GetHttpRequestMessage()
-        {
-            return HttpContext.Current.Items["MS_HttpRequestMessage"] as HttpRequestMessage;
-        }
+        private static HttpRequestMessage GetHttpRequestMessage(IUnityContainer container) 
+            => HttpContext.Current.Items["MS_HttpRequestMessage"] as HttpRequestMessage;
     }
 }

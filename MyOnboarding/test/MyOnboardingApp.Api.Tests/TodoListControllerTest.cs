@@ -19,7 +19,7 @@ namespace MyOnboardingApp.Tests
     public class TodoListControllerTest
     {
         private ITodoListRepository _repository; 
-        private readonly Guid _expectedId = Guid.Empty;
+        private readonly Guid _expectedId = new Guid("00112233-4455-6677-8899-aabbccddeeff");
         private TodoListController _controller;
         private IUrlLocator _itemUrlLocator;
         private IEqualityComparer<TodoListItem> _comparer;

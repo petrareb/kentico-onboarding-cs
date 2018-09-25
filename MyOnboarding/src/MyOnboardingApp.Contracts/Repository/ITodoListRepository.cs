@@ -13,7 +13,7 @@ namespace MyOnboardingApp.Contracts.Repository
 
         Task<TodoListItem> AddNewItemAsync(TodoListItem newItem);
 
-        Task EditItemAsync(Guid id, TodoListItem item);
+        Task<TodoListItem> ReplaceItemAsync(TodoListItem item);
 
         Task<TodoListItem> DeleteItemAsync(Guid id);
     }

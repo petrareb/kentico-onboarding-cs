@@ -9,7 +9,7 @@ namespace MyOnboardingApp.Database.Repository
     internal class TodoListRepository: ITodoListRepository
     {
         private static readonly TodoListItem s_defaultItem =
-            new TodoListItem { Text = "Default Item", Id = Guid.Empty };
+            new TodoListItem { Text = "Default Item", Id = new Guid("00112233-4455-6677-8899-aabbccddeeff") };
         private static readonly List<TodoListItem> s_items = new List<TodoListItem> { s_defaultItem };
 
 
@@ -25,8 +25,8 @@ namespace MyOnboardingApp.Database.Repository
             => await Task.FromResult(newItem);
 
 
-        public async Task EditItemAsync(Guid id, TodoListItem item)
-            => await Task.CompletedTask;
+        public async Task<TodoListItem> ReplaceItemAsync(TodoListItem item)
+            => await Task.FromResult(item);
 
 
         public async Task<TodoListItem> DeleteItemAsync(Guid id) 
