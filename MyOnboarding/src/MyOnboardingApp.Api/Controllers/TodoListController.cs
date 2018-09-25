@@ -37,6 +37,7 @@ namespace MyOnboardingApp.Api.Controllers
         {
             var storedItem = await _repository.AddNewItemAsync(newItem);
             var location = _urlLocator.GetListItemUrl(storedItem.Id);
+
             return Created(location, storedItem);
         } 
             
@@ -44,7 +45,7 @@ namespace MyOnboardingApp.Api.Controllers
         [Route("{id}")]
         public async Task<IHttpActionResult> PutAsync(Guid id, [FromBody] TodoListItem item)
         {
-            await _repository.EditItemAsync(id, item);
+            await _repository.ReplaceItemAsync(item);
             return StatusCode(HttpStatusCode.NoContent);
         }
             

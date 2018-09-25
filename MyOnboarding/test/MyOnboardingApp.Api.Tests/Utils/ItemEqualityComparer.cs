@@ -8,8 +8,8 @@ namespace MyOnboardingApp.Tests.Utils
         public bool Equals(TodoListItem x, TodoListItem y)
         {
             if (ReferenceEquals(x, y)) return true;
-            if (ReferenceEquals(x, null)) return false;
-            if (ReferenceEquals(y, null)) return false;
+            if (x is null) return false;
+            if (y is null) return false;
             if (x.GetType() != y.GetType()) return false;
             return x.Id.Equals(y.Id) && string.Equals(x.Text, y.Text);
         }
