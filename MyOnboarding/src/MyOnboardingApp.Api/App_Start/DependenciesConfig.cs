@@ -21,10 +21,7 @@ namespace MyOnboardingApp.Api
 
             config.DependencyResolver = new DependencyResolver(container);
         }
-    }
 
-    public static class UnityContainerExtension
-    {
         public static IUnityContainer RegisterDependency<TDependency>(this IUnityContainer container) where TDependency : IBootstrapper, new()
         {
             var dependency = new TDependency();
@@ -33,5 +30,3 @@ namespace MyOnboardingApp.Api
         }
     }
 }
-
-
