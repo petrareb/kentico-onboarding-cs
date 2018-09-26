@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
+using MyOnboardingApp.Api;
 using MyOnboardingApp.ApiServices;
+using MyOnboardingApp.Contracts.Registration;
+using MyOnboardingApp.Contracts.Urls;
 using MyOnboardingApp.Database;
-using NSubstitute;
 using NUnit.Framework;
 using Unity;
 
@@ -13,38 +16,57 @@ namespace MyOnboardingApp.Tests
     [TestFixture]
     public class ContainerDependenciesTest
     {
-        private readonly IUnityContainer _container = Substitute.For<IUnityContainer>();
+        private IUnityContainer _container;
+        private List<Type> _exportedTypes;
+        private List<Type> _ignoredTypes;
 
         [SetUp]
         public void SetUp()
         {
+            _ignoredTypes = new List<Type>
+            {
+                typeof(DatabaseBootstrapper),
+                typeof(ApiServicesBootstrapper),
+                typeof(IBootstrapper)
+            };
+            _exportedTypes = Assembly
+                .Load("MyOnboardingApp.Contracts")
+                .ExportedTypes
+                .Where(contract => contract.IsInterface)
+                .ToList();
+            _exportedTypes.Add(typeof(HttpRequestMessage));
+            _exportedTypes.RemoveAll(contract => _ignoredTypes.Contains(contract));
 
+            _container = new UnityContainer();            
         }
+
+     
 
         [Test]
         public void UnityContainer_AfterRegistration_ContainsAllContracts()
         {
-            var assembly = Assembly.Load("MyOnboardingApp.Contracts");
-            var ignoredContracts = new List<Type> { typeof(DatabaseBootstrapper), typeof(ApiServicesBootstrapper) };
-
-            var contracts = assembly.GetTypes().Where(t => !ignoredContracts.Contains(t))/*.Where(type => type.IsInterface).*/.ToList();
-
-            foreach (Type t in contracts)
+            RegisterAllDependencies(_container);
+            foreach (var type in _exportedTypes)
             {
-                //_container.RegisterDependency<t>();
-            }
+                Assert.That(_container.IsRegistered(type));
+            } 
+        }
 
-            foreach (Type t in contracts)
-            {
-                Assert.That(_container.IsRegistered(t));
-            }
-
-            //IUrlLocatorConfig*
-            //    HttpRequestMessage
-            //        IUrlLocator*
-            //            ITodoListRepository*
-
+        public static void RegisterAllDependencies(IUnityContainer container)
+        {
+            container
+                .RegisterDependency<ApiServicesBootstrapper>()
+                .RegisterDependency<DatabaseBootstrapper>()
+                .RegisterType<IUrlLocatorConfig>();
         }
     }
 
 }
+
+// IUrlLocatorConfig,*
+// ApiServicesBootstrapper,
+// DatabaseBootstrapper,
+// HttpRequestMessage, ---
+// IUrlLocator,*
+// ITodoListRepository*
+// IBootstrapper*

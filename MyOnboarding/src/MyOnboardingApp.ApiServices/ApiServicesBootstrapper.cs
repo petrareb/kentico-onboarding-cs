@@ -2,14 +2,14 @@
 using System.Web;
 using MyOnboardingApp.ApiServices.UrlLocation;
 using MyOnboardingApp.Contracts.Registration;
-using MyOnboardingApp.Contracts.UrlLocation;
+using MyOnboardingApp.Contracts.Urls;
 using Unity;
 using Unity.Injection;
 using Unity.Lifetime;
 
 namespace MyOnboardingApp.ApiServices
 {
-    public class ApiServicesBootstrapper: IRegistration
+    public class ApiServicesBootstrapper: IBootstrapper
     {
         public void Register(IUnityContainer container)
         {

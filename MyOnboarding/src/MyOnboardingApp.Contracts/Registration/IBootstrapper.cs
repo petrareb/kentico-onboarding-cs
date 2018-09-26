@@ -2,7 +2,7 @@
 
 namespace MyOnboardingApp.Contracts.Registration
 {
-    public interface IRegistration
+    public interface IBootstrapper
     {
         void Register(IUnityContainer container);
     }

@@ -3,7 +3,7 @@ using MyOnboardingApp.Api.DependencyResolvers;
 using MyOnboardingApp.Api.UrlLocation;
 using MyOnboardingApp.ApiServices;
 using MyOnboardingApp.Contracts.Registration;
-using MyOnboardingApp.Contracts.UrlLocation;
+using MyOnboardingApp.Contracts.Urls;
 using MyOnboardingApp.Database;
 using Unity;
 using Unity.Lifetime;
@@ -25,7 +25,7 @@ namespace MyOnboardingApp.Api
 
     public static class UnityContainerExtension
     {
-        public static IUnityContainer RegisterDependency<TDependency>(this IUnityContainer container) where TDependency : IRegistration, new()
+        public static IUnityContainer RegisterDependency<TDependency>(this IUnityContainer container) where TDependency : IBootstrapper, new()
         {
             var dependency = new TDependency();
             dependency.Register(container);

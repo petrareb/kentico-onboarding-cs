@@ -7,7 +7,7 @@ using System.Web.Http.Routing;
 using MyOnboardingApp.Api.Controllers;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Repository;
-using MyOnboardingApp.Contracts.UrlLocation;
+using MyOnboardingApp.Contracts.Urls;
 using MyOnboardingApp.Tests.Comparators;
 using MyOnboardingApp.Tests.Utils;
 using NSubstitute;

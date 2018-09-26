@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.Http.Routing;
-using MyOnboardingApp.Contracts.UrlLocation;
 using System.Runtime.CompilerServices;
+using MyOnboardingApp.Contracts.Urls;
 
 [assembly: InternalsVisibleTo("MyOnboardingApp.ApiServices.Tests")]
 namespace MyOnboardingApp.ApiServices.UrlLocation
@@ -17,6 +17,7 @@ namespace MyOnboardingApp.ApiServices.UrlLocation
             _urlConfiguration = config;
         }
 
-        public string GetListItemUrl(Guid id) => _url.Route(_urlConfiguration.TodoListItemRouteNameGetter, new { id });
+        public string GetListItemUrl(Guid id) 
+            => _url.Route(_urlConfiguration.TodoListItemRouteNameGetter, new { id });
     }
 }

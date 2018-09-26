@@ -2,7 +2,7 @@
 using System.Web.Http.Routing;
 using MyOnboardingApp.Api.UrlLocation;
 using MyOnboardingApp.ApiServices.UrlLocation;
-using MyOnboardingApp.Contracts.UrlLocation;
+using MyOnboardingApp.Contracts.Urls;
 using NSubstitute;
 using NUnit.Framework;
 
