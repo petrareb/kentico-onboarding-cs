@@ -6,7 +6,7 @@ using Unity.Lifetime;
 
 namespace MyOnboardingApp.Database
 {
-    public class DatabaseBootstrapper: IRegistration
+    public class DatabaseBootstrapper: IBootstrapper
     {
         public void Register(IUnityContainer container) 
             => container.RegisterType<ITodoListRepository, TodoListRepository>(new HierarchicalLifetimeManager());

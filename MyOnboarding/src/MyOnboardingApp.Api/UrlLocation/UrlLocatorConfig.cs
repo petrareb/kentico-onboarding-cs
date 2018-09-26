@@ -1,4 +1,4 @@
-﻿using MyOnboardingApp.Contracts.UrlLocation;
+﻿using MyOnboardingApp.Contracts.Urls;
 
 namespace MyOnboardingApp.Api.UrlLocation
 {

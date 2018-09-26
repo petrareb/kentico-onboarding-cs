@@ -9,9 +9,21 @@ namespace MyOnboardingApp.Database.Repository
     internal class TodoListRepository: ITodoListRepository
     {
         private static readonly TodoListItem[] s_items = {
-            new TodoListItem{ Text = "1st Todo Item", Id = new Guid("00000000-0000-0000-0000-aabbccddeeff") },
-            new TodoListItem{ Text = "2nd Todo Item", Id = new Guid("11111111-1111-1111-1111-aabbccddeeff") },
-            new TodoListItem{ Text = "3rd Todo Item", Id = new Guid("22222222-2222-2222-2222-aabbccddeeff") }
+            new TodoListItem
+            {
+                Text = "1st Todo Item",
+                Id = new Guid("11111111-1111-1111-1111-aabbccddeeff")
+            },
+            new TodoListItem
+            {
+                Text = "2nd Todo Item",
+                Id = new Guid("22222222-2222-2222-2222-aabbccddeeff")
+            },
+            new TodoListItem
+            {
+                Text = "3rd Todo Item",
+                Id = new Guid("33333333-3333-3333-3333-aabbccddeeff")
+            }
         };
 
         public async Task<IEnumerable<TodoListItem>> GetAllItemsAsync() 

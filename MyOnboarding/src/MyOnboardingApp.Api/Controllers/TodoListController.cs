@@ -6,7 +6,7 @@ using Microsoft.Web.Http;
 using MyOnboardingApp.Api.UrlLocation;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Repository;
-using MyOnboardingApp.Contracts.UrlLocation;
+using MyOnboardingApp.Contracts.Urls;
 
 namespace MyOnboardingApp.Api.Controllers
 {

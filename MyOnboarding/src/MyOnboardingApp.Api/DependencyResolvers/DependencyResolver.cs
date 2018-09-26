@@ -10,11 +10,14 @@ namespace MyOnboardingApp.Api.DependencyResolvers
     {
         protected IUnityContainer Container;
 
-        public DependencyResolver(IUnityContainer container) => Container = container ?? throw new ArgumentNullException(nameof(container));
+        public DependencyResolver(IUnityContainer container) 
+            => Container = container ?? throw new ArgumentNullException(nameof(container));
 
-        public void Dispose() => Dispose(true);
+        public void Dispose() 
+            => Dispose(true);
 
-        protected virtual void Dispose(bool disposing) => Container.Dispose();
+        protected virtual void Dispose(bool disposing) 
+            => Container.Dispose();
 
         public object GetService(Type serviceType)
         {

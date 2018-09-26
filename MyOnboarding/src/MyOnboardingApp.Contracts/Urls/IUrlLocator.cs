@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MyOnboardingApp.Contracts.UrlLocation
+namespace MyOnboardingApp.Contracts.Urls
 {
     public interface IUrlLocator
     {
