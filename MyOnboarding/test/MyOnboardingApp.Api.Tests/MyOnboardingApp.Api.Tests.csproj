@@ -101,9 +101,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Comparators\ItemEqualityExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TodoListControllerTest.cs" />
-    <Compile Include="Extensions\ItemEqualityComparer.cs" />
+    <Compile Include="Comparators\ItemEqualityComparer.cs" />
     <Compile Include="Extensions\ControllerExtensions.cs" />
     <Compile Include="ContainerDependenciesTest.cs" />
   </ItemGroup>

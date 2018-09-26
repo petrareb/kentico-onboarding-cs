@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using MyOnboardingApp.Contracts.Models;
 
-namespace MyOnboardingApp.Tests.Extensions
+namespace MyOnboardingApp.Tests.Comparators
 {
     public sealed class ItemEqualityComparer : IEqualityComparer<TodoListItem>
     {
@@ -23,3 +23,4 @@ namespace MyOnboardingApp.Tests.Extensions
         }
     }
 }
+

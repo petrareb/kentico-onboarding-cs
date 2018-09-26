@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ using MyOnboardingApp.Api.Controllers;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Contracts.UrlLocation;
-using MyOnboardingApp.Tests.Extensions;
+using MyOnboardingApp.Tests.Comparators;
 using MyOnboardingApp.Tests.Utils;
 using NSubstitute;
 using NUnit.Framework;
@@ -35,7 +34,7 @@ namespace MyOnboardingApp.Tests
                 Configuration = new HttpConfiguration(),
                 Url = new UrlHelper()
             };
-            //_comparer = new ItemEqualityComparer();
+            
         }
 
         [Test]
@@ -47,7 +46,7 @@ namespace MyOnboardingApp.Tests
                 new TodoListItem {Text = "2nd Todo Item", Id = new Guid("22222222-2222-2222-2222-aabbccddeeff")}
             };
             _repository.GetAllItemsAsync().Returns(expectedItems);
-            var message = await _controller.GetMessageFromAction(controller => controller.GetAsync());
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.GetAsync());
             message.TryGetContentValue(out TodoListItem[] itemsFromMessage);
 
             Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -61,11 +60,11 @@ namespace MyOnboardingApp.Tests
             var expectedItem = new TodoListItem { Text = "Default Item", Id = _expectedId };
             _repository.GetItemByIdAsync(_expectedId).Returns(expectedItem);
 
-            var message = await _controller.GetMessageFromAction(controller => controller.GetAsync(_expectedId));
-            message.TryGetContentValue(out TodoListItem itemFromMsg);
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.GetAsync(_expectedId));
+            message.TryGetContentValue(out TodoListItem itemFromMessage);
 
             Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(_controller.CheckTodoListItemsEquality(itemFromMsg, expectedItem));
+            Assert.That(itemFromMessage, Is.EqualTo(expectedItem).UsingItemEqualityComparer());
         }
 
         [Test]
@@ -74,19 +73,18 @@ namespace MyOnboardingApp.Tests
             var expectedItem = new TodoListItem {Text = "Default Item", Id = _expectedId};
             _repository.DeleteItemAsync(_expectedId).Returns(expectedItem);
 
-            var message = await _controller.GetMessageFromAction(controller => controller.DeleteAsync(_expectedId));
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.DeleteAsync(_expectedId));
             var statusCode = message.StatusCode;
-            message.TryGetContentValue(out TodoListItem itemFromMsg);
+            message.TryGetContentValue(out TodoListItem itemFromMessage);
 
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK));
-            //Assert.That(itemFromMsg, Is.EqualTo(expectedItem).Using(_comparer));
-            Assert.That(_controller.CheckTodoListItemsEquality(itemFromMsg, expectedItem));
+            Assert.That(itemFromMessage, Is.EqualTo(expectedItem).UsingItemEqualityComparer());
         }
 
         [Test]
         public async Task Put_IdSpecifiedTextSpecified_ReturnsCorrectStatusCode()
         {
-            var message = await _controller.GetMessageFromAction(controller => controller.PutAsync(_expectedId, new TodoListItem { Text = "newText" }));
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.PutAsync(_expectedId, new TodoListItem { Text = "newText" }));
             var statusCode = message.StatusCode;
 
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.NoContent));
@@ -101,11 +99,11 @@ namespace MyOnboardingApp.Tests
             const string expectedUrl = "expected/Url";
             _itemUrlLocator.GetListItemUrl(itemToAdd.Id).Returns(expectedUrl);
 
-            var message = await _controller.GetMessageFromAction(controller => controller.PostAsync(itemToAdd));
-            message.TryGetContentValue(out TodoListItem itemFromMsg);
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.PostAsync(itemToAdd));
+            message.TryGetContentValue(out TodoListItem itemFromMessage);
 
             Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.Created));
-            Assert.That(_controller.CheckTodoListItemsEquality(itemFromMsg, expectedItem));
+            Assert.That(itemFromMessage, Is.EqualTo(expectedItem).UsingItemEqualityComparer());
         }
     }
 }
