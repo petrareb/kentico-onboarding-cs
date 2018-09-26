@@ -23,4 +23,3 @@ namespace MyOnboardingApp.Tests.Comparators
         }
     }
 }
-

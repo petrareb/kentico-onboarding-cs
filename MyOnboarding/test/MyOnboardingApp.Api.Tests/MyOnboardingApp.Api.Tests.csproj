@@ -101,7 +101,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Comparators\ItemEqualityExtension.cs" />
+    <Compile Include="Extensions\ItemEqualityExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TodoListControllerTest.cs" />
     <Compile Include="Comparators\ItemEqualityComparer.cs" />

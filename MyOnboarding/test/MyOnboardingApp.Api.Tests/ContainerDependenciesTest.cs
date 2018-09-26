@@ -25,8 +25,6 @@ namespace MyOnboardingApp.Tests
         {
             _ignoredTypes = new List<Type>
             {
-                typeof(DatabaseBootstrapper),
-                typeof(ApiServicesBootstrapper),
                 typeof(IBootstrapper)
             };
             _exportedTypes = Assembly
@@ -36,23 +34,20 @@ namespace MyOnboardingApp.Tests
                 .ToList();
             _exportedTypes.Add(typeof(HttpRequestMessage));
             _exportedTypes.RemoveAll(contract => _ignoredTypes.Contains(contract));
-
             _container = new UnityContainer();            
         }
 
-     
-
         [Test]
-        public void UnityContainer_AfterRegistration_ContainsAllContracts()
+        public void UnityContainer_AfterDependencyRegistration_ContainsAllContracts()
         {
             RegisterAllDependencies(_container);
             foreach (var type in _exportedTypes)
             {
-                Assert.That(_container.IsRegistered(type));
+                Assert.That(_container.IsRegistered(type), Is.True);
             } 
         }
 
-        public static void RegisterAllDependencies(IUnityContainer container)
+        private static void RegisterAllDependencies(IUnityContainer container)
         {
             container
                 .RegisterDependency<ApiServicesBootstrapper>()
@@ -60,13 +55,4 @@ namespace MyOnboardingApp.Tests
                 .RegisterType<IUrlLocatorConfig>();
         }
     }
-
 }
-
-// IUrlLocatorConfig,*
-// ApiServicesBootstrapper,
-// DatabaseBootstrapper,
-// HttpRequestMessage, ---
-// IUrlLocator,*
-// ITodoListRepository*
-// IBootstrapper*

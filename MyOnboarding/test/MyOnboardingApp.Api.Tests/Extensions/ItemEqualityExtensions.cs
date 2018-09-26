@@ -1,8 +1,9 @@
-﻿using NUnit.Framework.Constraints;
+﻿using MyOnboardingApp.Tests.Comparators;
+using NUnit.Framework.Constraints;
 
-namespace MyOnboardingApp.Tests.Comparators
+namespace MyOnboardingApp.Tests.Extensions
 {
-    public static class ItemEqualityExtension
+    public static class ItemEqualityExtensions
     {
         public static EqualConstraint UsingItemEqualityComparer(this EqualConstraint constraint) 
             => constraint.Using(new ItemEqualityComparer());
