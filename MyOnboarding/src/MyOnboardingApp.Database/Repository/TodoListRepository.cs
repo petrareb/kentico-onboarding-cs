@@ -43,6 +43,6 @@ namespace MyOnboardingApp.Database.Repository
 
 
         public async Task<TodoListItem> DeleteItemAsync(Guid id) 
-            => await Task.FromResult(s_items[0]);
+            => await Task.FromResult(s_items[1]);
     }
 }
