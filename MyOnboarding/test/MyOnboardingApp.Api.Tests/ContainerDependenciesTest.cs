@@ -52,12 +52,12 @@ namespace MyOnboardingApp.Tests
 
             Assert.That(unexpectedTypes, Is.Empty);
             Assert.That(missingTypes, Is.Empty);
-
-
         }
 
         private class UnityContainerMock: IUnityContainer
         {
+            public IUnityContainer Parent { get; } = new UnityContainer();
+            public IEnumerable<IContainerRegistration> Registrations => _registrations;
             private readonly List<IContainerRegistration> _registrations = new List<IContainerRegistration>();
 
             public void Dispose()
@@ -108,9 +108,6 @@ namespace MyOnboardingApp.Tests
                     .Select(registration => registration.RegisteredType)
                     .Contains(type);
             }
-
-            public IUnityContainer Parent { get; }
-            public IEnumerable<IContainerRegistration> Registrations => _registrations;
         }   
     }
 }

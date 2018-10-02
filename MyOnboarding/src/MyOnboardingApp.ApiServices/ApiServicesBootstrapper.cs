@@ -21,6 +21,6 @@ namespace MyOnboardingApp.ApiServices
         }
 
         private static HttpRequestMessage GetHttpRequestMessage(IUnityContainer container) 
-            => HttpContext.Current.Items["MS_HttpRequestMessage"] as HttpRequestMessage;
+            => (HttpRequestMessage) HttpContext.Current.Items["MS_HttpRequestMessage"];
     }
 }
