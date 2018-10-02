@@ -103,9 +103,7 @@ namespace MyOnboardingApp.Api.Tests
 
             public bool IsRegistered(Type type, string name)
             {
-                return Registrations
-                    .Select(registration => registration.RegisteredType)
-                    .Contains(type);
+                throw new NotImplementedException();
             }
         }   
     }
