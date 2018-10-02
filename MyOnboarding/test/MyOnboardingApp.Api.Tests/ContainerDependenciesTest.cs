@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using MyOnboardingApp.Api;
 using MyOnboardingApp.Contracts.Registration;
 using NUnit.Framework;
 using Unity;
@@ -11,7 +10,7 @@ using Unity.Lifetime;
 using Unity.Registration;
 using Unity.Resolution;
 
-namespace MyOnboardingApp.Tests
+namespace MyOnboardingApp.Api.Tests
 {
     [TestFixture]
     public class ContainerDependenciesTest

@@ -9,7 +9,7 @@ using MyOnboardingApp.Database;
 using Unity;
 using Unity.Lifetime;
 
-[assembly: InternalsVisibleTo("MyOnboardingApp.Tests")]
+[assembly: InternalsVisibleTo("MyOnboardingApp.Api.Tests")]
 namespace MyOnboardingApp.Api
 {
     internal static class DependenciesConfig
