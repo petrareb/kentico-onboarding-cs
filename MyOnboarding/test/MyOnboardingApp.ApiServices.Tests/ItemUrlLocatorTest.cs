@@ -26,7 +26,11 @@ namespace MyOnboardingApp.ApiServices.Tests
         public void GetListItemUrl_IdSpecified_ReturnsCorrectUrlWithId()
         {
             var testId = new Guid("11111111-1111-1111-1111-aabbccddeeff"); 
-            _urlHelper.Route(UrlLocatorConfig.TodoListItemRouteName, Arg.Is<object>(obj => (Guid)new HttpRouteValueDictionary(obj)["id"] == testId)).Returns(testId.ToString());
+            _urlHelper
+                .Route(
+                UrlLocatorConfig.TodoListItemRouteName, 
+                Arg.Is<object>(obj => (Guid)new HttpRouteValueDictionary(obj)["id"] == testId))
+                .Returns(testId.ToString());
 
             var resultUrl = _locator.GetListItemUrl(testId);
 
