@@ -45,6 +45,7 @@ namespace MyOnboardingApp.Tests
                 new TodoListItem {Text = "2nd Todo Item", Id = new Guid("22222222-2222-2222-2222-aabbccddeeff")}
             };
             _repository.GetAllItemsAsync().Returns(expectedItems);
+
             var message = await _controller.GetMessageFromActionAsync(controller => controller.GetAsync());
             message.TryGetContentValue(out TodoListItem[] itemsFromMessage);
 
@@ -54,7 +55,7 @@ namespace MyOnboardingApp.Tests
 
 
         [Test]
-        public async Task Get_IdSpecified_ReturnsCorrectResponse()
+        public async Task Get_IdSpecified_ReturnsResponseWithOkStatusCodeAndExpectedItem()
         {
             var expectedItem = new TodoListItem { Text = "Default Item", Id = _expectedId };
             _repository.GetItemByIdAsync(_expectedId).Returns(expectedItem);
