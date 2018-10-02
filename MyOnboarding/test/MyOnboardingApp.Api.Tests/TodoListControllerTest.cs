@@ -12,7 +12,7 @@ using MyOnboardingApp.Tests.Extensions;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MyOnboardingApp.Tests
+namespace MyOnboardingApp.Api.Tests
 {
     [TestFixture]
     public class TodoListControllerTest
