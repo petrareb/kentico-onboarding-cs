@@ -332,4 +332,4 @@ ASALocalRun/
 .localhistory/
 
 # Files with secret information for connection with DB
-./MyOnboarding/src/MyOnboardingApp.Api/ConnectionStrings.config
+ConnectionStrings.config
