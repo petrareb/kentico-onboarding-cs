@@ -21,13 +21,11 @@ namespace MyOnboardingApp.Api
             config.DependencyResolver = new DependencyResolver(container);
         }
 
-        internal static void RegisterAllDependencies(IUnityContainer container)
-        {
-            container
+        internal static void RegisterAllDependencies(IUnityContainer container) 
+            => container
                 .RegisterDependency<ApiServicesBootstrapper>()
                 .RegisterDependency<DatabaseBootstrapper>()
                 .RegisterType<IUrlLocatorConfig, UrlLocatorConfig>(new HierarchicalLifetimeManager());
-        }
 
         private static IUnityContainer RegisterDependency<TDependency>(this IUnityContainer container) where TDependency : IBootstrapper, new()
         {
