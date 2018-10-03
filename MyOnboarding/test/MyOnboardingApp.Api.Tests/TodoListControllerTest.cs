@@ -33,7 +33,6 @@ namespace MyOnboardingApp.Api.Tests
                 Configuration = new HttpConfiguration(),
                 Url = new UrlHelper()
             };
-            
         }
 
         [Test]

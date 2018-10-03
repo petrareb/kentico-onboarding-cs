@@ -59,10 +59,8 @@ namespace MyOnboardingApp.Api.Tests
             public IEnumerable<IContainerRegistration> Registrations => _registrations;
             private readonly List<IContainerRegistration> _registrations = new List<IContainerRegistration>();
 
-            public void Dispose()
-            {
-                throw new NotImplementedException();
-            }
+            public void Dispose() 
+                => throw new NotImplementedException();
 
             public IUnityContainer RegisterType(Type typeFrom, Type typeTo, string name, LifetimeManager lifetimeManager,
                 params InjectionMember[] injectionMembers)
@@ -71,40 +69,26 @@ namespace MyOnboardingApp.Api.Tests
                 return this;
             }
 
-            public IUnityContainer RegisterInstance(Type type, string name, object instance, LifetimeManager lifetime)
-            {
-                throw new NotImplementedException();
-            }
+            public IUnityContainer RegisterInstance(Type type, string name, object instance, LifetimeManager lifetime) 
+                => throw new NotImplementedException();
 
-            public object Resolve(Type type, string name, params ResolverOverride[] resolverOverrides)
-            {
-                throw new NotImplementedException();
-            }
+            public object Resolve(Type type, string name, params ResolverOverride[] resolverOverrides) 
+                => throw new NotImplementedException();
 
-            public object BuildUp(Type type, object existing, string name, params ResolverOverride[] resolverOverrides)
-            {
-                throw new NotImplementedException();
-            }
+            public object BuildUp(Type type, object existing, string name, params ResolverOverride[] resolverOverrides) 
+                => throw new NotImplementedException();
 
-            public IUnityContainer AddExtension(UnityContainerExtension extension)
-            {
-                throw new NotImplementedException();
-            }
+            public IUnityContainer AddExtension(UnityContainerExtension extension) 
+                => throw new NotImplementedException();
 
-            public object Configure(Type configurationInterface)
-            {
-                throw new NotImplementedException();
-            }
+            public object Configure(Type configurationInterface) 
+                => throw new NotImplementedException();
 
-            public IUnityContainer CreateChildContainer()
-            {
-                throw new NotImplementedException();
-            }
+            public IUnityContainer CreateChildContainer() 
+                => throw new NotImplementedException();
 
-            public bool IsRegistered(Type type, string name)
-            {
-                throw new NotImplementedException();
-            }
+            public bool IsRegistered(Type type, string name) 
+                => throw new NotImplementedException();
         }   
     }
 }
