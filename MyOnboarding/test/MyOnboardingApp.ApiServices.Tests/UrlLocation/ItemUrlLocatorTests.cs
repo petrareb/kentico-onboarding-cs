@@ -6,10 +6,10 @@ using MyOnboardingApp.Contracts.Urls;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MyOnboardingApp.ApiServices.Tests
+namespace MyOnboardingApp.ApiServices.Tests.UrlLocation
 {
     [TestFixture]
-    public class ItemUrlLocatorTest
+    public class ItemUrlLocatorTests
     {
         private IUrlLocator _locator;
         private UrlHelper _urlHelper;

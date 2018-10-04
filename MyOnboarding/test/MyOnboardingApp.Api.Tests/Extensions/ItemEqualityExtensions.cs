@@ -1,7 +1,7 @@
-﻿using MyOnboardingApp.Tests.Comparators;
+﻿using MyOnboardingApp.Api.Tests.Comparators;
 using NUnit.Framework.Constraints;
 
-namespace MyOnboardingApp.Tests.Extensions
+namespace MyOnboardingApp.Api.Tests.Extensions
 {
     public static class ItemEqualityExtensions
     {

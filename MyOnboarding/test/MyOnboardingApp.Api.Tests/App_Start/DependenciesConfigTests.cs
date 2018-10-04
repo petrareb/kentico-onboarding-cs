@@ -12,19 +12,19 @@ using Unity.Registration;
 namespace MyOnboardingApp.Api.Tests
 {
     [TestFixture]
-    public class ContainerDependenciesTest
+    public class DependenciesConfigTests
     {
-        private Type[] _exportedTypes;
         private readonly Type[] _ignoredTypes = 
         {
             typeof(IBootstrapper)
         };
+
         private readonly Type[] _explicitTypes =
         {
             typeof(HttpRequestMessage)
         };
 
-        public Type[] GetExportedTypesFromAssembly() 
+        public Type[] GetTypesExportedFromAssembly() 
             => typeof(IBootstrapper)
                 .Assembly
                 .ExportedTypes
@@ -32,9 +32,6 @@ namespace MyOnboardingApp.Api.Tests
                 .Except(_ignoredTypes)
                 .Union(_explicitTypes)
                 .ToArray();
-
-        public Type[] GetExtraTypesFromArray(Type[] array, Type[] expectedArray) 
-            => array.Except(expectedArray).ToArray();
 
         public IUnityContainer MockUnityContainer(ICollection<Type> actualTypes)
         {
@@ -45,24 +42,26 @@ namespace MyOnboardingApp.Api.Tests
                 {
                     var typeFrom = callInfo.ArgAt<Type>(0);
                     var typeTo = callInfo.ArgAt<Type>(1);
+
                     actualTypes.Add(typeFrom ?? typeTo);
+
                     return container;
                 });
+
             return container;
         }
-
 
         [Test]
         public void UnityContainer_AfterDependencyRegistration_ContainsAllContracts()
         {
-            _exportedTypes = GetExportedTypesFromAssembly();
+            var exportedTypes = GetTypesExportedFromAssembly();
             var actualTypes = new List<Type>();
             var container = MockUnityContainer(actualTypes);
-      
+
             DependenciesConfig.RegisterAllDependencies(container);
-            var unexpectedTypes = GetExtraTypesFromArray(actualTypes.ToArray(), _exportedTypes);
-            var missingTypes = GetExtraTypesFromArray(_exportedTypes, actualTypes.ToArray());
-              
+            var unexpectedTypes = actualTypes.Except(exportedTypes).ToArray();
+            var missingTypes = exportedTypes.Except(actualTypes).ToArray();
+
             Assert.That(unexpectedTypes, Is.Empty, "There are more types registered to the container than expected.");
             Assert.That(missingTypes, Is.Empty, "Some of the types are not registered.");
         } 

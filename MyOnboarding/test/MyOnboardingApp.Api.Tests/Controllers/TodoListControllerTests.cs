@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Routing;
 using MyOnboardingApp.Api.Controllers;
+using MyOnboardingApp.Api.Tests.Extensions;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Contracts.Urls;
-using MyOnboardingApp.Tests.Extensions;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace MyOnboardingApp.Api.Tests
+namespace MyOnboardingApp.Api.Tests.Controllers
 {
     [TestFixture]
-    public class TodoListControllerTest
+    public class TodoListControllerTests
     {
         private ITodoListRepository _repository; 
         private readonly Guid _expectedId = new Guid("00112233-4455-6677-8899-aabbccddeeff");

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace MyOnboardingApp.Tests.Extensions
+namespace MyOnboardingApp.Api.Tests.Extensions
 {
     public static class ControllerExtensions
     {
