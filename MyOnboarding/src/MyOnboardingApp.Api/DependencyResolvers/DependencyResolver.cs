@@ -13,11 +13,14 @@ namespace MyOnboardingApp.Api.DependencyResolvers
         public DependencyResolver(IUnityContainer container) 
             => Container = container ?? throw new ArgumentNullException(nameof(container));
 
+
         public void Dispose() 
             => Dispose(true);
 
+
         protected virtual void Dispose(bool disposing) 
             => Container.Dispose();
+
 
         public object GetService(Type serviceType)
         {
@@ -30,6 +33,7 @@ namespace MyOnboardingApp.Api.DependencyResolvers
                 return null;
             }
         }
+
 
         public IEnumerable<object> GetServices(Type serviceType)
         {

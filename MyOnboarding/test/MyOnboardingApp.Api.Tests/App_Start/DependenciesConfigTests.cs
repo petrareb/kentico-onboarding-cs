@@ -33,6 +33,7 @@ namespace MyOnboardingApp.Api.Tests
                 .Union(_explicitTypes)
                 .ToArray();
 
+
         public IUnityContainer MockUnityContainer(ICollection<Type> actualTypes)
         {
             var container = Substitute.For<IUnityContainer>();
@@ -50,6 +51,7 @@ namespace MyOnboardingApp.Api.Tests
 
             return container;
         }
+
 
         [Test]
         public void UnityContainer_AfterDependencyRegistration_ContainsAllContracts()
