@@ -26,6 +26,7 @@ namespace MyOnboardingApp.Database.Repository
             }
         };
 
+
         public async Task<IEnumerable<TodoListItem>> GetAllItemsAsync() 
             => await Task.FromResult(s_items);
         

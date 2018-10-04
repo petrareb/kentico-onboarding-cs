@@ -11,6 +11,7 @@ namespace MyOnboardingApp.ApiServices.UrlLocation
         private readonly UrlHelper _url;
         private readonly IUrlLocatorConfig _urlConfiguration;
 
+
         public ItemUrlLocator(UrlHelper url, IUrlLocatorConfig config)
         {
             _url = url;

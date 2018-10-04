@@ -24,6 +24,7 @@ namespace MyOnboardingApp.Api.Tests
             typeof(HttpRequestMessage)
         };
 
+
         public Type[] GetTypesExportedFromAssembly() 
             => typeof(IBootstrapper)
                 .Assembly
