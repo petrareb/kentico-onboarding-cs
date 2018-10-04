@@ -14,6 +14,7 @@ namespace MyOnboardingApp.Api.Tests.Comparators
             return x.Id.Equals(y.Id) && string.Equals(x.Text, y.Text);
         }
 
+
         public int GetHashCode(TodoListItem obj)
         {
             unchecked

@@ -24,6 +24,7 @@ namespace MyOnboardingApp.Api.Controllers
             _urlLocator = urlLocator;
         }
 
+
         public async Task<IHttpActionResult> GetAsync() 
             => Ok(await _repository.GetAllItemsAsync());
 
