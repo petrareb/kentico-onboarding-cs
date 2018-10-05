@@ -1,8 +1,11 @@
-﻿using MyOnboardingApp.Contracts.Urls;
+﻿using System.Runtime.CompilerServices;
+using MyOnboardingApp.Contracts.Urls;
+
+[assembly: InternalsVisibleTo("MyOnboardingApp.ApiServices.Tests")]
 
 namespace MyOnboardingApp.Api.UrlLocation
 {
-    public class UrlLocatorConfig: IUrlLocatorConfig
+    internal class RoutesConfig: IRoutesConfig
     {
         public const string TodoListItemRouteName = "ListItemUrl";
         public string TodoListItemRouteNameGetter => TodoListItemRouteName;

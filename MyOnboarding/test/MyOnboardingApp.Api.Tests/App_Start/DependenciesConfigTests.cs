@@ -14,28 +14,44 @@ namespace MyOnboardingApp.Api.Tests
     [TestFixture]
     public class DependenciesConfigTests
     {
-        private readonly Type[] _ignoredTypes = 
+        private static readonly Type[] s_ignoredTypes = 
         {
             typeof(IBootstrapper)
         };
 
-        private readonly Type[] _explicitTypes =
+        private static readonly Type[] s_explicitTypes =
         {
             typeof(HttpRequestMessage)
         };
 
 
-        public Type[] GetTypesExportedFromAssembly() 
+        [Test]
+        public void UnityContainer_AfterDependencyRegistration_ContainsAllContracts()
+        {
+            var exportedTypes = GetTypesExportedFromAssembly();
+            var actualTypes = new List<Type>();
+            var container = MockUnityContainer(actualTypes);
+
+            DependenciesConfig.RegisterAllDependencies(container);
+            var unexpectedTypes = actualTypes.Except(exportedTypes).ToArray();
+            var missingTypes = exportedTypes.Except(actualTypes).ToArray();
+
+            Assert.That(unexpectedTypes, Is.Empty, "There are more types registered to the container than expected.");
+            Assert.That(missingTypes, Is.Empty, "Some of the types are not registered.");
+        }
+
+
+        private static Type[] GetTypesExportedFromAssembly() 
             => typeof(IBootstrapper)
                 .Assembly
                 .ExportedTypes
                 .Where(contract => contract.IsInterface)
-                .Except(_ignoredTypes)
-                .Union(_explicitTypes)
+                .Except(s_ignoredTypes)
+                .Union(s_explicitTypes)
                 .ToArray();
 
 
-        public IUnityContainer MockUnityContainer(ICollection<Type> actualTypes)
+        private static IUnityContainer MockUnityContainer(ICollection<Type> actualTypes)
         {
             var container = Substitute.For<IUnityContainer>();
             container
@@ -52,21 +68,5 @@ namespace MyOnboardingApp.Api.Tests
 
             return container;
         }
-
-
-        [Test]
-        public void UnityContainer_AfterDependencyRegistration_ContainsAllContracts()
-        {
-            var exportedTypes = GetTypesExportedFromAssembly();
-            var actualTypes = new List<Type>();
-            var container = MockUnityContainer(actualTypes);
-
-            DependenciesConfig.RegisterAllDependencies(container);
-            var unexpectedTypes = actualTypes.Except(exportedTypes).ToArray();
-            var missingTypes = exportedTypes.Except(actualTypes).ToArray();
-
-            Assert.That(unexpectedTypes, Is.Empty, "There are more types registered to the container than expected.");
-            Assert.That(missingTypes, Is.Empty, "Some of the types are not registered.");
-        } 
     }
 }

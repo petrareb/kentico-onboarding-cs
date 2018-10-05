@@ -6,7 +6,7 @@ using System.Web.Http;
 
 namespace MyOnboardingApp.Api.Tests.Extensions
 {
-    public static class ControllerExtensions
+    internal static class ControllerExtensions
     {
         public static async Task<HttpResponseMessage> GetMessageFromActionAsync<T>(this T controller, Func<T, Task<IHttpActionResult>> action)
         {

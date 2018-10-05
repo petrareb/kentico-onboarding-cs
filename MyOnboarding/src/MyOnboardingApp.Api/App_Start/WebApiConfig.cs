@@ -4,7 +4,7 @@ using Microsoft.Web.Http.Routing;
 
 namespace MyOnboardingApp.Api
 {
-    public static class WebApiConfig
+    internal static class WebApiConfig
     {
         public static void Register(HttpConfiguration config)
         {

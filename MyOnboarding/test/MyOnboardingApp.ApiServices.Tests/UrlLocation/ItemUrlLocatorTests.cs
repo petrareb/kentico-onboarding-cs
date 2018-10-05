@@ -19,7 +19,7 @@ namespace MyOnboardingApp.ApiServices.Tests.UrlLocation
         public void SetUp()
         {
             _urlHelper = Substitute.For<UrlHelper>();
-            var locatorConfig = new UrlLocatorConfig();
+            var locatorConfig = new RoutesConfig();
             _locator = new ItemUrlLocator(_urlHelper, locatorConfig);
         }
 
@@ -30,7 +30,7 @@ namespace MyOnboardingApp.ApiServices.Tests.UrlLocation
             var testId = new Guid("11111111-1111-1111-1111-aabbccddeeff");
             _urlHelper
                 .Route(
-                    UrlLocatorConfig.TodoListItemRouteName,
+                    RoutesConfig.TodoListItemRouteName,
                     Arg.Is<object>(obj => (Guid) new HttpRouteValueDictionary(obj)["id"] == testId))
                 .Returns(testId.ToString());
 

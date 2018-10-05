@@ -3,7 +3,7 @@ using NUnit.Framework.Constraints;
 
 namespace MyOnboardingApp.Api.Tests.Extensions
 {
-    public static class ItemEqualityExtensions
+    internal static class ItemEqualityExtensions
     {
         public static EqualConstraint UsingItemEqualityComparer(this EqualConstraint constraint) 
             => constraint.Using(new ItemEqualityComparer());
