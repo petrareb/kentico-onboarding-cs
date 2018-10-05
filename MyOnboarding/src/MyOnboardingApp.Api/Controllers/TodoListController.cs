@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Web.Http;
-using MyOnboardingApp.Api.Models;
+using MyOnboardingApp.Api.UrlLocation;
+using MyOnboardingApp.Contracts.Models;
+using MyOnboardingApp.Contracts.Repository;
+using MyOnboardingApp.Contracts.Urls;
 
 namespace MyOnboardingApp.Api.Controllers
 {
@@ -14,37 +15,45 @@ namespace MyOnboardingApp.Api.Controllers
     [Route("")]
     public class TodoListController : ApiController
     {
-        private static readonly TodoListItem s_defaultItem =
-            new TodoListItem { Text = "Default Item", Id = Guid.Empty };
-        private static readonly List<TodoListItem> s_items = new List<TodoListItem> { s_defaultItem };
+        private readonly ITodoListRepository _repository;
+        private readonly IUrlLocator _urlLocator;
 
 
-        public TodoListController()
+        public TodoListController(ITodoListRepository repository, IUrlLocator urlLocator)
         {
-            Request = new HttpRequestMessage();
-            Configuration = new HttpConfiguration();
+            _repository = repository;
+            _urlLocator = urlLocator;
         }
 
-        public async Task<IHttpActionResult> GetAsync() => 
-            await Task.FromResult(Ok(s_items));
 
+        public async Task<IHttpActionResult> GetAsync() 
+            => Ok(await _repository.GetAllItemsAsync());
+
+
+        [Route("{id}", Name = RoutesConfig.TodoListItemRouteName)]
+        public async Task<IHttpActionResult> GetAsync(Guid id) 
+            => Ok(await _repository.GetItemByIdAsync(id));
+
+
+        public async Task<IHttpActionResult> PostAsync([FromBody] TodoListItem newItem)
+        {
+            var storedItem = await _repository.AddNewItemAsync(newItem);
+            var location = _urlLocator.GetListItemUrl(storedItem.Id);
+
+            return Created(location, storedItem);
+        } 
+            
+            
+        [Route("{id}")]
+        public async Task<IHttpActionResult> PutAsync(Guid id, [FromBody] TodoListItem item)
+        {
+            await _repository.ReplaceItemAsync(item);
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+            
 
         [Route("{id}")]
-        public async Task<IHttpActionResult> GetAsync(Guid id) => 
-            await Task.FromResult(Ok(s_defaultItem));
-
-
-        public async Task<IHttpActionResult> PostAsync([FromBody]TodoListItem newItem) => 
-            await Task.FromResult(Created("api/v{version}/todolist", newItem));
-
-
-        [Route("{id}")]
-        public async Task<IHttpActionResult> PutAsync(Guid id, [FromBody]TodoListItem item) =>
-            await Task.FromResult(StatusCode(HttpStatusCode.NoContent));
-
-
-        [Route("{id}")]
-        public async Task<IHttpActionResult> DeleteAsync(Guid id) =>
-            await Task.FromResult(Ok(s_defaultItem));
+        public async Task<IHttpActionResult> DeleteAsync(Guid id) 
+            => Ok(await _repository.DeleteItemAsync(id));
     }
 }

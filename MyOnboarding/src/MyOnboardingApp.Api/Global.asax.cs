@@ -8,6 +8,7 @@ namespace MyOnboardingApp.Api
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
             GlobalConfiguration.Configure(JsonSerializerConfig.Register);
+            GlobalConfiguration.Configure(DependenciesConfig.Register);
         }
     }
 }

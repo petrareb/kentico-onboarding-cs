@@ -4,7 +4,7 @@ using Microsoft.Web.Http.Routing;
 
 namespace MyOnboardingApp.Api
 {
-    public static class WebApiConfig
+    internal static class WebApiConfig
     {
         public static void Register(HttpConfiguration config)
         {
@@ -15,9 +15,7 @@ namespace MyOnboardingApp.Api
                     ["apiVersion"] = typeof( ApiVersionRouteConstraint )
                 }
             };
-            // Web API configuration and services
 
-            // Web API routes
             config.MapHttpAttributeRoutes(constraintResolver);
             config.AddApiVersioning();
         }
