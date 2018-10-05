@@ -1,6 +1,6 @@
 ﻿namespace MyOnboardingApp.Contracts.Urls
 {
-    public interface IUrlLocatorConfig
+    public interface IRoutesConfig
     {
         string TodoListItemRouteNameGetter { get; }
     }

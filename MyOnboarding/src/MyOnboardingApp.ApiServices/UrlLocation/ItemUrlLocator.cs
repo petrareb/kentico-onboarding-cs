@@ -9,10 +9,10 @@ namespace MyOnboardingApp.ApiServices.UrlLocation
     internal class ItemUrlLocator: IUrlLocator
     {
         private readonly UrlHelper _url;
-        private readonly IUrlLocatorConfig _urlConfiguration;
+        private readonly IRoutesConfig _urlConfiguration;
 
 
-        public ItemUrlLocator(UrlHelper url, IUrlLocatorConfig config)
+        public ItemUrlLocator(UrlHelper url, IRoutesConfig config)
         {
             _url = url;
             _urlConfiguration = config;

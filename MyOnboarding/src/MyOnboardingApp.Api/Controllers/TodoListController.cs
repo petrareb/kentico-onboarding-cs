@@ -30,7 +30,7 @@ namespace MyOnboardingApp.Api.Controllers
             => Ok(await _repository.GetAllItemsAsync());
 
 
-        [Route("{id}", Name = UrlLocatorConfig.TodoListItemRouteName)]
+        [Route("{id}", Name = RoutesConfig.TodoListItemRouteName)]
         public async Task<IHttpActionResult> GetAsync(Guid id) 
             => Ok(await _repository.GetItemByIdAsync(id));
 

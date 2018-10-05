@@ -10,6 +10,7 @@ using Unity;
 using Unity.Lifetime;
 
 [assembly: InternalsVisibleTo("MyOnboardingApp.Api.Tests")]
+
 namespace MyOnboardingApp.Api
 {
     internal static class DependenciesConfig
@@ -26,7 +27,7 @@ namespace MyOnboardingApp.Api
             => container
                 .RegisterDependency<ApiServicesBootstrapper>()
                 .RegisterDependency<DatabaseBootstrapper>()
-                .RegisterType<IUrlLocatorConfig, UrlLocatorConfig>(new HierarchicalLifetimeManager());
+                .RegisterType<IRoutesConfig, RoutesConfig>(new HierarchicalLifetimeManager());
 
 
         private static IUnityContainer RegisterDependency<TDependency>(this IUnityContainer container) where TDependency : IBootstrapper, new()

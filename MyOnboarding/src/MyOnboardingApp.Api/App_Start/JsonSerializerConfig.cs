@@ -3,7 +3,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace MyOnboardingApp.Api
 {
-    public static class JsonSerializerConfig
+    internal static class JsonSerializerConfig
     {
         public static void Register(HttpConfiguration config)
         {

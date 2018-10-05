@@ -6,7 +6,7 @@ using Unity.Exceptions;
 
 namespace MyOnboardingApp.Api.DependencyResolvers
 {
-    public class DependencyResolver: IDependencyResolver
+    internal class DependencyResolver: IDependencyResolver
     {
         protected IUnityContainer Container;
 

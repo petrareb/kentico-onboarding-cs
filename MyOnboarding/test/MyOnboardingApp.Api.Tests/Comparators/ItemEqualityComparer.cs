@@ -3,7 +3,7 @@ using MyOnboardingApp.Contracts.Models;
 
 namespace MyOnboardingApp.Api.Tests.Comparators
 {
-    public sealed class ItemEqualityComparer : IEqualityComparer<TodoListItem>
+    internal sealed class ItemEqualityComparer : IEqualityComparer<TodoListItem>
     {
         public bool Equals(TodoListItem x, TodoListItem y)
         {
