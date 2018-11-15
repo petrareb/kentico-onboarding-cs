@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.ApiServices
 		{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB} = {EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.TestUtils", "test\MyOnboardingApp.TestUtils\MyOnboardingApp.TestUtils.csproj", "{162DA514-CFAF-49B0-93EC-9934A261E02B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{1A978F69-9E79-4653-8378-79394648D9B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A978F69-9E79-4653-8378-79394648D9B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A978F69-9E79-4653-8378-79394648D9B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{162DA514-CFAF-49B0-93EC-9934A261E02B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{162DA514-CFAF-49B0-93EC-9934A261E02B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{162DA514-CFAF-49B0-93EC-9934A261E02B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{162DA514-CFAF-49B0-93EC-9934A261E02B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +72,7 @@ Global
 		{7AE74B5B-86A4-4FDA-A19B-D406EBFBE72A} = {26D61547-AD3B-4558-A308-8E8085470281}
 		{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB} = {26D61547-AD3B-4558-A308-8E8085470281}
 		{1A978F69-9E79-4653-8378-79394648D9B0} = {EB6A548A-AA87-4F46-A7E4-7F696639446D}
+		{162DA514-CFAF-49B0-93EC-9934A261E02B} = {EB6A548A-AA87-4F46-A7E4-7F696639446D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {54079897-BE8D-4E0C-AB3F-2923612B2927}

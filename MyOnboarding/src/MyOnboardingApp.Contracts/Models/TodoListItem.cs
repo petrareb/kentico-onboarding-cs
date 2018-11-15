@@ -8,6 +8,15 @@ namespace MyOnboardingApp.Contracts.Models
 
         public string Text { get; set; }
 
-        public override string ToString() => $"{nameof(Id)}: {Id}, {nameof(Text)}: {Text}";
+        public DateTime CreationTime { get; set; }
+
+        public DateTime LastUpdateTime { get; set; }
+
+
+        public override string ToString()
+            => $"{nameof(Id)}: {Id}, " +
+               $"{nameof(Text)}: {Text}, " +
+               $"{nameof(CreationTime)}: {CreationTime:s}" +
+               $"{nameof(LastUpdateTime)}: {LastUpdateTime:s}";
     }
 }
