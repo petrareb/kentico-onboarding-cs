@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Web.Http.Routing;
-using MyOnboardingApp.Api.UrlLocation;
 using MyOnboardingApp.ApiServices.UrlLocation;
 using MyOnboardingApp.Contracts.Urls;
 using NSubstitute;
@@ -11,32 +10,41 @@ namespace MyOnboardingApp.ApiServices.Tests.UrlLocation
     [TestFixture]
     public class ItemUrlLocatorTests
     {
-        private IUrlLocator _locator;
-        private UrlHelper _urlHelper;
-
-
-        [SetUp]
-        public void SetUp()
-        {
-            _urlHelper = Substitute.For<UrlHelper>();
-            var locatorConfig = new RoutesConfig();
-            _locator = new ItemUrlLocator(_urlHelper, locatorConfig);
-        }
-
-
         [Test]
         public void GetListItemUrl_IdSpecified_ReturnsCorrectUrlWithId()
         {
             var testId = new Guid("11111111-1111-1111-1111-aabbccddeeff");
-            _urlHelper
-                .Route(
-                    RoutesConfig.TodoListItemRouteName,
-                    Arg.Is<object>(obj => (Guid) new HttpRouteValueDictionary(obj)["id"] == testId))
-                .Returns(testId.ToString());
+            var locator = CreateUrlLocator(testId);
 
-            var resultUrl = _locator.GetListItemUrl(testId);
+            var resultUrl = locator.GetListItemUrl(testId);
 
             Assert.That(resultUrl.Equals(testId.ToString()));
+        }
+
+
+        private static IUrlLocator CreateUrlLocator(Guid testId)
+        {
+            const string routeName = "RouteName";
+
+            var locatorConfig = Substitute.For<IRoutesConfig>();
+            locatorConfig.TodoListItemRouteNameGetter.Returns(routeName);
+
+            var urlHelper = CreateUrlHelper(testId, routeName);
+
+            return new ItemUrlLocator(urlHelper, locatorConfig);
+        }
+
+
+        private static UrlHelper CreateUrlHelper(Guid testId, string routeName)
+        {
+            var urlHelper = Substitute.For<UrlHelper>();
+            urlHelper
+                .Route(
+                    routeName,
+                    Arg.Is<object>(obj => (Guid)new HttpRouteValueDictionary(obj)["id"] == testId))
+                .Returns(testId.ToString());
+
+            return urlHelper;
         }
     }
 }
