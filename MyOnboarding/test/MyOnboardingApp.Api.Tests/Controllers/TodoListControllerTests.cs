@@ -12,6 +12,7 @@ using MyOnboardingApp.Contracts.Urls;
 using NSubstitute;
 using NUnit.Framework;
 using MyOnboardingApp.TestUtils.Extensions;
+using MyOnboardingApp.Contracts.Services;
 
 namespace MyOnboardingApp.Api.Tests.Controllers
 {
@@ -22,6 +23,7 @@ namespace MyOnboardingApp.Api.Tests.Controllers
         private readonly Guid _expectedId = new Guid("00112233-4455-6677-8899-aabbccddeeff");
         private TodoListController _controller;
         private IUrlLocator _itemUrlLocator;
+        private IRetrieveItemService _retrieveService;
 
 
         [SetUp]
@@ -29,7 +31,8 @@ namespace MyOnboardingApp.Api.Tests.Controllers
         {
             _itemUrlLocator = Substitute.For<IUrlLocator>();
             _repository = Substitute.For<ITodoListRepository>();
-            _controller = new TodoListController(_repository, _itemUrlLocator)
+            _retrieveService = Substitute.For<IRetrieveItemService>();
+            _controller = new TodoListController(_repository, _itemUrlLocator, _retrieveService)
             {
                 Request = new HttpRequestMessage(),
                 Configuration = new HttpConfiguration(),
@@ -43,10 +46,22 @@ namespace MyOnboardingApp.Api.Tests.Controllers
         {
             var expectedItems = new[]
             {
-                new TodoListItem {Text = "1st Todo Item", Id = new Guid("11111111-1111-1111-1111-aabbccddeeff")},
-                new TodoListItem {Text = "2nd Todo Item", Id = new Guid("22222222-2222-2222-2222-aabbccddeeff")}
+                new TodoListItem
+                {
+                    Text = "1st Todo Item",
+                    Id = new Guid("11111111-1111-1111-1111-aabbccddeeff"),
+                    CreationTime = new DateTime(1995, 01, 01),
+                    LastUpdateTime = new DateTime(1996, 01, 01)
+                },
+                new TodoListItem
+                {
+                    Text = "2nd Todo Item",
+                    Id = new Guid("22222222-2222-2222-2222-aabbccddeeff"),
+                    CreationTime = new DateTime(2000, 01, 01),
+                    LastUpdateTime = new DateTime(2001, 01, 01)
+                }
             };
-            _repository.GetAllItemsAsync().Returns(expectedItems);
+            _retrieveService.GetAllItemsAsync().Returns(expectedItems);
 
             var message = await _controller.GetMessageFromActionAsync(controller => controller.GetAsync());
             message.TryGetContentValue(out TodoListItem[] itemsFromMessage);
@@ -57,16 +72,44 @@ namespace MyOnboardingApp.Api.Tests.Controllers
 
 
         [Test]
-        public async Task Get_IdSpecified_ReturnsResponseWithOkStatusCodeAndExpectedItem()
+        public async Task Get_IdSpecified_ReturnsOkStatusCodeAndExpectedItemWithNoErrors()
         {
-            var expectedItem = new TodoListItem { Text = "Default Item", Id = _expectedId };
-            _repository.GetItemByIdAsync(_expectedId).Returns(expectedItem);
+            var expectedItem = new TodoListItem
+            {
+                Text = "Test Item",
+                Id = _expectedId
+            };
+            var expectedItemWithStatus = ResolvedItem.Create(expectedItem);
+            _retrieveService.GetItemByIdAsync(_expectedId).Returns(expectedItemWithStatus);
 
             var message = await _controller.GetMessageFromActionAsync(controller => controller.GetAsync(_expectedId));
             message.TryGetContentValue(out TodoListItem itemFromMessage);
 
             Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(itemFromMessage, Is.EqualTo(expectedItem).UsingItemEqualityComparer());
+        }
+
+
+        [Test]
+        public async Task Get_EmptyIdSpecified_ReturnsBadRequestStatusCode()
+        {
+            var id = Guid.Empty;
+
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.GetAsync(id));
+
+            Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        }
+
+
+        [Test]
+        public async Task Get_NonExistingIdSpecified_ReturnsNotFoundStatusCode()
+        {
+            var expectedItemWithStatus = ResolvedItem.Create((TodoListItem)null);
+            _retrieveService.GetItemByIdAsync(_expectedId).Returns(expectedItemWithStatus);
+
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.GetAsync(_expectedId));
+
+            Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
 
