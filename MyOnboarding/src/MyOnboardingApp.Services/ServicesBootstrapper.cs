@@ -1,6 +1,8 @@
 ﻿using System;
 using MyOnboardingApp.Contracts.Generators;
+using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Registration;
+using MyOnboardingApp.Contracts.Validation;
 using MyOnboardingApp.Services.Generators;
 using Unity;
 using Unity.Lifetime;
@@ -12,6 +14,9 @@ namespace MyOnboardingApp.Services
         public void Register(IUnityContainer container)
             => container
                 .RegisterType<IIdGenerator<Guid>, GuidGenerator>(new HierarchicalLifetimeManager())
-                .RegisterType<IDateTimeGenerator, DateTimeGenerator>(new HierarchicalLifetimeManager());
+                .RegisterType<IDateTimeGenerator, DateTimeGenerator>(new HierarchicalLifetimeManager())
+                .RegisterType<IItemWithErrors<TodoListItem>>(new HierarchicalLifetimeManager())
+                .RegisterType<IResolvedItem<TodoListItem>>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidationCriterion<TodoListItem>>(new HierarchicalLifetimeManager());
     }
 }
