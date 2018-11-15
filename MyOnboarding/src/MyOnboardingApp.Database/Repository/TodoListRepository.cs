@@ -12,17 +12,23 @@ namespace MyOnboardingApp.Database.Repository
             new TodoListItem
             {
                 Text = "1st Todo Item",
-                Id = new Guid("11111111-1111-1111-1111-aabbccddeeff")
+                Id = new Guid("11111111-1111-1111-1111-aabbccddeeff"),
+                CreationTime = new DateTime(1995, 01, 01),
+                LastUpdateTime = new DateTime(1996, 01, 01)
             },
             new TodoListItem
             {
                 Text = "2nd Todo Item",
-                Id = new Guid("22222222-2222-2222-2222-aabbccddeeff")
+                Id = new Guid("22222222-2222-2222-2222-aabbccddeeff"),
+                CreationTime = new DateTime(2000, 01, 01),
+                LastUpdateTime = new DateTime(2001, 01, 01)
             },
             new TodoListItem
             {
                 Text = "3rd Todo Item",
-                Id = new Guid("33333333-3333-3333-3333-aabbccddeeff")
+                Id = new Guid("33333333-3333-3333-3333-aabbccddeeff"),
+                CreationTime = new DateTime(2010, 01, 01),
+                LastUpdateTime = new DateTime(2010, 01, 01)
             }
         };
 
