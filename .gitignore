@@ -332,4 +332,4 @@ ASALocalRun/
 .localhistory/
 
 # Files with secret information for connection with DB
-ConnectionStrings.config
+*ConnectionStrings.config

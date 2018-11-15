@@ -122,6 +122,7 @@
     <Compile Include="App_Start\DependenciesConfig.cs" />
     <Compile Include="App_Start\JsonSerializerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Configuration\DatabaseConnection.cs" />
     <Compile Include="Controllers\TodoListController.cs" />
     <Compile Include="DependencyResolvers\DependencyResolver.cs" />
     <Compile Include="Global.asax.cs">
