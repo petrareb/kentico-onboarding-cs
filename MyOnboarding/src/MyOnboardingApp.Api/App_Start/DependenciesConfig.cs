@@ -1,8 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Web.Http;
+using MyOnboardingApp.Api.Configuration;
 using MyOnboardingApp.Api.DependencyResolvers;
 using MyOnboardingApp.Api.UrlLocation;
 using MyOnboardingApp.ApiServices;
+using MyOnboardingApp.Contracts.Database;
 using MyOnboardingApp.Contracts.Registration;
 using MyOnboardingApp.Contracts.Urls;
 using MyOnboardingApp.Database;
@@ -27,7 +29,8 @@ namespace MyOnboardingApp.Api
             => container
                 .RegisterDependency<ApiServicesBootstrapper>()
                 .RegisterDependency<DatabaseBootstrapper>()
-                .RegisterType<IRoutesConfig, RoutesConfig>(new HierarchicalLifetimeManager());
+                .RegisterType<IRoutesConfig, RoutesConfig>(new HierarchicalLifetimeManager())
+                .RegisterType<IDatabaseConnection, DatabaseConnection>(new HierarchicalLifetimeManager());
 
 
         private static IUnityContainer RegisterDependency<TDependency>(this IUnityContainer container) where TDependency : IBootstrapper, new()
