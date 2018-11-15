@@ -24,6 +24,7 @@ namespace MyOnboardingApp.Api.Tests.Controllers
         private TodoListController _controller;
         private IUrlLocator _itemUrlLocator;
         private IRetrieveItemService _retrieveService;
+        private ICreateItemService _addNewService;
 
 
         [SetUp]
@@ -32,7 +33,9 @@ namespace MyOnboardingApp.Api.Tests.Controllers
             _itemUrlLocator = Substitute.For<IUrlLocator>();
             _repository = Substitute.For<ITodoListRepository>();
             _retrieveService = Substitute.For<IRetrieveItemService>();
-            _controller = new TodoListController(_repository, _itemUrlLocator, _retrieveService)
+            _addNewService = Substitute.For<ICreateItemService>();
+
+            _controller = new TodoListController(_repository, _itemUrlLocator, _retrieveService, _addNewService)
             {
                 Request = new HttpRequestMessage(),
                 Configuration = new HttpConfiguration(),
@@ -139,11 +142,25 @@ namespace MyOnboardingApp.Api.Tests.Controllers
 
 
         [Test]
-        public async Task Post_NewTextSpecifiedInRequestBody_ReturnsCorrectResponse()
+        public async Task Post_CorrectAttributesInRequestBody_ReturnsCorrectResponseAndItemWithNoErrors()
         {
-            var itemToAdd = new TodoListItem {Text = "newText"};
-            var expectedItem = new TodoListItem {Id = _expectedId, Text = "newText"};
-            _repository.AddNewItemAsync(itemToAdd).Returns(expectedItem);
+            var itemToAdd = new TodoListItem
+            {
+                Text = "newText",
+                Id = Guid.Empty,
+                CreationTime = DateTime.MinValue,
+                LastUpdateTime = DateTime.MinValue
+            };
+            var updatedTime = new DateTime(2018, 10, 10);
+            var expectedItem = new TodoListItem
+            {
+                Id = _expectedId,
+                Text = "newText",
+                CreationTime = updatedTime,
+                LastUpdateTime = updatedTime
+            };
+            var expectedItemWithStatus = ResolvedItem.Create(expectedItem);
+            _addNewService.AddNewItemAsync(itemToAdd).Returns(expectedItemWithStatus);
             const string expectedUrl = "expected/Url";
             _itemUrlLocator.GetListItemUrl(itemToAdd.Id).Returns(expectedUrl);
 
@@ -152,6 +169,63 @@ namespace MyOnboardingApp.Api.Tests.Controllers
 
             Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.Created));
             Assert.That(itemFromMessage, Is.EqualTo(expectedItem).UsingItemEqualityComparer());
+        }
+
+
+        [Test]
+        public async Task Post_EmptyTextSpecifiedInRequestBody_ReturnsBadRequest()
+        {
+            var itemToAdd = new TodoListItem
+            {
+                Text = "",
+                Id = Guid.Empty,
+                CreationTime = DateTime.MinValue,
+                LastUpdateTime = DateTime.MinValue
+            };
+            const string expectedUrl = "expected/Url";
+            _itemUrlLocator.GetListItemUrl(itemToAdd.Id).Returns(expectedUrl);
+
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.PostAsync(itemToAdd));
+
+            Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        }
+
+
+        [Test]
+        public async Task Post_InvalidCreationTimeSpecifiedInRequestBody_ReturnsBadRequest()
+        {
+            var itemToAdd = new TodoListItem
+            {
+                Text = "hello",
+                Id = Guid.Empty,
+                CreationTime = new DateTime(2018, 10, 10),
+                LastUpdateTime = DateTime.MinValue
+            };
+            const string expectedUrl = "expected/Url";
+            _itemUrlLocator.GetListItemUrl(itemToAdd.Id).Returns(expectedUrl);
+
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.PostAsync(itemToAdd));
+
+            Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        }
+
+
+        [Test]
+        public async Task Post_InvalidLastUpdateTimeSpecifiedInRequestBody_ReturnsBadRequest()
+        {
+            var itemToAdd = new TodoListItem
+            {
+                Text = "hello",
+                Id = Guid.Empty,
+                CreationTime = DateTime.MinValue,
+                LastUpdateTime = new DateTime(2018, 10, 10)
+            };
+            const string expectedUrl = "expected/Url";
+            _itemUrlLocator.GetListItemUrl(itemToAdd.Id).Returns(expectedUrl);
+
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.PostAsync(itemToAdd));
+
+            Assert.That(message.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         }
     }
 }
