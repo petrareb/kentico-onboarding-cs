@@ -8,6 +8,7 @@ using MyOnboardingApp.Contracts.Database;
 using MyOnboardingApp.Contracts.Registration;
 using MyOnboardingApp.Contracts.Urls;
 using MyOnboardingApp.Database;
+using MyOnboardingApp.Services;
 using Unity;
 using Unity.Lifetime;
 
@@ -29,6 +30,7 @@ namespace MyOnboardingApp.Api
             => container
                 .RegisterDependency<ApiServicesBootstrapper>()
                 .RegisterDependency<DatabaseBootstrapper>()
+                .RegisterDependency<ServicesBootstrapper>()
                 .RegisterType<IRoutesConfig, RoutesConfig>(new HierarchicalLifetimeManager())
                 .RegisterType<IDatabaseConnection, DatabaseConnection>(new HierarchicalLifetimeManager());
 
