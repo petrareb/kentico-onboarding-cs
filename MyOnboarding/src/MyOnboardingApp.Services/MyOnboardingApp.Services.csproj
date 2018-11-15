@@ -73,6 +73,7 @@
     <Compile Include="Generators\GuidGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServicesBootstrapper.cs" />
+    <Compile Include="Services\RetrieveItemService.cs" />
     <Compile Include="Validation\TextCheckingValidator.cs" />
   </ItemGroup>
   <ItemGroup>
