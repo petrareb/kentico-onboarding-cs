@@ -6,7 +6,9 @@ namespace MyOnboardingApp.Api.Configuration
     internal class DatabaseConnection : IDatabaseConnection
     {
         private static readonly string s_databaseConnectionString =
-            ConfigurationManager.ConnectionStrings["TodoListDbConnection"].ConnectionString;
+            ConfigurationManager
+                .ConnectionStrings["TodoListDbConnection"]
+                .ConnectionString;
 
 
         public string GetDatabaseConnectionString()

@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using MyOnboardingApp.Contracts.Generators;
+using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Registration;
+using MyOnboardingApp.Contracts.Validation;
 using NSubstitute;
 using NUnit.Framework;
 using Unity;
@@ -14,14 +17,18 @@ namespace MyOnboardingApp.Api.Tests
     [TestFixture]
     public class DependenciesConfigTests
     {
-        private static readonly Type[] s_ignoredTypes = 
+        private static readonly Type[] s_ignoredTypes =
         {
-            typeof(IBootstrapper)
+            typeof(IBootstrapper),
+            typeof(IItemWithErrors<>),
+            typeof(IResolvedItem<>)
         };
 
         private static readonly Type[] s_explicitTypes =
         {
-            typeof(HttpRequestMessage)
+            typeof(HttpRequestMessage),
+            typeof(IIdGenerator<Guid>),
+            typeof(IValidationCriterion<TodoListItem>),
         };
 
 
@@ -32,23 +39,33 @@ namespace MyOnboardingApp.Api.Tests
             var actualTypes = new List<Type>();
             var container = MockUnityContainer(actualTypes);
 
-            DependenciesConfig.RegisterAllDependencies(container);
-            var unexpectedTypes = actualTypes.Except(exportedTypes).ToArray();
-            var missingTypes = exportedTypes.Except(actualTypes).ToArray();
+            container.RegisterAllDependencies();
+            var unexpectedTypes = actualTypes
+                .Except(exportedTypes)
+                .ToArray();
+            var missingTypes = exportedTypes
+                .Except(actualTypes)
+                .ToArray();
 
             Assert.That(unexpectedTypes, Is.Empty, "There are more types registered to the container than expected.");
             Assert.That(missingTypes, Is.Empty, "Some of the types are not registered.");
         }
 
 
-        private static Type[] GetTypesExportedFromAssembly() 
-            => typeof(IBootstrapper)
+        private static Type[] GetTypesExportedFromAssembly()
+        {
+            var explicitGenerics = s_explicitTypes
+                .Where(type => type.IsGenericType)
+                .ToArray();
+            return typeof(IBootstrapper)
                 .Assembly
                 .ExportedTypes
                 .Where(contract => contract.IsInterface)
+                .Except(explicitGenerics.Select(type => type.GetGenericTypeDefinition()))
                 .Except(s_ignoredTypes)
                 .Union(s_explicitTypes)
                 .ToArray();
+        }
 
 
         private static IUnityContainer MockUnityContainer(ICollection<Type> actualTypes)

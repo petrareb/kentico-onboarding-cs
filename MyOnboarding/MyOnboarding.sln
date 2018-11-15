@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.ApiServices
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.TestUtils", "test\MyOnboardingApp.TestUtils\MyOnboardingApp.TestUtils.csproj", "{162DA514-CFAF-49B0-93EC-9934A261E02B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Services", "src\MyOnboardingApp.Services\MyOnboardingApp.Services.csproj", "{8FB04EDB-E388-46F6-B926-8703C47FCFFE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{162DA514-CFAF-49B0-93EC-9934A261E02B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{162DA514-CFAF-49B0-93EC-9934A261E02B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{162DA514-CFAF-49B0-93EC-9934A261E02B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FB04EDB-E388-46F6-B926-8703C47FCFFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FB04EDB-E388-46F6-B926-8703C47FCFFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FB04EDB-E388-46F6-B926-8703C47FCFFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FB04EDB-E388-46F6-B926-8703C47FCFFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +86,7 @@ Global
 		{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB} = {26D61547-AD3B-4558-A308-8E8085470281}
 		{1A978F69-9E79-4653-8378-79394648D9B0} = {EB6A548A-AA87-4F46-A7E4-7F696639446D}
 		{162DA514-CFAF-49B0-93EC-9934A261E02B} = {EB6A548A-AA87-4F46-A7E4-7F696639446D}
+		{8FB04EDB-E388-46F6-B926-8703C47FCFFE} = {26D61547-AD3B-4558-A308-8E8085470281}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {54079897-BE8D-4E0C-AB3F-2923612B2927}
