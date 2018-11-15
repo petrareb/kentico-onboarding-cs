@@ -11,6 +11,7 @@ using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Contracts.Urls;
 using NSubstitute;
 using NUnit.Framework;
+using MyOnboardingApp.TestUtils.Extensions;
 
 namespace MyOnboardingApp.Api.Tests.Controllers
 {

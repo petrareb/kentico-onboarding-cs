@@ -101,10 +101,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\ItemEqualityExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\TodoListControllerTests.cs" />
-    <Compile Include="Comparators\ItemEqualityComparer.cs" />
     <Compile Include="Extensions\ControllerExtensions.cs" />
     <Compile Include="App_Start\DependenciesConfigTests.cs" />
   </ItemGroup>
@@ -129,6 +127,10 @@
     <ProjectReference Include="..\..\src\MyOnboardingApp.Database\MyOnboardingApp.Database.csproj">
       <Project>{7AE74B5B-86A4-4FDA-A19B-D406EBFBE72A}</Project>
       <Name>MyOnboardingApp.Database</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyOnboardingApp.TestUtils\MyOnboardingApp.TestUtils.csproj">
+      <Project>{162da514-cfaf-49b0-93ec-9934a261e02b}</Project>
+      <Name>MyOnboardingApp.TestUtils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
