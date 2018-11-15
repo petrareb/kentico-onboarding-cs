@@ -19,13 +19,15 @@ namespace MyOnboardingApp.Api.Controllers
         private readonly ITodoListRepository _repository;
         private readonly IUrlLocator _urlLocator;
         private readonly IRetrieveItemService _retrieveService;
+        private readonly ICreateItemService _createService;
 
 
-        public TodoListController(ITodoListRepository repository, IUrlLocator urlLocator, IRetrieveItemService retrieveService)
+        public TodoListController(ITodoListRepository repository, IUrlLocator urlLocator, IRetrieveItemService retrieveService, ICreateItemService createService)
         {
             _repository = repository;
             _urlLocator = urlLocator;
             _retrieveService = retrieveService;
+            _createService = createService;
         }
 
 
@@ -58,13 +60,24 @@ namespace MyOnboardingApp.Api.Controllers
 
         public async Task<IHttpActionResult> PostAsync([FromBody] TodoListItem newItem)
         {
-            var storedItem = await _repository.AddNewItemAsync(newItem);
-            var location = _urlLocator.GetListItemUrl(storedItem.Id);
+            ValidateItemBeforePost(newItem);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Properties of given item are not valid.");
+            }
 
-            return Created(location, storedItem);
-        } 
-            
-            
+            var storedItem = await _createService.AddNewItemAsync(newItem);
+            if (!storedItem.WasOperationSuccessful)
+
+            {
+                return BadRequest("It was impossible to store the item.");
+            }
+
+            var location = _urlLocator.GetListItemUrl(storedItem.Item.Id);
+            return Created(location, storedItem.Item);
+        }
+
+
         [Route("{id}")]
         public async Task<IHttpActionResult> PutAsync(Guid id, [FromBody] TodoListItem item)
         {
@@ -76,5 +89,43 @@ namespace MyOnboardingApp.Api.Controllers
         [Route("{id}")]
         public async Task<IHttpActionResult> DeleteAsync(Guid id) 
             => Ok(await _repository.DeleteItemAsync(id));
+
+
+        private void ValidateIdPost(Guid id)
+        {
+            if (id != Guid.Empty)
+            {
+                ModelState.AddModelError("Id", "Id must be empty.");
+            }
+        }
+
+
+        private void ValidateTimePost(DateTime time, string field)
+        {
+            if (time != DateTime.MinValue)
+            {
+                ModelState.AddModelError(field, "Time is supposed to be DateTime.MinValue.");
+            }
+        }
+
+
+        private void ValidateNotEmptyText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                ModelState.AddModelError("Text", "Text must not be empty.");
+            }
+        }
+
+
+        private void ValidateItemBeforePost(TodoListItem item)
+        {
+            ValidateNotEmptyText(item.Text);
+            ValidateTimePost(item.CreationTime, "CreationTime");
+            ValidateTimePost(item.LastUpdateTime, "LastUpdateTime");
+            ValidateIdPost(item.Id);
+        }
     }
+
+
 }
