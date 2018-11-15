@@ -83,6 +83,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\IDatabaseConnection.cs" />
     <Compile Include="Registration\IBootstrapper.cs" />
     <Compile Include="Models\TodoListItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

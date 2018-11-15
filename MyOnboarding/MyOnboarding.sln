@@ -3,16 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EF4533BB-D985-48CC-86FC-08083CD851A6}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\appveyor.yml = ..\appveyor.yml
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{26D61547-AD3B-4558-A308-8E8085470281}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{EB6A548A-AA87-4F46-A7E4-7F696639446D}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Api", "src\MyOnboardingApp.Api\MyOnboardingApp.Api.csproj", "{D34DA1D7-8B0F-4D0F-A0E2-5B8D789065A7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB} = {EDE6E09D-D1D5-42E2-BF49-3B2053E8E8BB}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Api.Tests", "test\MyOnboardingApp.Api.Tests\MyOnboardingApp.Api.Tests.csproj", "{9559849D-AF53-4FE4-8424-060F7BDAFA64}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{26D61547-AD3B-4558-A308-8E8085470281}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{EB6A548A-AA87-4F46-A7E4-7F696639446D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Contracts", "src\MyOnboardingApp.Contracts\MyOnboardingApp.Contracts.csproj", "{94287D69-6747-474A-B4B8-50BE736EEE6F}"
 EndProject
