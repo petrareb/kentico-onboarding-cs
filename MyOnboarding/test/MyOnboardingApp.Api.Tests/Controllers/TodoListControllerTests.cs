@@ -25,6 +25,7 @@ namespace MyOnboardingApp.Api.Tests.Controllers
         private IUrlLocator _itemUrlLocator;
         private IRetrieveItemService _retrieveService;
         private ICreateItemService _addNewService;
+        private IDeleteItemService _deleteService;
 
 
         [SetUp]
@@ -34,8 +35,10 @@ namespace MyOnboardingApp.Api.Tests.Controllers
             _repository = Substitute.For<ITodoListRepository>();
             _retrieveService = Substitute.For<IRetrieveItemService>();
             _addNewService = Substitute.For<ICreateItemService>();
+            _deleteService = Substitute.For<IDeleteItemService>();
 
-            _controller = new TodoListController(_repository, _itemUrlLocator, _retrieveService, _addNewService)
+
+            _controller = new TodoListController(_repository, _itemUrlLocator, _retrieveService, _addNewService, _deleteService)
             {
                 Request = new HttpRequestMessage(),
                 Configuration = new HttpConfiguration(),
@@ -119,8 +122,9 @@ namespace MyOnboardingApp.Api.Tests.Controllers
         [Test]
         public async Task Delete_IdSpecified_ReturnsOkStatusCode()
         {
-            var expectedItem = new TodoListItem {Text = "Default Item", Id = _expectedId};
-            _repository.DeleteItemAsync(_expectedId).Returns(expectedItem);
+            var expectedItem = new TodoListItem { Text = "Test Item", Id = _expectedId };
+            var expectedItemWithStatus = ResolvedItem.Create(expectedItem);
+            _deleteService.DeleteItemAsync(_expectedId).Returns(expectedItemWithStatus);
 
             var message = await _controller.GetMessageFromActionAsync(controller => controller.DeleteAsync(_expectedId));
             var statusCode = message.StatusCode;
@@ -128,6 +132,19 @@ namespace MyOnboardingApp.Api.Tests.Controllers
 
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(itemFromMessage, Is.EqualTo(expectedItem).UsingItemEqualityComparer());
+        }
+
+
+        [Test]
+        public async Task Delete_NonExistingIdSpecified_ReturnsNoContentStatusCode()
+        {
+            var expectedItemWithStatus = ResolvedItem.Create((TodoListItem)null);
+            _deleteService.DeleteItemAsync(_expectedId).Returns(expectedItemWithStatus);
+
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.DeleteAsync(_expectedId));
+            var statusCode = message.StatusCode;
+
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
 
 

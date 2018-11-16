@@ -20,14 +20,16 @@ namespace MyOnboardingApp.Api.Controllers
         private readonly IUrlLocator _urlLocator;
         private readonly IRetrieveItemService _retrieveService;
         private readonly ICreateItemService _createService;
+        private readonly IDeleteItemService _deleteService;
 
 
-        public TodoListController(ITodoListRepository repository, IUrlLocator urlLocator, IRetrieveItemService retrieveService, ICreateItemService createService)
+        public TodoListController(ITodoListRepository repository, IUrlLocator urlLocator, IRetrieveItemService retrieveService, ICreateItemService createService, IDeleteItemService deleteService)
         {
             _repository = repository;
             _urlLocator = urlLocator;
             _retrieveService = retrieveService;
             _createService = createService;
+            _deleteService = deleteService;
         }
 
 
@@ -84,11 +86,29 @@ namespace MyOnboardingApp.Api.Controllers
             await _repository.ReplaceItemAsync(item);
             return StatusCode(HttpStatusCode.NoContent);
         }
-            
+
 
         [Route("{id}")]
-        public async Task<IHttpActionResult> DeleteAsync(Guid id) 
-            => Ok(await _repository.DeleteItemAsync(id));
+        public async Task<IHttpActionResult> DeleteAsync(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                ModelState.AddModelError("Id", "Id must not be empty.");
+            }
+
+            var deletedItemWithStatus = await _deleteService.DeleteItemAsync(id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Given parameters are invalid.");
+            }
+
+            if (!deletedItemWithStatus.WasOperationSuccessful)
+            {
+                return NotFound();
+            }
+
+            return Ok(deletedItemWithStatus.Item);
+        }
 
 
         private void ValidateIdPost(Guid id)
