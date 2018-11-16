@@ -5,7 +5,6 @@ using System.Web.Http;
 using Microsoft.Web.Http;
 using MyOnboardingApp.Api.UrlLocation;
 using MyOnboardingApp.Contracts.Models;
-using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Contracts.Services;
 using MyOnboardingApp.Contracts.Urls;
 
@@ -16,20 +15,21 @@ namespace MyOnboardingApp.Api.Controllers
     [Route("")]
     public class TodoListController : ApiController
     {
-        private readonly ITodoListRepository _repository;
         private readonly IUrlLocator _urlLocator;
         private readonly IRetrieveItemService _retrieveService;
         private readonly ICreateItemService _createService;
         private readonly IDeleteItemService _deleteService;
+        private readonly IUpdateItemService _editService;
 
 
-        public TodoListController(ITodoListRepository repository, IUrlLocator urlLocator, IRetrieveItemService retrieveService, ICreateItemService createService, IDeleteItemService deleteService)
+        public TodoListController(IUrlLocator urlLocator, IRetrieveItemService retrieveService, ICreateItemService createService, 
+            IDeleteItemService deleteService, IUpdateItemService editService)
         {
-            _repository = repository;
             _urlLocator = urlLocator;
             _retrieveService = retrieveService;
             _createService = createService;
             _deleteService = deleteService;
+            _editService = editService;
         }
 
 
@@ -83,7 +83,24 @@ namespace MyOnboardingApp.Api.Controllers
         [Route("{id}")]
         public async Task<IHttpActionResult> PutAsync(Guid id, [FromBody] TodoListItem item)
         {
-            await _repository.ReplaceItemAsync(item);
+            if (!id.Equals(item.Id))
+            {
+                ModelState.AddModelError("Id", "Id of item must be same as id in url.");
+            }
+
+            ValidateItemBeforePut(item);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Arguments are not valid");
+            }
+
+            var editedItem = await _editService.EditItemAsync(item);
+
+            if (!editedItem.WasOperationSuccessful)
+            {
+                return NotFound();
+            }
+
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -145,7 +162,16 @@ namespace MyOnboardingApp.Api.Controllers
             ValidateTimePost(item.LastUpdateTime, "LastUpdateTime");
             ValidateIdPost(item.Id);
         }
+
+
+        private void ValidateItemBeforePut(TodoListItem item)
+        {
+            if (item.Id == Guid.Empty)
+            {
+                ModelState.AddModelError("Id", "Id must not be empty.");
+            }
+
+            ValidateNotEmptyText(item.Text);
+        }
     }
-
-
 }

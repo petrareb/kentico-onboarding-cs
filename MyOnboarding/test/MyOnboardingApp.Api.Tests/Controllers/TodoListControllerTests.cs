@@ -7,7 +7,6 @@ using System.Web.Http.Routing;
 using MyOnboardingApp.Api.Controllers;
 using MyOnboardingApp.Api.Tests.Extensions;
 using MyOnboardingApp.Contracts.Models;
-using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Contracts.Urls;
 using NSubstitute;
 using NUnit.Framework;
@@ -19,26 +18,26 @@ namespace MyOnboardingApp.Api.Tests.Controllers
     [TestFixture]
     public class TodoListControllerTests
     {
-        private ITodoListRepository _repository; 
         private readonly Guid _expectedId = new Guid("00112233-4455-6677-8899-aabbccddeeff");
         private TodoListController _controller;
         private IUrlLocator _itemUrlLocator;
         private IRetrieveItemService _retrieveService;
         private ICreateItemService _addNewService;
         private IDeleteItemService _deleteService;
+        private IUpdateItemService _editService;
 
 
         [SetUp]
         public void SetUp()
         {
             _itemUrlLocator = Substitute.For<IUrlLocator>();
-            _repository = Substitute.For<ITodoListRepository>();
             _retrieveService = Substitute.For<IRetrieveItemService>();
             _addNewService = Substitute.For<ICreateItemService>();
             _deleteService = Substitute.For<IDeleteItemService>();
+            _editService = Substitute.For<IUpdateItemService>();
 
 
-            _controller = new TodoListController(_repository, _itemUrlLocator, _retrieveService, _addNewService, _deleteService)
+            _controller = new TodoListController(_itemUrlLocator, _retrieveService, _addNewService, _deleteService, _editService)
             {
                 Request = new HttpRequestMessage(),
                 Configuration = new HttpConfiguration(),
@@ -149,9 +148,40 @@ namespace MyOnboardingApp.Api.Tests.Controllers
 
 
         [Test]
-        public async Task Put_IdSpecifiedTextSpecified_ReturnsCorrectStatusCode()
+        public async Task Put_IdSpecifiedTextSpecified_ReturnsNoContentStatusCode()
         {
-            var message = await _controller.GetMessageFromActionAsync(controller => controller.PutAsync(_expectedId, new TodoListItem { Text = "newText" }));
+            var itemToPut = new TodoListItem { Id = _expectedId, Text = "text" };
+            var expectedResponse = ResolvedItem.Create(itemToPut);
+            _editService.EditItemAsync(itemToPut).Returns(expectedResponse);
+
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.PutAsync(_expectedId, itemToPut));
+            var statusCode = message.StatusCode;
+
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.NoContent));
+        }
+
+
+        [Test]
+        public async Task Put_DifferentIdSpecifiedInUrlAndParameters_ReturnsBadRequestStatusCode()
+        {
+            var itemId = new Guid("00000000-0000-0000-0000-000000000007");
+            var itemToPut = new TodoListItem { Id = itemId, Text = "text" };
+
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.PutAsync(_expectedId, itemToPut));
+            var statusCode = message.StatusCode;
+
+            Assert.That(statusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        }
+
+
+        [Test]
+        public async Task Put_NonExistingItem_ReturnsBadRequestStatusCode()
+        {
+            var itemToPut = new TodoListItem { Id = _expectedId, Text = "text" };
+            var responseItem = ResolvedItem.Create(itemToPut);
+            _editService.EditItemAsync(itemToPut).Returns(responseItem);
+
+            var message = await _controller.GetMessageFromActionAsync(controller => controller.PutAsync(_expectedId, itemToPut));
             var statusCode = message.StatusCode;
 
             Assert.That(statusCode, Is.EqualTo(HttpStatusCode.NoContent));
