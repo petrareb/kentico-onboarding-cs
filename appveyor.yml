@@ -6,3 +6,12 @@ install:
 build:
   project: C:\Users\petrar\onboarding-cs\kentico-onboarding-cs\MyOnboarding\MyOnboarding.sln
   verbosity: minimal
+test:
+  # all except assemblies to test
+  assemblies:
+    except:
+      - .\MyOnboarding\test\MyOnboardingApp.Api.Tests\bin\Debug\MyOnboardingApp.TestUtils.dll
+      - .\MyOnboarding\test\MyOnboardingApp.Services.Tests\bin\Debug\MyOnboardingApp.TestUtils.dll
+      - .\MyOnboarding\test\MyOnboardingApp.TestUtils\bin\Debug\MyOnboardingApp.TestUtils.dll
+      - .\MyOnboarding\test\MyOnboardingApp.Validation.Tests\bin\Debug\MyOnboardingApp.TestUtils.dll
+      - .\MyOnboarding\test\MyOnboardingApp.Contracts.Tests\bin\Debug\MyOnboardingApp.TestUtils.dll
