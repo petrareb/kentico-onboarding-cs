@@ -1,55 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using MongoDB.Driver;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Repository;
 
 namespace MyOnboardingApp.Database.Repository
 {
-    internal class TodoListRepository: ITodoListRepository
+    internal class TodoListRepository : ITodoListRepository
     {
-        private static readonly TodoListItem[] s_items = {
-            new TodoListItem
-            {
-                Text = "1st Todo Item",
-                Id = new Guid("11111111-1111-1111-1111-aabbccddeeff"),
-                CreationTime = new DateTime(1995, 01, 01),
-                LastUpdateTime = new DateTime(1996, 01, 01)
-            },
-            new TodoListItem
-            {
-                Text = "2nd Todo Item",
-                Id = new Guid("22222222-2222-2222-2222-aabbccddeeff"),
-                CreationTime = new DateTime(2000, 01, 01),
-                LastUpdateTime = new DateTime(2001, 01, 01)
-            },
-            new TodoListItem
-            {
-                Text = "3rd Todo Item",
-                Id = new Guid("33333333-3333-3333-3333-aabbccddeeff"),
-                CreationTime = new DateTime(2010, 01, 01),
-                LastUpdateTime = new DateTime(2010, 01, 01)
-            }
-        };
-
-
-        public async Task<IEnumerable<TodoListItem>> GetAllItemsAsync() 
-            => await Task.FromResult(s_items);
+        private const string CollectionName = "TodoList";
+        private readonly IMongoDatabase _database;
+        private readonly IMongoCollection<TodoListItem> _databaseItems;
         
 
-        public async Task<TodoListItem> GetItemByIdAsync(Guid id) 
-            => await Task.FromResult(s_items[0]);
-        
-
-        public async Task<TodoListItem> AddNewItemAsync(TodoListItem newItem) 
-            => await Task.FromResult(s_items[2]);
-
-
-        public async Task<TodoListItem> ReplaceItemAsync(TodoListItem item)
-            => await Task.FromResult(item);
+        public TodoListRepository(IDatabaseConnection databaseConnection)
+        {
+            _database = GetDatabaseFromConnection(databaseConnection);
+            _databaseItems = LoadCollectionFromDatabase(CollectionName);
+        }
 
 
-        public async Task<TodoListItem> DeleteItemAsync(Guid id) 
-            => await Task.FromResult(s_items[1]);
+        public async Task<IEnumerable<TodoListItem>> GetAllItemsAsync()
+            => await _databaseItems
+                .Find(FilterDefinition<TodoListItem>.Empty)
+                .ToListAsync();
+
+
+        public async Task<TodoListItem> GetItemByIdAsync(Guid id)
+            => await _databaseItems
+                .Find(item => item.Id == id)
+                .SingleOrDefaultAsync(CancellationToken.None);
+
+
+        public async Task<TodoListItem> AddNewItemAsync(TodoListItem newItem)
+        {
+            await _databaseItems.InsertOneAsync(newItem);
+            return newItem;
+        }
+
+
+        public async Task<TodoListItem> ReplaceItemAsync(TodoListItem replacingItem)
+            => await _databaseItems.FindOneAndReplaceAsync(i => i.Id == replacingItem.Id, replacingItem);
+
+
+        public async Task<TodoListItem> DeleteItemAsync(Guid id)
+            => await _databaseItems.FindOneAndDeleteAsync(item => item.Id == id);
+
+
+        private static IMongoDatabase GetDatabaseFromConnection(IDatabaseConnection databaseConnection)
+        {
+            var connection = MongoUrl.Create(databaseConnection.GetDatabaseConnectionString);
+            var client = new MongoClient(connection);
+
+            return client.GetDatabase(connection.DatabaseName);
+        }
+
+
+        private IMongoCollection<TodoListItem> LoadCollectionFromDatabase(string collectionName)
+            => _database.GetCollection<TodoListItem>(collectionName);
     }
 }
