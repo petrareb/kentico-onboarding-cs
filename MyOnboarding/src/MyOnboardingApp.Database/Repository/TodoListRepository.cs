@@ -1,55 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using MongoDB.Driver;
+using MyOnboardingApp.Contracts.Database;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Repository;
 
 namespace MyOnboardingApp.Database.Repository
 {
-    internal class TodoListRepository: ITodoListRepository
+    internal class TodoListRepository : ITodoListRepository
     {
-        private static readonly TodoListItem[] s_items = {
-            new TodoListItem
-            {
-                Text = "1st Todo Item",
-                Id = new Guid("11111111-1111-1111-1111-aabbccddeeff"),
-                CreationTime = new DateTime(1995, 01, 01),
-                LastUpdateTime = new DateTime(1996, 01, 01)
-            },
-            new TodoListItem
-            {
-                Text = "2nd Todo Item",
-                Id = new Guid("22222222-2222-2222-2222-aabbccddeeff"),
-                CreationTime = new DateTime(2000, 01, 01),
-                LastUpdateTime = new DateTime(2001, 01, 01)
-            },
-            new TodoListItem
-            {
-                Text = "3rd Todo Item",
-                Id = new Guid("33333333-3333-3333-3333-aabbccddeeff"),
-                CreationTime = new DateTime(2010, 01, 01),
-                LastUpdateTime = new DateTime(2010, 01, 01)
-            }
-        };
+        private readonly IMongoDatabase _database;
+        private readonly IMongoCollection<TodoListItem> _databaseItems;
+        private const string CollectionName = "TodoItems";
 
 
-        public async Task<IEnumerable<TodoListItem>> GetAllItemsAsync() 
-            => await Task.FromResult(s_items);
-        
+        public TodoListRepository(IDatabaseConnection connectionString)
+        {
+            _database = GetDatabaseFromConnection(connectionString);
+            _databaseItems = LoadCollectionFromDatabase(CollectionName);
+        }
 
-        public async Task<TodoListItem> GetItemByIdAsync(Guid id) 
-            => await Task.FromResult(s_items[0]);
-        
 
-        public async Task<TodoListItem> AddNewItemAsync(TodoListItem newItem) 
-            => await Task.FromResult(s_items[2]);
+        public async Task<IEnumerable<TodoListItem>> GetAllItemsAsync()
+        {
+            var results = await _databaseItems.FindAsync(FilterDefinition<TodoListItem>.Empty);
+            return results.ToEnumerable();
+        }
+
+
+        public async Task<TodoListItem> GetItemByIdAsync(Guid id)
+            => await _databaseItems.Find(_ => _.Id == id).SingleOrDefaultAsync(CancellationToken.None);
+
+
+        public async Task<TodoListItem> AddNewItemAsync(TodoListItem newItem)
+        {
+            await _databaseItems.InsertOneAsync(newItem);
+            return newItem;
+        }
 
 
         public async Task<TodoListItem> ReplaceItemAsync(TodoListItem item)
-            => await Task.FromResult(item);
+        {
+            var filter = Builders<TodoListItem>.Filter.Eq(_ => _.Id, item.Id);
+            var updateDefinition = Builders<TodoListItem>.Update.Set("Text", item.Text).Set("LastUpdateTime", item.LastUpdateTime);
+            var itemToReplace = await _databaseItems.FindOneAndUpdateAsync(filter, updateDefinition);
+            return itemToReplace;
+        }
 
 
-        public async Task<TodoListItem> DeleteItemAsync(Guid id) 
-            => await Task.FromResult(s_items[1]);
+        public async Task<TodoListItem> DeleteItemAsync(Guid id)
+            => await _databaseItems.FindOneAndDeleteAsync(_ => _.Id == id);
+
+
+        private static IMongoDatabase GetDatabaseFromConnection(IDatabaseConnection connectionString)
+        {
+            var connection = MongoUrl.Create(connectionString.GetDatabaseConnectionString());
+            var client = new MongoClient(connection);
+            var databaseName = connection.DatabaseName;
+            return client.GetDatabase(databaseName);
+        }
+
+
+        private IMongoCollection<TodoListItem> LoadCollectionFromDatabase(string collectionName)
+            => _database.GetCollection<TodoListItem>(collectionName);
     }
 }
