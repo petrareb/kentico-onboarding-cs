@@ -95,6 +95,7 @@
     <Compile Include="Services\ICreateItemService.cs" />
     <Compile Include="Services\IDeleteItemService.cs" />
     <Compile Include="Services\IRetrieveItemService.cs" />
+    <Compile Include="Services\IUpdateItemService.cs" />
     <Compile Include="Urls\IUrlLocator.cs" />
     <Compile Include="Urls\IRoutesConfig.cs" />
     <Compile Include="Validation\IValidator.cs" />
