@@ -76,6 +76,7 @@
     <Compile Include="Services\CreateItemService.cs" />
     <Compile Include="Services\DeleteItemService.cs" />
     <Compile Include="Services\RetrieveItemService.cs" />
+    <Compile Include="Services\UpdateItemService.cs" />
     <Compile Include="Validation\TextCheckingValidator.cs" />
   </ItemGroup>
   <ItemGroup>

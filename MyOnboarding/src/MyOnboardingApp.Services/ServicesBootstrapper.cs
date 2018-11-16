@@ -22,6 +22,7 @@ namespace MyOnboardingApp.Services
                 .RegisterType<ICreateItemService, CreateItemService>(new HierarchicalLifetimeManager())
                 .RegisterType<IRetrieveItemService, RetrieveItemService>(new HierarchicalLifetimeManager())
                 .RegisterType<IDeleteItemService, DeleteItemService>(new HierarchicalLifetimeManager())
+                .RegisterType<IUpdateItemService, UpdateItemService>(new HierarchicalLifetimeManager())
                 .RegisterType<IItemWithErrors<TodoListItem>>(new HierarchicalLifetimeManager())
                 .RegisterType<IResolvedItem<TodoListItem>>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidationCriterion<TodoListItem>>(new HierarchicalLifetimeManager());
