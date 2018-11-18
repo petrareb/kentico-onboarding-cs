@@ -23,10 +23,8 @@ namespace MyOnboardingApp.Contracts.Models
             public bool WasOperationSuccessful => _item != null;
 
 
-            public ResolvedItemInternal(TEntity item)
-            {
-                _item = item;
-            }
+            public ResolvedItemInternal(TEntity item) 
+                => _item = item;
         }
     }
 
