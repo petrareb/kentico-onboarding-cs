@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Web.Http;
+﻿using System.Web.Http;
 using MyOnboardingApp.Api.Configuration;
 using MyOnboardingApp.Api.DependencyResolvers;
 using MyOnboardingApp.Api.UrlLocation;
@@ -12,7 +11,6 @@ using MyOnboardingApp.Services;
 using Unity;
 using Unity.Lifetime;
 
-[assembly: InternalsVisibleTo("MyOnboardingApp.Api.Tests")]
 
 namespace MyOnboardingApp.Api
 {

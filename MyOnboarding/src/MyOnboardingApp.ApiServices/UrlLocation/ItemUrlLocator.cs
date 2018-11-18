@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Web.Http.Routing;
-using System.Runtime.CompilerServices;
 using MyOnboardingApp.Contracts.Urls;
 
-[assembly: InternalsVisibleTo("MyOnboardingApp.ApiServices.Tests")]
 namespace MyOnboardingApp.ApiServices.UrlLocation
 {
     internal class ItemUrlLocator: IUrlLocator

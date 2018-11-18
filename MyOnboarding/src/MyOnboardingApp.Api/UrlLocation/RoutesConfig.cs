@@ -1,7 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using MyOnboardingApp.Contracts.Urls;
-
-[assembly: InternalsVisibleTo("MyOnboardingApp.ApiServices.Tests")]
+﻿using MyOnboardingApp.Contracts.Urls;
 
 namespace MyOnboardingApp.Api.UrlLocation
 {
