@@ -10,12 +10,12 @@ namespace MyOnboardingApp.Services.Services
 {
     internal class UpdateItemService : IUpdateItemService
     {
-        private readonly IValidator<TodoListItem> _validator;
+        private readonly IInvariantValidator<TodoListItem> _validator;
         private readonly ITodoListRepository _repository;
         private readonly IDateTimeGenerator _dateTimeGenerator;
 
 
-        public UpdateItemService(ITodoListRepository repository, IDateTimeGenerator dateTimeGenerator, IValidator<TodoListItem> validator)
+        public UpdateItemService(ITodoListRepository repository, IDateTimeGenerator dateTimeGenerator, IInvariantValidator<TodoListItem> validator)
         {
             _dateTimeGenerator = dateTimeGenerator;
             _repository = repository;
