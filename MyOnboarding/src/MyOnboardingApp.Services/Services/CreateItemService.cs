@@ -10,13 +10,13 @@ namespace MyOnboardingApp.Services.Services
 {
     internal class CreateItemService : ICreateItemService
     {
-        private readonly IValidator<TodoListItem> _validator;
+        private readonly IInvariantValidator<TodoListItem> _validator;
         private readonly ITodoListRepository _repository;
         private readonly IIdGenerator<Guid> _idGenerator;
         private readonly IDateTimeGenerator _dateTimeGenerator;
 
 
-        public CreateItemService(ITodoListRepository repository, IIdGenerator<Guid> idGenerator, IDateTimeGenerator dateTimeGenerator, IValidator<TodoListItem> validator)
+        public CreateItemService(ITodoListRepository repository, IIdGenerator<Guid> idGenerator, IDateTimeGenerator dateTimeGenerator, IInvariantValidator<TodoListItem> validator)
         {
             _repository = repository;
             _idGenerator = idGenerator;

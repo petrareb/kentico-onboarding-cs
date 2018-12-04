@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using MyOnboardingApp.Contracts.Errors;
 using MyOnboardingApp.Contracts.Generators;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Repository;
@@ -22,7 +23,7 @@ namespace MyOnboardingApp.Services.Tests.Services
         private readonly ITodoListRepository _repository = Substitute.For<ITodoListRepository>();
         private readonly IIdGenerator<Guid> _idGenerator = Substitute.For<IIdGenerator<Guid>>();
         private readonly IDateTimeGenerator _dateTimeGenerator = Substitute.For<IDateTimeGenerator>();
-        private readonly IValidator<TodoListItem> _validator = Substitute.For<IValidator<TodoListItem>>();
+        private readonly IInvariantValidator<TodoListItem> _validator = Substitute.For<IInvariantValidator<TodoListItem>>();
 
 
         [SetUp]
@@ -57,7 +58,7 @@ namespace MyOnboardingApp.Services.Tests.Services
             };
             _validator
                 .Validate(Arg.Is<TodoListItem>(arg => arg.Id == expectedId))
-                .Returns(ItemWithErrors.Create(completedItem, new List<string>()));
+                .Returns(ItemWithErrors.Create(completedItem, new List<Error>().AsReadOnly()));
             _repository
                 .AddNewItemAsync(Arg.Is<TodoListItem>(arg => arg.Id == expectedId))
                 .Returns(completedItem);
@@ -81,7 +82,7 @@ namespace MyOnboardingApp.Services.Tests.Services
             };
             _validator
                 .Validate(Arg.Is<TodoListItem>(arg => arg.Id == itemToAdd.Id))
-                .Returns(ItemWithErrors.Create(itemToAdd, new List<string> { "Error" }));
+                .Returns(ItemWithErrors.Create(itemToAdd, new List<Error>().AsReadOnly()));
 
             var result = await _service.AddNewItemAsync(itemToAdd);
 

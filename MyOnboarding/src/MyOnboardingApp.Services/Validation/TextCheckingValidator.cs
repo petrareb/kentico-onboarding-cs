@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using MyOnboardingApp.Contracts.Errors;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Validation;
 
 namespace MyOnboardingApp.Services.Validation
 {
-    internal class TextCheckingValidator : IValidator<TodoListItem>
+    internal class TextCheckingValidator : IInvariantValidator<TodoListItem>
     {
         private readonly IEnumerable<IValidationCriterion<TodoListItem>> _criteria = new List<IValidationCriterion<TodoListItem>>
         {
@@ -19,7 +21,8 @@ namespace MyOnboardingApp.Services.Validation
                 .SelectMany(criterion => criterion.Validate(item))
                 .ToList()
                 .AsReadOnly();
-            return ItemWithErrors.Create(item, errors);
+            //return ItemWithErrors.Create(item, errors);
+            throw new NotImplementedException();
         }
     }
 
@@ -32,6 +35,11 @@ namespace MyOnboardingApp.Services.Validation
             {
                 yield return "Text of the item must not be empty or whitespace.";
             }
+        }
+
+        IEnumerable<Error> IValidationCriterion<TodoListItem>.Validate(TodoListItem entity)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

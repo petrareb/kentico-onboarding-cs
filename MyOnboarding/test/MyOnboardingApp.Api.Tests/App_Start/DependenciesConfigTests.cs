@@ -30,7 +30,7 @@ namespace MyOnboardingApp.Api.Tests
         private static readonly Type[] s_explicitGenericTypes =
         {
             typeof(IIdGenerator<Guid>),
-            typeof(IValidator<TodoListItem>),
+            typeof(IInvariantValidator<TodoListItem>),
             typeof(IValidationCriterion<TodoListItem>),
             typeof(IResolvedItem<TodoListItem>),
             typeof(IItemWithErrors<TodoListItem>),

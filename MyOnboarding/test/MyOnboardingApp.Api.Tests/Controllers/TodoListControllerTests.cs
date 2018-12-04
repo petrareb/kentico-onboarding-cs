@@ -12,6 +12,7 @@ using NSubstitute;
 using NUnit.Framework;
 using MyOnboardingApp.TestUtils.Extensions;
 using MyOnboardingApp.Contracts.Services;
+using MyOnboardingApp.Contracts.Validation;
 
 namespace MyOnboardingApp.Api.Tests.Controllers
 {
