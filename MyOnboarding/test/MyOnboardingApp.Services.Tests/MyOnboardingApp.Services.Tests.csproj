@@ -102,7 +102,6 @@
     <Compile Include="Services\DeleteItemServiceTests.cs" />
     <Compile Include="Services\RetrieveItemServiceTests.cs" />
     <Compile Include="Services\UpdateItemServiceTests.cs" />
-    <Compile Include="Validation\TextCheckingValidatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

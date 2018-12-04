@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MyOnboardingApp.Contracts.ErrorFactories;
 using MyOnboardingApp.Contracts.Errors;
 
 namespace MyOnboardingApp.Contracts.Validation
@@ -6,6 +7,6 @@ namespace MyOnboardingApp.Contracts.Validation
     public interface IValidationCriterion<in TEntity>
         where TEntity : class
     {
-        IEnumerable<Error> Validate(TEntity entity);
+        IEnumerable<Error> Validate(TEntity entity, IErrorFactory errorFactory);
     }
 }

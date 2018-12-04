@@ -75,6 +75,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Criteria\DateCheckingCriteria\LastUpdateDateBiggerThanCreationDateCriterion.cs" />
+    <Compile Include="Criteria\TextCheckingCriteria\TrimmedTextLengthCriterion.cs" />
+    <Compile Include="Criteria\TextCheckingCriteria\TrimmedTextNonEmptyCriterion.cs" />
     <Compile Include="Generators\DateTimeGenerator.cs" />
     <Compile Include="Generators\GuidGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,7 +86,6 @@
     <Compile Include="Services\DeleteItemService.cs" />
     <Compile Include="Services\RetrieveItemService.cs" />
     <Compile Include="Services\UpdateItemService.cs" />
-    <Compile Include="Validation\TextCheckingValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MyOnboardingApp.Contracts\MyOnboardingApp.Contracts.csproj">
@@ -94,6 +96,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

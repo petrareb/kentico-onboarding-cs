@@ -91,6 +91,8 @@
   <ItemGroup>
     <Compile Include="ErrorFactories\IErrorFactory.cs" />
     <Compile Include="Errors\Error.cs" />
+    <Compile Include="Errors\ErrorCode.cs" />
+    <Compile Include="Registration\UnityContainerExtensions.cs" />
     <Compile Include="Repository\IDatabaseConnection.cs" />
     <Compile Include="Generators\IDateTimeGenerator.cs" />
     <Compile Include="Generators\IIdGenerator.cs" />
