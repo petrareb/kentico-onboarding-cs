@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Validation"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Validation.Tests", "test\MyOnboardingApp.Validation.Tests\MyOnboardingApp.Validation.Tests.csproj", "{1EA06A2F-E1FB-4A6A-B6C7-17074C81DBB0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyOnboardingApp.Contracts.Tests", "test\MyOnboardingApp.Contracts.Tests\MyOnboardingApp.Contracts.Tests.csproj", "{295C3B2D-BD9F-4AA2-A8C4-B8498D4BB5C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{1EA06A2F-E1FB-4A6A-B6C7-17074C81DBB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EA06A2F-E1FB-4A6A-B6C7-17074C81DBB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EA06A2F-E1FB-4A6A-B6C7-17074C81DBB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{295C3B2D-BD9F-4AA2-A8C4-B8498D4BB5C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{295C3B2D-BD9F-4AA2-A8C4-B8498D4BB5C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{295C3B2D-BD9F-4AA2-A8C4-B8498D4BB5C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{295C3B2D-BD9F-4AA2-A8C4-B8498D4BB5C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +107,7 @@ Global
 		{B89559E9-D977-4BC3-BEF7-6A9C04953062} = {EB6A548A-AA87-4F46-A7E4-7F696639446D}
 		{E728BB6B-60CA-476B-8255-ABDC6F9D6EDC} = {26D61547-AD3B-4558-A308-8E8085470281}
 		{1EA06A2F-E1FB-4A6A-B6C7-17074C81DBB0} = {EB6A548A-AA87-4F46-A7E4-7F696639446D}
+		{295C3B2D-BD9F-4AA2-A8C4-B8498D4BB5C0} = {EB6A548A-AA87-4F46-A7E4-7F696639446D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {54079897-BE8D-4E0C-AB3F-2923612B2927}
