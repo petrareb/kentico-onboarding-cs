@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Web;
 using MyOnboardingApp.ApiServices.UrlLocation;
 using MyOnboardingApp.Contracts.Registration;
@@ -9,17 +10,26 @@ using Unity.Lifetime;
 
 namespace MyOnboardingApp.ApiServices
 {
-    public class ApiServicesBootstrapper: IBootstrapper
+    public class ApiServicesBootstrapper : IBootstrapper
     {
-        public void Register(IUnityContainer container) 
+        public IUnityContainer Register(IUnityContainer container)
             => container
-            .RegisterType<HttpRequestMessage>(
-                new HierarchicalLifetimeManager(), 
-                new InjectionFactory(GetHttpRequestMessage))
-            .RegisterType<IUrlLocator, ItemUrlLocator>(new HierarchicalLifetimeManager());
+                .RegisterType<HttpRequestMessage>(
+                    new HierarchicalLifetimeManager(),
+                    new InjectionFactory(GetHttpRequestMessage))
+                .RegisterType<IUrlLocator, ItemUrlLocator>(new HierarchicalLifetimeManager());
 
 
-        private static HttpRequestMessage GetHttpRequestMessage(IUnityContainer container) 
-            => (HttpRequestMessage) HttpContext.Current.Items["MS_HttpRequestMessage"];
+        public void ValidateConfiguration(IUnityContainer container)
+        {
+            if (!container.IsRegistered<IRoutesConfig>())
+            {
+                throw new InvalidOperationException($"Configuration of {nameof(ApiServicesBootstrapper)} is invalid, there must registered instance of {nameof(IRoutesConfig)}.");
+            }
+        }
+
+
+        private static HttpRequestMessage GetHttpRequestMessage(IUnityContainer container)
+            => (HttpRequestMessage)HttpContext.Current.Items["MS_HttpRequestMessage"];
     }
 }

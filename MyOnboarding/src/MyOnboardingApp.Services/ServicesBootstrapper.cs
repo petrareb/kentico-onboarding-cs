@@ -26,5 +26,11 @@ namespace MyOnboardingApp.Services
                 .RegisterType<IItemWithErrors<TodoListItem>>(new HierarchicalLifetimeManager())
                 .RegisterType<IResolvedItem<TodoListItem>>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidationCriterion<TodoListItem>>(new HierarchicalLifetimeManager());
+
+
+        public void ValidateConfiguration(IUnityContainer container) => throw new NotImplementedException();
+
+
+        IUnityContainer IBootstrapper.Register(IUnityContainer container) => throw new NotImplementedException();
     }
 }

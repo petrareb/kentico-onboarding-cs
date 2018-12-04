@@ -4,6 +4,8 @@ namespace MyOnboardingApp.Contracts.Registration
 {
     public interface IBootstrapper
     {
-        void Register(IUnityContainer container);
+        IUnityContainer Register(IUnityContainer container);
+
+        void ValidateConfiguration(IUnityContainer container);
     }
 }
