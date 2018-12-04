@@ -12,7 +12,7 @@ namespace MyOnboardingApp.Services.Services
         private readonly ITodoListRepository _repository;
 
 
-        public DeleteItemService(ITodoListRepository repository) 
+        public DeleteItemService(ITodoListRepository repository)
             => _repository = repository;
 
 

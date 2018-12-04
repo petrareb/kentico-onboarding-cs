@@ -6,6 +6,7 @@ using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Contracts.Services;
 using MyOnboardingApp.Services.Services;
 using MyOnboardingApp.TestUtils.Extensions;
+using MyOnboardingApp.TestUtils.Factories;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -35,12 +36,17 @@ namespace MyOnboardingApp.Services.Tests.Services
                 CreationTime = new DateTime(2015, 01, 01),
                 LastUpdateTime = new DateTime(2015, 02, 02)
             };
-            _repository.DeleteItemAsync(idToDelete).Returns(itemToDelete);
+            _repository
+                .DeleteItemAsync(idToDelete)
+                .Returns(itemToDelete);
+            var expectedResult = ItemVariantsFactory
+                .CreateItemVariants(itemToDelete)
+                .ResolvedItem;
 
             var resultItem = await _deleteService.DeleteItemAsync(idToDelete);
 
-            Assert.That(resultItem.Item, Is.EqualTo(itemToDelete).UsingItemEqualityComparer());
-            Assert.That(resultItem.WasOperationSuccessful, Is.True);
+            await _repository.Received(1).DeleteItemAsync(idToDelete);
+            Assert.That(resultItem, Is.EqualTo(expectedResult).UsingResolvedItemEqualityComparer());
         }
 
 
@@ -48,16 +54,14 @@ namespace MyOnboardingApp.Services.Tests.Services
         public async Task DeleteItemAsync_NonExistingIdSpecified_ReturnsNullItemWithErrors()
         {
             var idToDelete = new Guid("00000000-0000-0000-0000-000000000002");
-            _repository.DeleteItemAsync(idToDelete).Returns((TodoListItem)null);
+            _repository
+                .DeleteItemAsync(idToDelete)
+                .Returns((TodoListItem)null);
 
             var resultItem = await _deleteService.DeleteItemAsync(idToDelete);
+
+            await _repository.Received(1).DeleteItemAsync(idToDelete);
             Assert.That(resultItem.WasOperationSuccessful, Is.False);
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                // ReSharper disable once UnusedVariable
-                // The property Item must be called to throw an exception
-                var callItem = resultItem.Item;
-            });
         }
     }
 }
