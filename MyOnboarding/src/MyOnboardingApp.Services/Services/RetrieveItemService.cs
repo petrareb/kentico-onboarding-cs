@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Repository;
@@ -12,12 +11,8 @@ namespace MyOnboardingApp.Services.Services
         private readonly ITodoListRepository _repository;
 
 
-        public RetrieveItemService(ITodoListRepository repository) 
+        public RetrieveItemService(ITodoListRepository repository)
             => _repository = repository;
-
-
-        public async Task<IEnumerable<TodoListItem>> GetAllItemsAsync()
-            => await _repository.GetAllItemsAsync();
 
 
         public async Task<IResolvedItem<TodoListItem>> GetItemByIdAsync(Guid id)

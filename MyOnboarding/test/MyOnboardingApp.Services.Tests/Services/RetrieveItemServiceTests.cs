@@ -5,6 +5,7 @@ using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Contracts.Services;
 using MyOnboardingApp.Services.Services;
 using MyOnboardingApp.TestUtils.Extensions;
+using MyOnboardingApp.TestUtils.Factories;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -23,48 +24,23 @@ namespace MyOnboardingApp.Services.Tests.Services
 
 
         [Test]
-        public async Task Get_NoIdSpecified_ReturnsAllItems()
-        {
-            var expectedItems = new[]
-            {
-                new TodoListItem
-                {
-                    Text = "1st Todo Item",
-                    Id = new Guid("11111111-1111-1111-1111-aabbccddeeff"),
-                    CreationTime = new DateTime(1995, 01, 01),
-                    LastUpdateTime = new DateTime(1996, 01, 01)
-                },
-                new TodoListItem
-                {
-                    Text = "2nd Todo Item",
-                    Id = new Guid("22222222-2222-2222-2222-aabbccddeeff"),
-                    CreationTime = new DateTime(2000, 01, 01),
-                    LastUpdateTime = new DateTime(2001, 01, 01)
-                }
-            };
-            _repository.GetAllItemsAsync().Returns(expectedItems);
-
-            var result = await _service.GetAllItemsAsync();
-
-            Assert.That(result, Is.SameAs(expectedItems));
-        }
-
-
-        [Test]
         public async Task Get_IdSpecified_ReturnsCorrectItemWithNoErrors()
         {
             var requestedId = new Guid("00000000-0000-0000-0000-000000000007");
             var expectedItem = new TodoListItem
             {
                 Text = "Test Item",
-                Id = requestedId
+                Id = requestedId,
+                CreationTime = new DateTime(2010, 01, 01),
+                LastUpdateTime = new DateTime(2010, 01, 01)
             };
+            var expectedResult = ItemVariantsFactory.CreateItemVariants(expectedItem).ResolvedItem;
             _repository.GetItemByIdAsync(requestedId).Returns(expectedItem);
 
             var result = await _service.GetItemByIdAsync(requestedId);
 
-            Assert.That(result.Item, Is.EqualTo(expectedItem).UsingItemEqualityComparer());
-            Assert.That(result.WasOperationSuccessful, Is.True);
+            await _repository.Received(1).GetItemByIdAsync(requestedId);
+            Assert.That(result, Is.EqualTo(expectedResult).UsingResolvedItemEqualityComparer());
         }
 
 
@@ -78,9 +54,7 @@ namespace MyOnboardingApp.Services.Tests.Services
 
             Assert.Throws<InvalidOperationException>(() =>
             {
-                // ReSharper disable once UnusedVariable
-                // The property Item must be called to throw an exception
-                var callItem = result.Item;
+                var _ = result.Item;
             });
             Assert.That(result.WasOperationSuccessful, Is.False);
         }
