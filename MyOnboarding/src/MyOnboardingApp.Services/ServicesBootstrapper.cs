@@ -6,7 +6,6 @@ using MyOnboardingApp.Contracts.Services;
 using MyOnboardingApp.Contracts.Validation;
 using MyOnboardingApp.Services.Generators;
 using MyOnboardingApp.Services.Services;
-using MyOnboardingApp.Services.Validation;
 using Unity;
 using Unity.Lifetime;
 

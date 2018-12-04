@@ -37,3 +37,4 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("MyOnboardingApp.Api.Tests")]
 [assembly: InternalsVisibleTo("MyOnboardingApp.Services.Tests")]
+[assembly: InternalsVisibleTo("MyOnboardingApp.Contracts.Tests")]
