@@ -22,7 +22,7 @@ namespace MyOnboardingApp.Services
             => container
                 .RegisterType<IIdGenerator<Guid>, GuidGenerator>(new HierarchicalLifetimeManager())
                 .RegisterType<IDateTimeGenerator, DateTimeGenerator>(new HierarchicalLifetimeManager())
-                .RegisterType<IValidator<TodoListItem>, TextCheckingValidator>(new HierarchicalLifetimeManager())
+                //.RegisterType<IInvariantValidator<TodoListItem>, TextCheckingValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<ICreateItemService, CreateItemService>(new HierarchicalLifetimeManager())
                 .RegisterType<IRetrieveItemService, RetrieveItemService>(new HierarchicalLifetimeManager())
                 .RegisterType<IDeleteItemService, DeleteItemService>(new HierarchicalLifetimeManager())

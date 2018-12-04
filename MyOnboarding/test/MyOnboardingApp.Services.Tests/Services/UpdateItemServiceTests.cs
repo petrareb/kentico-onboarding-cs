@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using MyOnboardingApp.Contracts.Errors;
 using MyOnboardingApp.Contracts.Generators;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Repository;
@@ -20,7 +21,7 @@ namespace MyOnboardingApp.Services.Tests.Services
         private UpdateItemService _service;
         private IDateTimeGenerator _dateTimeGenerator;
         private ITodoListRepository _repository;
-        private IValidator<TodoListItem> _validator;
+        private IInvariantValidator<TodoListItem> _validator;
 
 
         [SetUp]
@@ -28,7 +29,7 @@ namespace MyOnboardingApp.Services.Tests.Services
         {
             _repository = Substitute.For<ITodoListRepository>();
             _dateTimeGenerator = Substitute.For<IDateTimeGenerator>();
-            _validator = Substitute.For<IValidator<TodoListItem>>();
+            _validator = Substitute.For<IInvariantValidator<TodoListItem>>();
             _service = new UpdateItemService(_repository, _dateTimeGenerator, _validator);
         }
 
@@ -56,7 +57,7 @@ namespace MyOnboardingApp.Services.Tests.Services
             };
             _repository.ReplaceItemAsync(Arg.Is<TodoListItem>(arg => arg.Id == itemToEdit.Id)).Returns(expectedItem);
             _validator.Validate(Arg.Is<TodoListItem>(item => item.Id == expectedItem.Id))
-                .Returns(ItemWithErrors.Create(expectedItem, new List<string>().AsReadOnly()));
+                .Returns(ItemWithErrors.Create(expectedItem, new List<Error>().AsReadOnly()));
 
             var resultItem = await _service.EditItemAsync(itemToEdit);
 
@@ -88,7 +89,7 @@ namespace MyOnboardingApp.Services.Tests.Services
             };
             _repository.ReplaceItemAsync(itemToEdit).Returns((TodoListItem)null);
             _validator.Validate(Arg.Is<TodoListItem>(item => item.Id == expectedItem.Id))
-                .Returns(ItemWithErrors.Create(expectedItem, new List<string>().AsReadOnly()));
+                .Returns(ItemWithErrors.Create(expectedItem, new List<Error>().AsReadOnly()));
 
             var resultItem = await _service.EditItemAsync(itemToEdit);
 
