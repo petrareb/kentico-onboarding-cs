@@ -2,11 +2,14 @@
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Results;
 using Microsoft.Web.Http;
 using MyOnboardingApp.Api.UrlLocation;
 using MyOnboardingApp.Contracts.Models;
+using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Contracts.Services;
 using MyOnboardingApp.Contracts.Urls;
+using MyOnboardingApp.Contracts.Validation;
 
 namespace MyOnboardingApp.Api.Controllers
 {
@@ -16,16 +19,18 @@ namespace MyOnboardingApp.Api.Controllers
     public class TodoListController : ApiController
     {
         private readonly IUrlLocator _urlLocator;
+        private readonly ITodoListRepository _repository;
         private readonly IRetrieveItemService _retrieveService;
         private readonly ICreateItemService _createService;
         private readonly IDeleteItemService _deleteService;
         private readonly IUpdateItemService _editService;
 
 
-        public TodoListController(IUrlLocator urlLocator, IRetrieveItemService retrieveService, ICreateItemService createService, 
+        public TodoListController(IUrlLocator urlLocator, ITodoListRepository repository, IRetrieveItemService retrieveService, ICreateItemService createService,
             IDeleteItemService deleteService, IUpdateItemService editService)
         {
             _urlLocator = urlLocator;
+            _repository = repository;
             _retrieveService = retrieveService;
             _createService = createService;
             _deleteService = deleteService;
@@ -34,20 +39,16 @@ namespace MyOnboardingApp.Api.Controllers
 
 
         public async Task<IHttpActionResult> GetAsync()
-            => Ok(await _retrieveService.GetAllItemsAsync());
+            => Ok(await _repository.GetAllItemsAsync());
 
 
         [Route("{id}", Name = RoutesConfig.TodoListItemRouteName)]
         public async Task<IHttpActionResult> GetAsync(Guid id)
         {
-            if (id == Guid.Empty)
-            {
-                ModelState.AddModelError("Id", "Id must not be empty.");
-            }
-
+            ValidateIdPresence(id);
             if (!ModelState.IsValid)
             {
-                return BadRequest("Arguments are not valid.");
+                return BadRequest(ModelState);
             }
 
             var itemWithStatus = await _retrieveService.GetItemByIdAsync(id);
@@ -62,17 +63,16 @@ namespace MyOnboardingApp.Api.Controllers
 
         public async Task<IHttpActionResult> PostAsync([FromBody] TodoListItem newItem)
         {
-            ValidateItemBeforePost(newItem);
+            ValidateItemBeforeCreating(newItem);
             if (!ModelState.IsValid)
             {
-                return BadRequest("Properties of given item are not valid.");
+                return BadRequest(ModelState);
             }
 
             var storedItem = await _createService.AddNewItemAsync(newItem);
             if (!storedItem.WasOperationSuccessful)
-
             {
-                return BadRequest("It was impossible to store the item.");
+                return BadRequest(storedItem);
             }
 
             var location = _urlLocator.GetListItemUrl(storedItem.Item.Id);
@@ -81,24 +81,25 @@ namespace MyOnboardingApp.Api.Controllers
 
 
         [Route("{id}")]
-        public async Task<IHttpActionResult> PutAsync(Guid id, [FromBody] TodoListItem item)
+        public async Task<IHttpActionResult> PutAsync(Guid id, [FromBody] TodoListItem replacingItem)
         {
-            if (!id.Equals(item.Id))
-            {
-                ModelState.AddModelError("Id", "Id of item must be same as id in url.");
-            }
-
-            ValidateItemBeforePut(item);
+            ValidateItemBeforeEditing(replacingItem, id);
             if (!ModelState.IsValid)
             {
-                return BadRequest("Arguments are not valid");
+                return BadRequest(ModelState);
             }
 
-            var editedItem = await _editService.EditItemAsync(item);
-
+            var existingItem = await _retrieveService.GetItemByIdAsync(replacingItem.Id);
+            if (!existingItem.WasOperationSuccessful)
+            {
+                var itemToAdd = CreateItemWithTextOnly(replacingItem);
+                return await PostAsync(itemToAdd);
+            }
+            
+            var editedItem = await _editService.EditItemAsync(replacingItem, existingItem);
             if (!editedItem.WasOperationSuccessful)
             {
-                return NotFound();
+                return BadRequest(editedItem);
             }
 
             return StatusCode(HttpStatusCode.NoContent);
@@ -108,17 +109,13 @@ namespace MyOnboardingApp.Api.Controllers
         [Route("{id}")]
         public async Task<IHttpActionResult> DeleteAsync(Guid id)
         {
-            if (id == Guid.Empty)
+            ValidateIdPresence(id);
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("Id", "Id must not be empty.");
+                return BadRequest(ModelState);
             }
 
             var deletedItemWithStatus = await _deleteService.DeleteItemAsync(id);
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Given parameters are invalid.");
-            }
-
             if (!deletedItemWithStatus.WasOperationSuccessful)
             {
                 return NotFound();
@@ -128,20 +125,47 @@ namespace MyOnboardingApp.Api.Controllers
         }
 
 
-        private void ValidateIdPost(Guid id)
+        public InvalidModelStateResult BadRequest(IItemWithErrors<TodoListItem> item)
         {
-            if (id != Guid.Empty)
+            foreach (var error in item.Errors)
             {
-                ModelState.AddModelError("Id", "Id must be empty.");
+                ModelState.AddModelError(error.Location, error.Message);
+            }
+
+            return BadRequest(ModelState);
+        }
+
+
+        private static TodoListItem CreateItemWithTextOnly(TodoListItem item)
+            => new TodoListItem
+            {
+                Text = item.Text,
+            };
+
+
+        private void ValidateIdPresence(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(id), "Identifier must not be empty.");
             }
         }
 
 
-        private void ValidateTimePost(DateTime time, string field)
+        private void ValidateIdAbsence(Guid id)
+        {
+            if (id != Guid.Empty)
+            {
+                ModelState.AddModelError(nameof(id), "Identifier must be empty.");
+            }
+        }
+
+
+        private void ValidateDateTimeSet(DateTime time, string field)
         {
             if (time != DateTime.MinValue)
             {
-                ModelState.AddModelError(field, "Time is supposed to be DateTime.MinValue.");
+                ModelState.AddModelError(field, $"Time is supposed to have a value of {DateTime.MinValue}.");
             }
         }
 
@@ -150,25 +174,42 @@ namespace MyOnboardingApp.Api.Controllers
         {
             if (string.IsNullOrEmpty(text))
             {
-                ModelState.AddModelError("Text", "Text must not be empty.");
+                ModelState.AddModelError(nameof(TodoListItem.Text), "Text must not be empty.");
             }
         }
 
 
-        private void ValidateItemBeforePost(TodoListItem item)
+        private void ValidateItemBeforeCreating(TodoListItem item)
         {
+            if (item == null)
+            {
+                ModelState.AddModelError(nameof(TodoListItem), "Item from the request body must not be null.");
+                return;
+            }
+
             ValidateNotEmptyText(item.Text);
-            ValidateTimePost(item.CreationTime, "CreationTime");
-            ValidateTimePost(item.LastUpdateTime, "LastUpdateTime");
-            ValidateIdPost(item.Id);
+            ValidateDateTimeSet(item.CreationTime, nameof(TodoListItem.CreationTime));
+            ValidateDateTimeSet(item.LastUpdateTime, nameof(TodoListItem.LastUpdateTime));
+            ValidateIdAbsence(item.Id);
         }
 
 
-        private void ValidateItemBeforePut(TodoListItem item)
+        private void ValidateItemBeforeEditing(TodoListItem item, Guid idFromUrl)
         {
+            if (item == null)
+            {
+                ModelState.AddModelError(nameof(TodoListItem), "Item from the request body must not be null.");
+                return;
+            }
+
             if (item.Id == Guid.Empty)
             {
-                ModelState.AddModelError("Id", "Id must not be empty.");
+                ModelState.AddModelError(nameof(TodoListItem.Id), "Identifier must not be empty.");
+            }
+
+            if (item.Id != idFromUrl)
+            {
+                ModelState.AddModelError(nameof(TodoListItem.Id), "Identifier in the body of request must be the same as in the URL.");
             }
 
             ValidateNotEmptyText(item.Text);
