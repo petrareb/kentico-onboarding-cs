@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Comparators\ItemEqualityComparer.cs" />
+    <Compile Include="Comparators\ItemWithErrorsEqualityComparer.cs" />
+    <Compile Include="Comparators\ResolvedItemEqualityComparer.cs" />
     <Compile Include="Extensions\ItemEqualityExtensions.cs" />
     <Compile Include="Factories\ItemVariantsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
