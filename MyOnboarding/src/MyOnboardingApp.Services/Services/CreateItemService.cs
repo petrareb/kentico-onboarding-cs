@@ -24,7 +24,7 @@ namespace MyOnboardingApp.Services.Services
         }
 
 
-        public async Task<IItemWithErrors<TodoListItem>> AddNewItemAsync(TodoListItem newItem)
+        public async Task<IResolvedItem<TodoListItem>> AddNewItemAsync(TodoListItem newItem)
             => await TryCompleteAndStoreItemAsync(newItem);
 
 

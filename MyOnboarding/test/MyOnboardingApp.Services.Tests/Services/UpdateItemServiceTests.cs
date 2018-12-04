@@ -9,6 +9,7 @@ using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Contracts.Validation;
 using MyOnboardingApp.Services.Services;
 using MyOnboardingApp.TestUtils.Extensions;
+using MyOnboardingApp.TestUtils.Factories;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -18,27 +19,16 @@ namespace MyOnboardingApp.Services.Tests.Services
     [SuppressMessage("ReSharper", "IdentifierTypo")]
     public class UpdateItemServiceTests
     {
-        private UpdateItemService _service;
-        private IDateTimeGenerator _dateTimeGenerator;
-        private ITodoListRepository _repository;
-        private IInvariantValidator<TodoListItem> _validator;
-
-
-        [SetUp]
-        public void SetUp()
-        {
-            _repository = Substitute.For<ITodoListRepository>();
-            _dateTimeGenerator = Substitute.For<IDateTimeGenerator>();
-            _validator = Substitute.For<IInvariantValidator<TodoListItem>>();
-            _service = new UpdateItemService(_repository, _dateTimeGenerator, _validator);
-        }
-
-
         [Test]
         public async Task EditItemAsync_ExistingItemSpecified_ReturnsEditedItemWithNoErrors()
         {
+            var repository = Substitute.For<ITodoListRepository>();
+            var dateTimeGenerator = Substitute.For<IDateTimeGenerator>();
+            var validator = Substitute.For<IInvariantValidator<TodoListItem>>();
+            var service = new UpdateItemService(repository, dateTimeGenerator, validator);
+
             var updatedTime = new DateTime(2018, 10, 10);
-            _dateTimeGenerator
+            dateTimeGenerator
                 .GetCurrentDateTime()
                 .Returns(updatedTime);
             var itemToEdit = new TodoListItem
@@ -55,51 +45,60 @@ namespace MyOnboardingApp.Services.Tests.Services
                 CreationTime = new DateTime(2015, 01, 01),
                 LastUpdateTime = updatedTime
             };
-            _repository.ReplaceItemAsync(Arg.Is<TodoListItem>(arg => arg.Id == itemToEdit.Id)).Returns(expectedItem);
-            _validator.Validate(Arg.Is<TodoListItem>(item => item.Id == expectedItem.Id))
+            repository.ReplaceItemAsync(Arg.Is<TodoListItem>(arg => arg.Id == itemToEdit.Id)).Returns(expectedItem);
+            validator.Validate(Arg.Is<TodoListItem>(item => item.Id == expectedItem.Id))
                 .Returns(ItemWithErrors.Create(expectedItem, new List<Error>().AsReadOnly()));
 
-            var resultItem = await _service.EditItemAsync(itemToEdit);
+            var resultItem = await service.EditItemAsync(itemToEdit);
 
+            await repository.Received(1).ReplaceItemAsync(expectedItem);
             Assert.That(resultItem.Item, Is.EqualTo(expectedItem).UsingItemEqualityComparer());
             Assert.That(resultItem.WasOperationSuccessful, Is.True);
         }
 
 
         [Test]
-        public async Task EditItemAsync_NonExistingItemSpecified_ReturnsNullItemWithErrors()
+        public async Task EditItemAsync_InvalidItemSpecified_ReturnsItemWithErrors()
         {
+            var repository = Substitute.For<ITodoListRepository>();
+            var dateTimeGenerator = Substitute.For<IDateTimeGenerator>();
+            var validator = Substitute.For<IInvariantValidator<TodoListItem>>();
+            var service = new UpdateItemService(repository, dateTimeGenerator, validator);
             var updatedTime = new DateTime(2018, 10, 10);
-            _dateTimeGenerator
+            dateTimeGenerator
                 .GetCurrentDateTime()
                 .Returns(updatedTime);
             var itemToEdit = new TodoListItem
             {
                 Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                Text = "new text",
+                Text = string.Empty,
                 CreationTime = new DateTime(2015, 01, 01),
                 LastUpdateTime = new DateTime(2015, 02, 02)
             };
-            var expectedItem = new TodoListItem
-            {
-                Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                Text = "new text",
-                CreationTime = new DateTime(2015, 01, 01),
-                LastUpdateTime = updatedTime
-            };
-            _repository.ReplaceItemAsync(itemToEdit).Returns((TodoListItem)null);
-            _validator.Validate(Arg.Is<TodoListItem>(item => item.Id == expectedItem.Id))
-                .Returns(ItemWithErrors.Create(expectedItem, new List<Error>().AsReadOnly()));
+            var error = new Error(ErrorCode.DataValidationError, "message", "location");
+            var errors = new List<Error> { error };
+            var itemWithError = ItemVariantsFactory.CreateItemVariants(itemToEdit, errors).ItemWithErrors;
+            validator.Validate(itemToEdit).Returns(itemWithError);
 
-            var resultItem = await _service.EditItemAsync(itemToEdit);
+            var result = await service.EditItemAsync(itemToEdit);
 
-            Assert.That(resultItem.WasOperationSuccessful, Is.False);
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                // ReSharper disable once UnusedVariable
-                // The property Item must be called to throw an exception
-                var callItem = resultItem.Item;
-            });
+            await repository.Received(0).ReplaceItemAsync(itemToEdit);
+            Assert.That(result.WasOperationSuccessful, Is.False);
+            Assert.That(result.Errors, Is.EqualTo(errors));
+        }
+
+
+        [Test]
+        public async Task EditItemAsync_NullItemSpecified_ThrowsArgumentNullException()
+        {
+            var repository = Substitute.For<ITodoListRepository>();
+            var dateTimeGenerator = Substitute.For<IDateTimeGenerator>();
+            var validator = Substitute.For<IInvariantValidator<TodoListItem>>();
+            var service = new UpdateItemService(repository, dateTimeGenerator, validator);
+
+            await repository.Received(0).ReplaceItemAsync(null);
+            Assert.ThrowsAsync<ArgumentNullException>(
+                () => service.EditItemAsync(null));
         }
     }
 }

@@ -1,39 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using MyOnboardingApp.Contracts.Errors;
 using MyOnboardingApp.Contracts.Generators;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Repository;
-using MyOnboardingApp.Contracts.Services;
 using MyOnboardingApp.Contracts.Validation;
 using MyOnboardingApp.Services.Services;
 using MyOnboardingApp.TestUtils.Extensions;
+using MyOnboardingApp.TestUtils.Factories;
 using NSubstitute;
 using NUnit.Framework;
 
 namespace MyOnboardingApp.Services.Tests.Services
 {
     [TestFixture]
-    [SuppressMessage("ReSharper", "IdentifierTypo")]
     public class CreateItemServiceTests
     {
-        private ICreateItemService _service;
-        private readonly ITodoListRepository _repository = Substitute.For<ITodoListRepository>();
-        private readonly IIdGenerator<Guid> _idGenerator = Substitute.For<IIdGenerator<Guid>>();
-        private readonly IDateTimeGenerator _dateTimeGenerator = Substitute.For<IDateTimeGenerator>();
-        private readonly IInvariantValidator<TodoListItem> _validator = Substitute.For<IInvariantValidator<TodoListItem>>();
-
-
-        [SetUp]
-        public void SetUp()
-            => _service = new CreateItemService(_repository, _idGenerator, _dateTimeGenerator, _validator);
-
-
         [Test]
         public async Task AddNewItemAsync_ValidItemSpecified_ReturnsAddedItemWithNoError()
         {
+            var repository = Substitute.For<ITodoListRepository>();
+            var idGenerator = Substitute.For<IIdGenerator<Guid>>();
+            var dateTimeGenerator = Substitute.For<IDateTimeGenerator>();
+            var validator = Substitute.For<IInvariantValidator<TodoListItem>>();
+            var service = new CreateItemService(repository, idGenerator, dateTimeGenerator, validator);
+
             var itemToAdd = new TodoListItem
             {
                 Id = Guid.Empty,
@@ -42,11 +34,11 @@ namespace MyOnboardingApp.Services.Tests.Services
                 LastUpdateTime = DateTime.MinValue
             };
             var expectedId = new Guid("00000000-0000-0000-0000-000000000007");
-            _idGenerator
+            idGenerator
                 .GetNewId()
                 .Returns(expectedId);
             var expectedDateTime = new DateTime(2018, 10, 10);
-            _dateTimeGenerator
+            dateTimeGenerator
                 .GetCurrentDateTime()
                 .Returns(expectedDateTime);
             var completedItem = new TodoListItem
@@ -56,23 +48,43 @@ namespace MyOnboardingApp.Services.Tests.Services
                 CreationTime = expectedDateTime,
                 LastUpdateTime = expectedDateTime
             };
-            _validator
+            validator
+                .Validate(Arg.Is<TodoListItem>(arg => arg.Id == itemToAdd.Id))
+                .Returns(ItemWithErrors.Create(completedItem, new List<Error>()));
+            validator
                 .Validate(Arg.Is<TodoListItem>(arg => arg.Id == expectedId))
-                .Returns(ItemWithErrors.Create(completedItem, new List<Error>().AsReadOnly()));
-            _repository
+                .Returns(ItemWithErrors.Create(completedItem, new List<Error>()));
+            repository
                 .AddNewItemAsync(Arg.Is<TodoListItem>(arg => arg.Id == expectedId))
                 .Returns(completedItem);
+            var expectedResult = ItemVariantsFactory
+                .CreateItemVariants(completedItem)
+                .ItemWithErrors;
 
-            var result = await _service.AddNewItemAsync(itemToAdd);
+            var result = await service.AddNewItemAsync(itemToAdd);
 
-            Assert.That(result.Item, Is.EqualTo(completedItem).UsingItemEqualityComparer());
-            Assert.That(result.WasOperationSuccessful, Is.True);
+            await repository
+                .Received(1)
+                .AddNewItemAsync(completedItem);
+            dateTimeGenerator
+                .Received(1)
+                .GetCurrentDateTime();
+            idGenerator
+                .Received(1)
+                .GetNewId();
+            Assert.That(result, Is.EqualTo(expectedResult).UsingItemWithErrorsEqualityComparer());
         }
 
 
         [Test]
         public async Task AddNewItemAsync_ItemWithInvalidTextSpecified_ReturnsItemWithErrors()
         {
+            var repository = Substitute.For<ITodoListRepository>();
+            var idGenerator = Substitute.For<IIdGenerator<Guid>>();
+            var dateTimeGenerator = Substitute.For<IDateTimeGenerator>();
+            var validator = Substitute.For<IInvariantValidator<TodoListItem>>();
+            var service = new CreateItemService(repository, idGenerator, dateTimeGenerator, validator);
+
             var itemToAdd = new TodoListItem
             {
                 Id = Guid.Empty,
@@ -80,14 +92,39 @@ namespace MyOnboardingApp.Services.Tests.Services
                 CreationTime = DateTime.MinValue,
                 LastUpdateTime = DateTime.MinValue
             };
-            _validator
+            var error = new Error(ErrorCode.DataValidationError, "error happened", "text");
+            var errors = new List<Error> { error };
+            validator
                 .Validate(Arg.Is<TodoListItem>(arg => arg.Id == itemToAdd.Id))
-                .Returns(ItemWithErrors.Create(itemToAdd, new List<Error>().AsReadOnly()));
+                .Returns(ItemVariantsFactory.CreateItemVariants(itemToAdd, errors).ItemWithErrors);
+            var expectedResult = ItemVariantsFactory
+                .CreateItemVariants(itemToAdd, errors)
+                .ItemWithErrors;
 
-            var result = await _service.AddNewItemAsync(itemToAdd);
+            var result = await service.AddNewItemAsync(itemToAdd);
 
-            Assert.That(result.Item, Is.EqualTo(itemToAdd).UsingItemEqualityComparer());
-            Assert.That(result.WasOperationSuccessful, Is.False);
+            await repository
+                .Received(0)
+                .AddNewItemAsync(itemToAdd);
+            Assert.That(result, Is.EqualTo(expectedResult).UsingItemWithErrorsEqualityComparer());
+        }
+
+
+        [Test]
+        public async Task AddNewItemAsync_NullItemSpecified_ThrowsArgumentNullException()
+        {
+            var repository = Substitute.For<ITodoListRepository>();
+            var idGenerator = Substitute.For<IIdGenerator<Guid>>();
+            var dateTimeGenerator = Substitute.For<IDateTimeGenerator>();
+            var validator = Substitute.For<IInvariantValidator<TodoListItem>>();
+            var service = new CreateItemService(repository, idGenerator, dateTimeGenerator, validator);
+
+            await repository
+                .Received(0)
+                .AddNewItemAsync(null);
+
+            Assert.ThrowsAsync<ArgumentNullException>(
+                () => service.AddNewItemAsync(null));
         }
     }
 }
