@@ -20,20 +20,15 @@ namespace MyOnboardingApp.Api.Tests
         private static readonly Type[] s_ignoredTypes =
         {
             typeof(IBootstrapper),
+            typeof(IItemWithErrors<>),
+            typeof(IResolvedItem<>)
         };
 
         private static readonly Type[] s_explicitTypes =
         {
-            typeof(HttpRequestMessage)
-        };
-
-        private static readonly Type[] s_explicitGenericTypes =
-        {
+            typeof(HttpRequestMessage),
             typeof(IIdGenerator<Guid>),
-            typeof(IInvariantValidator<TodoListItem>),
             typeof(IValidationCriterion<TodoListItem>),
-            typeof(IResolvedItem<TodoListItem>),
-            typeof(IItemWithErrors<TodoListItem>),
         };
 
 
@@ -44,7 +39,7 @@ namespace MyOnboardingApp.Api.Tests
             var actualTypes = new List<Type>();
             var container = MockUnityContainer(actualTypes);
 
-            DependenciesConfig.RegisterAllDependencies(container);
+            container.RegisterAllDependencies();
             var unexpectedTypes = actualTypes
                 .Except(exportedTypes)
                 .ToArray();
@@ -58,15 +53,19 @@ namespace MyOnboardingApp.Api.Tests
 
 
         private static Type[] GetTypesExportedFromAssembly()
-            => typeof(IBootstrapper)
+        {
+            var explicitGenerics = s_explicitTypes
+                .Where(type => type.IsGenericType)
+                .ToArray();
+            return typeof(IBootstrapper)
                 .Assembly
                 .ExportedTypes
                 .Where(contract => contract.IsInterface)
+                .Except(explicitGenerics.Select(type => type.GetGenericTypeDefinition()))
                 .Except(s_ignoredTypes)
-                .Except(s_explicitGenericTypes.Select(type => type.GetGenericTypeDefinition()))
                 .Union(s_explicitTypes)
-                .Union(s_explicitGenericTypes)
                 .ToArray();
+        }
 
 
         private static IUnityContainer MockUnityContainer(ICollection<Type> actualTypes)

@@ -161,6 +161,10 @@
       <Project>{8fb04edb-e388-46f6-b926-8703c47fcffe}</Project>
       <Name>MyOnboardingApp.Services</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MyOnboardingApp.Validation\MyOnboardingApp.Validation.csproj">
+      <Project>{E728BB6B-60CA-476B-8255-ABDC6F9D6EDC}</Project>
+      <Name>MyOnboardingApp.Validation</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
