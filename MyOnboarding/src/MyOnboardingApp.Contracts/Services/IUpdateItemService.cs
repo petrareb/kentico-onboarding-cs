@@ -8,6 +8,6 @@ namespace MyOnboardingApp.Contracts.Services
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public interface IUpdateItemService
     {
-        Task<IResolvedItem<TodoListItem>> EditItemAsync(TodoListItem item);
+        Task<IItemWithErrors<TodoListItem>> EditItemAsync(TodoListItem replacingItem);
     }
 }

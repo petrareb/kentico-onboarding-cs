@@ -8,48 +8,35 @@ using MyOnboardingApp.Contracts.Validation;
 
 namespace MyOnboardingApp.Services.Services
 {
-    internal class CreateItemService : ICreateItemService
+    internal class CreateItemService : AbstractUpsertService, ICreateItemService
     {
-        private readonly IInvariantValidator<TodoListItem> _validator;
         private readonly ITodoListRepository _repository;
         private readonly IIdGenerator<Guid> _idGenerator;
         private readonly IDateTimeGenerator _dateTimeGenerator;
 
 
         public CreateItemService(ITodoListRepository repository, IIdGenerator<Guid> idGenerator, IDateTimeGenerator dateTimeGenerator, IInvariantValidator<TodoListItem> validator)
+            : base(validator)
         {
             _repository = repository;
             _idGenerator = idGenerator;
             _dateTimeGenerator = dateTimeGenerator;
-            _validator = validator;
         }
 
 
         public async Task<IResolvedItem<TodoListItem>> AddNewItemAsync(TodoListItem newItem)
+            => await TryCompleteAndStoreItemAsync(newItem);
+
+
+        protected override async Task StoreToDatabase(TodoListItem completedItem)
+            => await _repository.AddNewItemAsync(completedItem);
+
+
+        protected override (Guid id, DateTime creationTime, DateTime lastUpdateTime) GetGeneratedData(TodoListItem originalItem)
         {
-            var itemToAdd = CompleteItemToAdd(newItem);
-            var itemWithErrors = _validator.Validate(itemToAdd);
-            if (!itemWithErrors.WasOperationSuccessful)
-            {
-                return itemWithErrors;
-            }
-
-            var result = await _repository.AddNewItemAsync(itemWithErrors.Item);
-
-            return ResolvedItem.Create(result);
-        }
-
-
-        private TodoListItem CompleteItemToAdd(TodoListItem item)
-        {
+            var id = _idGenerator.GetNewId();
             var currentDateTime = _dateTimeGenerator.GetCurrentDateTime();
-            return new TodoListItem
-            {
-                Text = item.Text,
-                Id = _idGenerator.GetNewId(),
-                CreationTime = currentDateTime,
-                LastUpdateTime = currentDateTime
-            };
+            return (id, currentDateTime, currentDateTime);
         }
     }
 }

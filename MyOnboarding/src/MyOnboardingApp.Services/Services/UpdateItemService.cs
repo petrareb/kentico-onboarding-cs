@@ -8,50 +8,29 @@ using MyOnboardingApp.Contracts.Validation;
 
 namespace MyOnboardingApp.Services.Services
 {
-    internal class UpdateItemService : IUpdateItemService
+    internal class UpdateItemService : AbstractUpsertService, IUpdateItemService
     {
-        private readonly IInvariantValidator<TodoListItem> _validator;
         private readonly ITodoListRepository _repository;
         private readonly IDateTimeGenerator _dateTimeGenerator;
 
 
         public UpdateItemService(ITodoListRepository repository, IDateTimeGenerator dateTimeGenerator, IInvariantValidator<TodoListItem> validator)
+            : base(validator)
         {
             _dateTimeGenerator = dateTimeGenerator;
             _repository = repository;
-            _validator = validator;
         }
 
 
-        public async Task<IResolvedItem<TodoListItem>> EditItemAsync(TodoListItem item)
-        {
-            var itemToReplace = CompleteItemToReplace(item);
-            var itemWithErrors = _validator.Validate(itemToReplace);
-            if (!itemWithErrors.WasOperationSuccessful)
-            {
-                return itemWithErrors;
-            }
-
-            var result = await _repository.ReplaceItemAsync(itemWithErrors.Item);
-
-            return ResolvedItem.Create(result);
-        }
+        public async Task<IItemWithErrors<TodoListItem>> EditItemAsync(TodoListItem replacingItem)
+            => await TryCompleteAndStoreItemAsync(replacingItem);
 
 
-        private TodoListItem CompleteItemToReplace(TodoListItem item)
-        {
-            if (item == null)
-            {
-                throw new ArgumentNullException(nameof(item), "Item to complete must not be null.");
-            }
+        protected override async Task StoreToDatabase(TodoListItem completedItem)
+            => await _repository.ReplaceItemAsync(completedItem);
 
-            return new TodoListItem
-            {
-                Id = item.Id,
-                Text = item.Text,
-                CreationTime = item.CreationTime,
-                LastUpdateTime = _dateTimeGenerator.GetCurrentDateTime()
-            };
-        }
+
+        protected override (Guid id, DateTime creationTime, DateTime lastUpdateTime) GetGeneratedData(TodoListItem originalItem)
+            => (originalItem.Id, originalItem.CreationTime, _dateTimeGenerator.GetCurrentDateTime());
     }
 }
