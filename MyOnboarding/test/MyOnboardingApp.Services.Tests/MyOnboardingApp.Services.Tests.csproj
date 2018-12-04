@@ -66,6 +66,8 @@
     <Compile Include="Criteria\DateCheckingCriteria\LastUpdateDateBiggerThanCreationDateCriterionTests.cs" />
     <Compile Include="Criteria\TextCheckingCriteria\TrimmedTextLengthCriterionTests.cs" />
     <Compile Include="Criteria\TextCheckingCriteria\TrimmedTextNonEmptyCriterionTests.cs" />
+    <Compile Include="Generators\DateTimeGeneratorTests.cs" />
+    <Compile Include="Generators\GuidGeneratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CreateItemServiceTests.cs" />
     <Compile Include="Services\DeleteItemServiceTests.cs" />

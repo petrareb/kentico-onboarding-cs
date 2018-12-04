@@ -6,8 +6,6 @@ namespace MyOnboardingApp.Services.Generators
     internal class DateTimeGenerator : IDateTimeGenerator
     {
         public DateTime GetCurrentDateTime()
-            => DateTime
-                .UtcNow
-                .ToLocalTime();
+            => DateTime.UtcNow;
     }
 }
