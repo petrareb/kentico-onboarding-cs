@@ -1,5 +1,4 @@
 ﻿using System;
-using MyOnboardingApp.Contracts.Database;
 using MyOnboardingApp.Contracts.Registration;
 using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Database.Repository;

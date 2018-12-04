@@ -1,17 +1,19 @@
-﻿using System.Configuration;
-using MyOnboardingApp.Contracts.Database;
+﻿using System;
+using System.Configuration;
+using MyOnboardingApp.Contracts.Repository;
 
 namespace MyOnboardingApp.Api.Configuration
 {
     internal class DatabaseConnection : IDatabaseConnection
     {
-        private static readonly string s_databaseConnectionString =
-            ConfigurationManager
-                .ConnectionStrings["TodoListDbConnection"]
-                .ConnectionString;
+        private static readonly Lazy<string> s_databaseConnectionString
+            = new Lazy<string>(()
+                => ConfigurationManager
+                    .ConnectionStrings["TodoListDbConnection"]
+                    .ConnectionString);
 
 
-        public string GetDatabaseConnectionString()
-            => s_databaseConnectionString;
+        public string GetDatabaseConnectionString
+            => s_databaseConnectionString.Value;
     }
 }
