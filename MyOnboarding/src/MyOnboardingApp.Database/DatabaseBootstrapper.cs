@@ -1,5 +1,4 @@
 ﻿using System;
-using MyOnboardingApp.Contracts.Database;
 using MyOnboardingApp.Contracts.Registration;
 using MyOnboardingApp.Contracts.Repository;
 using MyOnboardingApp.Database.Repository;
@@ -12,7 +11,7 @@ namespace MyOnboardingApp.Database
     {
         public IUnityContainer Register(IUnityContainer container)
             => container
-                .RegisterType<ITodoListRepository, TodoListRepository>(new HierarchicalLifetimeManager());
+                .RegisterType<ITodoListRepository, TodoListRepository>(new ContainerControlledLifetimeManager());
 
 
         public void ValidateConfiguration(IUnityContainer container)
