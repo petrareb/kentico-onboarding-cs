@@ -6,6 +6,6 @@ namespace MyOnboardingApp.Contracts.Services
 {
     public interface IUpdateItemService
     {
-        Task<IItemWithErrors<TodoListItem>> EditItemAsync(TodoListItem replacingItem, TodoListItem existingItem);
+        Task<IItemWithErrors<TodoListItem>> EditItemAsync(TodoListItem replacingItem, IResolvedItem<TodoListItem> existingItem);
     }
 }
