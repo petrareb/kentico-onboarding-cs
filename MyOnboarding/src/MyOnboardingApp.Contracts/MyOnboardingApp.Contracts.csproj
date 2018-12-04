@@ -89,7 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database\IDatabaseConnection.cs" />
+    <Compile Include="Repository\IDatabaseConnection.cs" />
     <Compile Include="Generators\IDateTimeGenerator.cs" />
     <Compile Include="Generators\IIdGenerator.cs" />
     <Compile Include="Models\ItemWithErrors.cs" />
