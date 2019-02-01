@@ -14,10 +14,4 @@
             Location = location;
         }
     }
-
-    public enum ErrorCode
-    {
-        DataValidationError,
-        PermissionError,
-    };
 }

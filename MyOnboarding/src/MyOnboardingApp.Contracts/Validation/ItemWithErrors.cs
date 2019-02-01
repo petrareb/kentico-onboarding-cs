@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 using MyOnboardingApp.Contracts.Errors;
-
 
 namespace MyOnboardingApp.Contracts.Validation
 {
-    public class ItemWithErrors
+    public static class ItemWithErrors
     {
-        public static IItemWithErrors<TEntity> Create<TEntity>(TEntity item, IReadOnlyCollection<Error> errors)
+        public static IItemWithErrors<TEntity> Create<TEntity>(TEntity item, IEnumerable<Error> errors)
             where TEntity : class
-            => new ValidatedItem<TEntity>(item, errors);
+            => new ItemWithErrorsInternal<TEntity>(item, errors?.ToArray());
 
 
-        private class ValidatedItem<TEntity> : IItemWithErrors<TEntity>
+        private class ItemWithErrorsInternal<TEntity> : IItemWithErrors<TEntity>
             where TEntity : class
         {
             public TEntity Item { get; }
@@ -23,7 +22,7 @@ namespace MyOnboardingApp.Contracts.Validation
             public IReadOnlyCollection<Error> Errors { get; }
 
 
-            public ValidatedItem(TEntity item, IReadOnlyCollection<Error> errors)
+            public ItemWithErrorsInternal(TEntity item, IReadOnlyCollection<Error> errors)
             {
                 Item = item
                        ?? throw new ArgumentNullException(
@@ -32,6 +31,12 @@ namespace MyOnboardingApp.Contracts.Validation
 
                 Errors = errors ?? new List<Error>().AsReadOnly();
             }
+
+
+            public override string ToString() 
+                => $"{nameof(Item)}: {Item}, " +
+                   $"{nameof(WasOperationSuccessful)}: {WasOperationSuccessful}, " +
+                   $"{nameof(Errors)}: {Errors}";
         }
     }
 }

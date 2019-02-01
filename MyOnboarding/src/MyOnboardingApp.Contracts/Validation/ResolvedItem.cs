@@ -7,14 +7,14 @@ namespace MyOnboardingApp.Contracts.Validation
         public static IResolvedItem<TEntity> Create<TEntity>(TEntity item)
             where TEntity : class
             => item == null
-                ? ResultItem<TEntity>.InvalidResolvedItem
-                : new ResultItem<TEntity>(item);
+                ? ResolvedItemInternal<TEntity>.InvalidResolvedItem
+                : new ResolvedItemInternal<TEntity>(item);
 
 
-        private class ResultItem<TEntity> : IResolvedItem<TEntity>
+        private class ResolvedItemInternal<TEntity> : IResolvedItem<TEntity>
             where TEntity : class
         {
-            public static readonly IResolvedItem<TEntity> InvalidResolvedItem = new ResultItem<TEntity>();
+            public static readonly IResolvedItem<TEntity> InvalidResolvedItem = new ResolvedItemInternal<TEntity>();
 
             private readonly TEntity _item;
 
@@ -23,14 +23,19 @@ namespace MyOnboardingApp.Contracts.Validation
             public bool WasOperationSuccessful => _item != null;
 
 
-            public ResultItem(TEntity item)
+            public ResolvedItemInternal(TEntity item)
                 : this()
                 => _item = item ?? throw new ArgumentNullException(nameof(item));
 
 
-            private ResultItem()
+            private ResolvedItemInternal()
             {
             }
+
+
+            public override string ToString() 
+                => $"{nameof(_item)}: {_item}, " +
+                   $"{nameof(WasOperationSuccessful)}: {WasOperationSuccessful}";
         }
     }
 }
