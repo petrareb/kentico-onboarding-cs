@@ -20,7 +20,7 @@ namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
 
         [SetUp]
         public void SetUp()
-            => _dateCriterion = new LastUpdateDateBiggerThanCreationDateCriterion(_errorFactory);
+            => _dateCriterion = new LastUpdateDateBiggerThanCreationDateCriterion();
 
 
         [Test]
@@ -36,7 +36,7 @@ namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
             var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
             _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _dateCriterion.Validate(testItem);
+            var result = _dateCriterion.Validate(testItem, _errorFactory);
 
             Assert.That(result, Is.EqualTo(new List<Error>()));
         }
@@ -55,7 +55,7 @@ namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
             var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
             _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _dateCriterion.Validate(testItem);
+            var result = _dateCriterion.Validate(testItem, _errorFactory);
 
             Assert.That(result, Is.EqualTo(new List<Error> { error }));
         }
@@ -74,7 +74,7 @@ namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
             var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
             _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _dateCriterion.Validate(testItem);
+            var result = _dateCriterion.Validate(testItem, _errorFactory);
 
             Assert.That(result, Is.EqualTo(new List<Error>()));
         }

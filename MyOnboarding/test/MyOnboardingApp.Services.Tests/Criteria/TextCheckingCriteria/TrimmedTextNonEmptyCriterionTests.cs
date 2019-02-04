@@ -21,7 +21,7 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
 
         [SetUp]
         public void SetUp()
-            => _textCriterion = new TrimmedTextNonEmptyCriterion(_errorFactory);
+            => _textCriterion = new TrimmedTextNonEmptyCriterion();
 
 
         [Test]
@@ -37,7 +37,7 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
             var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
             _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _textCriterion.Validate(testItem);
+            var result = _textCriterion.Validate(testItem, _errorFactory);
 
             Assert.That(result, Is.EqualTo(new List<Error>()));
         }
@@ -56,7 +56,7 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
             var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
             _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _textCriterion.Validate(testItem).ToList();
+            var result = _textCriterion.Validate(testItem, _errorFactory).ToList();
 
             Assert.That(result, Is.Not.Empty);
             Assert.That(result, Is.EqualTo(new List<Error> { error, error, error }));
@@ -76,7 +76,7 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
             var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
             _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _textCriterion.Validate(testItem).ToList();
+            var result = _textCriterion.Validate(testItem, _errorFactory).ToList();
 
             Assert.That(result, Is.Not.Empty);
             Assert.That(result, Is.EqualTo(new List<Error> { error, error }));
@@ -96,7 +96,7 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
             var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
             _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _textCriterion.Validate(testItem).ToList();
+            var result = _textCriterion.Validate(testItem, _errorFactory).ToList();
 
             Assert.That(result, Is.Not.Empty);
             Assert.That(result, Is.EqualTo(new List<Error> { error }));
@@ -116,7 +116,7 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
             var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
             _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _textCriterion.Validate(testItem).ToList();
+            var result = _textCriterion.Validate(testItem, _errorFactory).ToList();
 
             Assert.That(result, Is.Not.Empty);
             Assert.That(result, Is.EqualTo(new List<Error> { error }));
@@ -136,7 +136,7 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
             var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
             _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _textCriterion.Validate(testItem).ToList();
+            var result = _textCriterion.Validate(testItem, _errorFactory).ToList();
 
             Assert.That(result, Is.Not.Empty);
             Assert.That(result, Is.EqualTo(new List<Error> { error }));
@@ -156,7 +156,7 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
             var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
             _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _textCriterion.Validate(testItem);
+            var result = _textCriterion.Validate(testItem, _errorFactory);
 
             Assert.That(result, Is.EqualTo(new List<Error>()));
         }

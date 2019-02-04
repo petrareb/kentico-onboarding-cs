@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using MyOnboardingApp.Contracts.ErrorFactories;
 using MyOnboardingApp.Contracts.Validation;
 
 namespace MyOnboardingApp.Validation.Validators
@@ -7,11 +9,14 @@ namespace MyOnboardingApp.Validation.Validators
         where T : class
     {
         private readonly IValidationCriterion<T>[] _criteria;
+        private readonly IErrorFactory _errorFactory;
 
 
         public InvariantValidator(IValidationCriterion<T>[] criteria, IErrorFactory errorFactory)
         {
-            _criteria = criteria;
+            _criteria = criteria 
+                        ?? throw new InvalidCastException(
+                            "There are no criteria specified to define the functionality of the validator.");
             _errorFactory = errorFactory;
         }
 
@@ -19,9 +24,8 @@ namespace MyOnboardingApp.Validation.Validators
         public IItemWithErrors<T> Validate(T item)
         {
             var errors = _criteria
-                .SelectMany(criterion => criterion.Validate(item))
-                .ToList()
-                .AsReadOnly();
+                .SelectMany(criterion => criterion.Validate(item, _errorFactory))
+                .ToArray();
 
             return ItemWithErrors.Create(item, errors);
         }
