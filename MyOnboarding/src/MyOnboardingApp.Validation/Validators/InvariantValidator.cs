@@ -3,14 +3,17 @@ using MyOnboardingApp.Contracts.Validation;
 
 namespace MyOnboardingApp.Validation.Validators
 {
-    internal class Validator<T> : IInvariantValidator<T>
+    internal class InvariantValidator<T> : IInvariantValidator<T>
         where T : class
     {
         private readonly IValidationCriterion<T>[] _criteria;
 
 
-        public Validator(IValidationCriterion<T>[] criteria)
-            => _criteria = criteria;
+        public InvariantValidator(IValidationCriterion<T>[] criteria, IErrorFactory errorFactory)
+        {
+            _criteria = criteria;
+            _errorFactory = errorFactory;
+        }
 
 
         public IItemWithErrors<T> Validate(T item)
