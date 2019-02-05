@@ -12,8 +12,7 @@ namespace MyOnboardingApp.Api.Configuration
                     .ConnectionStrings["TodoListDbConnection"]
                     .ConnectionString);
 
-
-        public string GetDatabaseConnectionString
+        public string DatabaseConnectionString
             => s_databaseConnectionString.Value;
     }
 }
