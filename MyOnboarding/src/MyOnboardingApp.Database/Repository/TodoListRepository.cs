@@ -51,7 +51,7 @@ namespace MyOnboardingApp.Database.Repository
 
         private static IMongoDatabase GetDatabaseFromConnection(IDatabaseConnection databaseConnection)
         {
-            var connection = MongoUrl.Create(databaseConnection.GetDatabaseConnectionString);
+            var connection = MongoUrl.Create(databaseConnection.DatabaseConnectionString);
             var client = new MongoClient(connection);
 
             return client.GetDatabase(connection.DatabaseName);

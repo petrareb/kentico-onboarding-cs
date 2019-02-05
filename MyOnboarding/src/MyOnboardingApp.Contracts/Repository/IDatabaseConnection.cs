@@ -2,6 +2,6 @@
 {
     public interface IDatabaseConnection
     {
-        string GetDatabaseConnectionString { get; }
+        string DatabaseConnectionString { get; }
     }
 }

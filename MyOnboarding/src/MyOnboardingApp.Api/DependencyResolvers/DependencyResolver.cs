@@ -1,33 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http.Dependencies;
 using Unity;
 using Unity.Exceptions;
 
 namespace MyOnboardingApp.Api.DependencyResolvers
 {
-    internal class DependencyResolver: IDependencyResolver
+    internal sealed class DependencyResolver: IDependencyResolver
     {
-        protected IUnityContainer Container;
+        private readonly IUnityContainer _container;
 
 
         public DependencyResolver(IUnityContainer container) 
-            => Container = container ?? throw new ArgumentNullException(nameof(container));
-
-
-        public void Dispose() 
-            => Dispose(true);
-
-
-        protected virtual void Dispose(bool disposing) 
-            => Container.Dispose();
+            => _container = container ?? throw new ArgumentNullException(nameof(container));
 
 
         public object GetService(Type serviceType)
         {
             try
             {
-                return Container.Resolve(serviceType);
+                return _container.Resolve(serviceType);
             }
             catch (ResolutionFailedException)
             {
@@ -40,19 +33,23 @@ namespace MyOnboardingApp.Api.DependencyResolvers
         {
             try
             {
-                return Container.ResolveAll(serviceType);
+                return _container.ResolveAll(serviceType);
             }
             catch (ResolutionFailedException)
             {
-                return new List<object>();
+                return Enumerable.Empty<object>();
             }
         }
 
 
         public IDependencyScope BeginScope()
         {
-            var child = Container.CreateChildContainer();
+            var child = _container.CreateChildContainer();
             return new DependencyResolver(child);
         }
+
+
+        public void Dispose() 
+            => _container?.Dispose();
     }
 }
