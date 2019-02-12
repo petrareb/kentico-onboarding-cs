@@ -20,6 +20,16 @@ namespace MyOnboardingApp.TestUtils.Factories
         }
 
 
+        public static (TodoListItem Item, IResolvedItem<TodoListItem> ResolvedItem, IItemWithErrors<TodoListItem>
+            ItemWithErrors) CreateItemVariants(string id, string text, string creationTime = "1900-01-01 0:00", IEnumerable<Error> errors = null) 
+                => CreateItemVariants(id, text, creationTime, creationTime, errors);
+
+
+        public static (TodoListItem Item, IResolvedItem<TodoListItem> ResolvedItem, IItemWithErrors<TodoListItem> ItemWithErrors)
+            CreateItemVariants(Guid id, string text, DateTime creationTime, IEnumerable<Error> errors = null)
+                => CreateItemVariants(id, text, creationTime, creationTime, errors);
+
+
         public static (TodoListItem Item, IResolvedItem<TodoListItem> ResolvedItem, IItemWithErrors<TodoListItem> ItemWithErrors) CreateItemVariants(
             Guid id, string text, DateTime? creationTime = null, DateTime? lastUpdateTime = null, IEnumerable<Error> errors = null)
         {

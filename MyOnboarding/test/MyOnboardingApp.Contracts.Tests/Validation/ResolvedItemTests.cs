@@ -1,12 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Validation;
 using MyOnboardingApp.TestUtils.Extensions;
 using MyOnboardingApp.TestUtils.Factories;
 using NUnit.Framework;
-
-// ReSharper disable ExpressionIsAlwaysNull
-// ReSharper disable UnusedVariable
 
 namespace MyOnboardingApp.Contracts.Tests.Validation
 {
@@ -18,12 +16,16 @@ namespace MyOnboardingApp.Contracts.Tests.Validation
         {
             var testItem = (TodoListItem)null;
 
+            // ReSharper disable once ExpressionIsAlwaysNull
             var result = ResolvedItem.Create(testItem);
 
-            Assert.That(result.WasOperationSuccessful, Is.False);
-            Assert.Throws<InvalidOperationException>(() =>
+            Assert.Multiple(() =>
             {
-                var itemFromResult = result.Item;
+                Assert.That(result.WasOperationSuccessful, Is.False);
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    var _ = result.Item;
+                });
             });
         }
 
@@ -31,20 +33,29 @@ namespace MyOnboardingApp.Contracts.Tests.Validation
         [Test]
         public void Create_ValidItemSpecified_ReturnsResolvedItemWithCorrectItem()
         {
-            var testItem = new TodoListItem
-            {
-                Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                Text = string.Empty,
-                CreationTime = new DateTime(2000, 01, 01),
-                LastUpdateTime = new DateTime(2000, 01, 01)
-            };
-            var expectedResult = ItemVariantsFactory
-                .CreateItemVariants(testItem)
-                .ResolvedItem;
+            var (resolvableItem, expectedResolvedItem, _) = ItemVariantsFactory.CreateItemVariants(
+                id: "00000000-0000-0000-0000-000000000001",
+                text: string.Empty,
+                creationTime: "2001-01-01",
+                errors: null
+                );
 
-            var result = ResolvedItem.Create(testItem);
+            var actualResolvedItem = ResolvedItem.Create(resolvableItem);
 
-            Assert.That(result, Is.EqualTo(expectedResult).UsingResolvedItemEqualityComparer());
+            Assert.That(actualResolvedItem, Is.EqualTo(expectedResolvedItem).UsingResolvedItemEqualityComparer());
+        }
+
+
+        [Test]
+        [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
+        public void Create_NullItemSpecified_ReturnsTheSameInvalidResolvedItem()
+        {
+            var testItem = (TodoListItem)null;
+
+            var result1 = ResolvedItem.Create(testItem);
+            var result2 = ResolvedItem.Create(testItem);
+
+            Assert.That(result1, Is.EqualTo(result2).UsingResolvedItemEqualityComparer());
         }
     }
 }
