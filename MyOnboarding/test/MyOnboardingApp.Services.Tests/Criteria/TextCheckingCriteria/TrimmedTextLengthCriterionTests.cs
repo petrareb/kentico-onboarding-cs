@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using MyOnboardingApp.Contracts.ErrorFactories;
-using MyOnboardingApp.Contracts.Errors;
+using System.Linq;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Validation;
 using MyOnboardingApp.Services.Criteria.TextCheckingCriteria;
-using NSubstitute;
+using MyOnboardingApp.TestUtils.Extensions;
+using MyOnboardingApp.TestUtils.Factories;
 using NUnit.Framework;
 
 namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
@@ -15,7 +13,6 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
     public class TrimmedTextLengthCriterionTests
     {
         private IValidationCriterion<TodoListItem> _textCriterion;
-        private readonly IErrorFactory _errorFactory = Substitute.For<IErrorFactory>();
 
 
         [SetUp]
@@ -26,99 +23,105 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
         [Test]
         public void Validate_ItemWithShorterTextSpecified_ReturnsCollectionWithError()
         {
-            const int length = TrimmedTextLengthCriterion.MinLength == 0
-                // ReSharper disable once UnreachableCode
-                ? 0
-                : TrimmedTextLengthCriterion.MinLength - 1;
-            var testItem = new TodoListItem
+            const int length = TrimmedTextLengthCriterion.MinLength - 1;
+            var testItem = ItemVariantsFactory.CreateItemVariants(
+                id: new Guid("00000000-0000-0000-0000-000000000001"),
+                text: new string('a', length),
+                creationTime: new DateTime(2015, 01, 01),
+                lastUpdateTime: new DateTime(2015, 02, 02)
+            ).Item;
+            var expectedErrorLocation = new[]
             {
-                Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                Text = new string('a', length),
-                CreationTime = new DateTime(2015, 01, 01),
-                LastUpdateTime = new DateTime(2015, 02, 02)
+                nameof(testItem.Text)
             };
-            var error = new Error(ErrorCode.DataValidationError, "error happened", "text");
-            _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _textCriterion.Validate(testItem, _errorFactory);
+            var result = _textCriterion
+                .GetErrorLocationsUsingFakeErrorFactory(testItem)
+                .ToArray();
 
-            Assert.That(result, Is.EqualTo(new List<Error> { error }));
+            Assert.That(result, Is.EquivalentTo(expectedErrorLocation));
         }
 
 
         [Test]
         public void Validate_ItemWithLongerTextSpecified_ReturnsCollectionWithError()
         {
-            var testItem = new TodoListItem
+            var testItem = ItemVariantsFactory.CreateItemVariants(
+                id: new Guid("00000000-0000-0000-0000-000000000002"),
+                text: new string('a', TrimmedTextLengthCriterion.MaxLength + 1),
+                creationTime: new DateTime(2015, 01, 01),
+                lastUpdateTime: new DateTime(2015, 02, 02)
+            ).Item;
+            var expectedErrorLocation = new[]
             {
-                Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                Text = new string('a', TrimmedTextLengthCriterion.MaxLength + 1),
-                CreationTime = new DateTime(2015, 01, 01),
-                LastUpdateTime = new DateTime(2015, 02, 02)
+                nameof(testItem.Text)
             };
-            var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
-            _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _textCriterion.Validate(testItem,_errorFactory);
+            var result = _textCriterion
+                .GetErrorLocationsUsingFakeErrorFactory(testItem)
+                .ToArray();
 
-            Assert.That(result, Is.EqualTo(new List<Error> { error }));
+            Assert.That(result, Is.EquivalentTo(expectedErrorLocation));
         }
 
 
         [Test]
         public void Validate_ItemWithEmptyTextSpecified_ReturnsCollectionWithError()
         {
-            var testItem = new TodoListItem
+            var testItem = ItemVariantsFactory.CreateItemVariants(
+                id: new Guid("00000000-0000-0000-0000-000000000003"),
+                text: string.Empty,
+                creationTime: new DateTime(2015, 01, 01),
+                lastUpdateTime: new DateTime(2015, 02, 02)
+            ).Item;
+            var expectedErrorLocation = new[]
             {
-                Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                Text = string.Empty,
-                CreationTime = new DateTime(2015, 01, 01),
-                LastUpdateTime = new DateTime(2015, 02, 02)
+                nameof(testItem.Text)
             };
-            var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
-            _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _textCriterion.Validate(testItem, _errorFactory);
+            var result = _textCriterion
+                .GetErrorLocationsUsingFakeErrorFactory(testItem)
+                .ToArray();
 
-            Assert.That(result, Is.EqualTo(new List<Error> { error }));
+            Assert.That(result, Is.EquivalentTo(expectedErrorLocation));
         }
 
 
         [Test]
         public void Validate_ItemWithMinimalTextSpecified_ReturnsEmptyErrorCollection()
         {
-            var testItem = new TodoListItem
-            {
-                Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                Text = new string('a', TrimmedTextLengthCriterion.MinLength),
-                CreationTime = new DateTime(2015, 01, 01),
-                LastUpdateTime = new DateTime(2015, 02, 02)
-            };
-            var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
-            _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
+            var testItem = ItemVariantsFactory.CreateItemVariants(
+                id: new Guid("00000000-0000-0000-0000-000000000004"),
+                text: new string('a', TrimmedTextLengthCriterion.MinLength),
+                creationTime: new DateTime(2015, 01, 01),
+                lastUpdateTime: new DateTime(2015, 02, 02)
+            ).Item;
+            var expectedErrorLocations = new string[] { };
 
-            var result = _textCriterion.Validate(testItem, _errorFactory);
+            var result = _textCriterion
+                .GetErrorLocationsUsingFakeErrorFactory(testItem)
+                .ToArray();
 
-            Assert.That(result, Is.EqualTo(new List<Error>()));
+            Assert.That(result, Is.EquivalentTo(expectedErrorLocations));
         }
 
 
         [Test]
         public void Validate_ItemWithMaximalTextSpecified_ReturnsEmptyErrorCollection()
         {
-            var testItem = new TodoListItem
-            {
-                Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                Text = new string('a', TrimmedTextLengthCriterion.MaxLength),
-                CreationTime = new DateTime(2015, 01, 01),
-                LastUpdateTime = new DateTime(2015, 02, 02)
-            };
-            var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
-            _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
+            var testItem = ItemVariantsFactory.CreateItemVariants(
+                id: new Guid("00000000-0000-0000-0000-000000000005"),
+                text: new string('a', TrimmedTextLengthCriterion.MaxLength),
+                creationTime: new DateTime(2015, 01, 01),
+                lastUpdateTime: new DateTime(2015, 02, 02)
+            ).Item;
+            var expectedErrorLocation = new string[] { };
 
-            var result = _textCriterion.Validate(testItem, _errorFactory);
+            var result = _textCriterion
+                .GetErrorLocationsUsingFakeErrorFactory(testItem)
+                .ToArray();
 
-            Assert.That(result, Is.EqualTo(new List<Error>()));
+            Assert.That(result, Is.EquivalentTo(expectedErrorLocation));
         }
     }
 }
