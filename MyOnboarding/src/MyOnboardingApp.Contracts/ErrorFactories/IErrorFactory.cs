@@ -6,8 +6,8 @@ namespace MyOnboardingApp.Contracts.ErrorFactories
 {
     public interface IErrorFactory
     {
-        Error CreateValidationError(Expression<Func<object>> propertySelector, string errorDescription);
+        Error CreateValidationError<TResult>(Expression<Func<TResult>> propertySelector, string errorDescription);
 
-        Error CreatePermissionError(Expression<Func<object>> propertySelector, string errorDescription);
+        Error CreatePermissionError<TResult>(Expression<Func<TResult>> propertySelector, string errorDescription);
     }
 }

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using MyOnboardingApp.Contracts.ErrorFactories;
-using MyOnboardingApp.Contracts.Errors;
+using System.Linq;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Validation;
 using MyOnboardingApp.Services.Criteria.DateCheckingCriteria;
-using NSubstitute;
+using MyOnboardingApp.TestUtils.Extensions;
+using MyOnboardingApp.TestUtils.Factories;
 using NUnit.Framework;
 
 namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
@@ -15,7 +13,6 @@ namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
     public class LastUpdateDateBiggerThanCreationDateCriterionTests
     {
         private IValidationCriterion<TodoListItem> _dateCriterion;
-        private readonly IErrorFactory _errorFactory = Substitute.For<IErrorFactory>();
 
 
         [SetUp]
@@ -26,57 +23,128 @@ namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
         [Test]
         public void Validate_ValidItemSpecified_ReturnsEmptyCollection()
         {
-            var testItem = new TodoListItem
-            {
-                Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                Text = "test",
-                CreationTime = new DateTime(2015, 01, 01),
-                LastUpdateTime = new DateTime(2015, 02, 02)
-            };
-            var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
-            _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
+            var testItem = ItemVariantsFactory.CreateItemVariants(
+                id: new Guid("00000000-0000-0000-0000-000000000001"),
+                text: "test item",
+                creationTime: new DateTime(2015, 01, 01),
+                lastUpdateTime: new DateTime(2015, 02, 02)
+            ).Item;
+            var expectedErrorLocation = new string[] { };
 
-            var result = _dateCriterion.Validate(testItem, _errorFactory);
+            var result = _dateCriterion
+                .GetErrorLocationsUsingFakeErrorFactory(testItem)
+                .ToArray();
 
-            Assert.That(result, Is.EqualTo(new List<Error>()));
+            Assert.That(result, Is.EquivalentTo(expectedErrorLocation));
         }
 
 
         [Test]
         public void Validate_CreationTimeBiggerThanLastUpdateTimeSpecified_ReturnsCollectionWithError()
         {
-            var testItem = new TodoListItem
+            var testItem = ItemVariantsFactory.CreateItemVariants(
+                id: new Guid("00000000-0000-0000-0000-000000000002"),
+                text: "test",
+                creationTime: new DateTime(2015, 01, 01),
+                lastUpdateTime: new DateTime(2010, 01, 01)
+                ).Item;
+            var expectedErrorLocation = new[]
             {
-                Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                Text = "test",
-                CreationTime = new DateTime(2015, 01, 01),
-                LastUpdateTime = new DateTime(2010, 01, 01)
+                nameof(testItem.CreationTime)
             };
-            var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
-            _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _dateCriterion.Validate(testItem, _errorFactory);
+            var result = _dateCriterion
+                .GetErrorLocationsUsingFakeErrorFactory(testItem)
+                .ToArray();
 
-            Assert.That(result, Is.EqualTo(new List<Error> { error }));
+            Assert.That(result, Is.EquivalentTo(expectedErrorLocation));
         }
 
 
         [Test]
         public void Validate_CreationTimeSameAsLastUpdateTimeSpecified_ReturnsEmptyCollection()
         {
-            var testItem = new TodoListItem
+            var testItem = ItemVariantsFactory.CreateItemVariants(
+                id: new Guid("00000000-0000-0000-0000-000000000003"),
+                text: "test",
+                creationTime: new DateTime(2010, 01, 01),
+                lastUpdateTime: new DateTime(2010, 01, 01)
+            ).Item;
+            var expectedErrorLocation = new string[] {};
+
+            var result = _dateCriterion
+                .GetErrorLocationsUsingFakeErrorFactory(testItem)
+                .ToArray();
+
+            Assert.That(result, Is.EquivalentTo(expectedErrorLocation));
+        }
+
+
+        [Test]
+        public void Validate_CreationTimeIsMinValue_ReturnsCollectionWithError()
+        {
+            var testItem = ItemVariantsFactory.CreateItemVariants(
+                id: new Guid("00000000-0000-0000-0000-000000000004"),
+                text: "test",
+                creationTime: DateTime.MinValue,
+                lastUpdateTime: new DateTime(2010, 01, 01)
+            ).Item;
+            var expectedErrorLocation = new[]
             {
-                Id = new Guid("00000000-0000-0000-0000-000000000003"),
-                Text = "test",
-                CreationTime = new DateTime(2010, 01, 01),
-                LastUpdateTime = new DateTime(2010, 01, 01)
+                nameof(testItem.CreationTime)
             };
-            var error = new Error(ErrorCode.DataValidationError, "error happened", "error.location");
-            _errorFactory.CreateValidationError(Arg.Any<Expression<Func<object>>>(), Arg.Any<string>()).Returns(error);
 
-            var result = _dateCriterion.Validate(testItem, _errorFactory);
+            var result = _dateCriterion
+                .GetErrorLocationsUsingFakeErrorFactory(testItem)
+                .ToArray();
 
-            Assert.That(result, Is.EqualTo(new List<Error>()));
+            Assert.That(result, Is.EquivalentTo(expectedErrorLocation));
+        }
+
+
+        [Test]
+        public void Validate_CreationTimeAndLastUpdateTimeAreMaxValue_ReturnsCollectionWithErrors()
+        {
+            var testItem = ItemVariantsFactory.CreateItemVariants(
+                id: new Guid("00000000-0000-0000-0000-000000000005"),
+                text: "test",
+                creationTime: DateTime.MaxValue,
+                lastUpdateTime: DateTime.MaxValue
+            ).Item;
+            var expectedErrorLocation = new[]
+            {
+                nameof(testItem.CreationTime),
+                nameof(testItem.LastUpdateTime)
+            };
+
+            var result = _dateCriterion
+                .GetErrorLocationsUsingFakeErrorFactory(testItem)
+                .ToArray();
+
+            Assert.That(result, Is.EquivalentTo(expectedErrorLocation));
+        }
+
+
+        [Test]
+        public void Validate_CreationTimeAndLastUpdateTimeAreMinValue_ReturnsCollectionWithErrors()
+        {
+            var testItem = ItemVariantsFactory.CreateItemVariants(
+                id: new Guid("00000000-0000-0000-0000-000000000006"),
+                text: "test",
+                creationTime: DateTime.MinValue,
+                lastUpdateTime: DateTime.MinValue
+            ).Item;
+            var expectedErrorLocation = new[]
+            {
+                nameof(testItem.CreationTime),
+                nameof(testItem.LastUpdateTime)
+            };
+
+            var result = _dateCriterion
+                .GetErrorLocationsUsingFakeErrorFactory(testItem)
+                .ToArray();
+
+            Assert.That(result, Is.EquivalentTo(expectedErrorLocation));
         }
     }
 }
