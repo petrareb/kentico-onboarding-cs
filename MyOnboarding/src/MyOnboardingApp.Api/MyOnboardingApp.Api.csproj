@@ -123,6 +123,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiBootstrapper.cs" />
     <Compile Include="App_Start\DependenciesConfig.cs" />
     <Compile Include="App_Start\JsonSerializerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />

@@ -1,90 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using MyOnboardingApp.Contracts.Generators;
-using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Registration;
-using MyOnboardingApp.Contracts.Validation;
 using NSubstitute;
 using NUnit.Framework;
 using Unity;
-using Unity.Lifetime;
-using Unity.Registration;
 
 namespace MyOnboardingApp.Api.Tests
 {
     [TestFixture]
     public class DependenciesConfigTests
     {
-        private static readonly Type[] s_ignoredTypes =
-        {
-            typeof(IBootstrapper),
-        };
-
-        private static readonly Type[] s_explicitTypes =
-        {
-            typeof(HttpRequestMessage)
-        };
-
-        private static readonly Type[] s_explicitGenericTypes =
-        {
-            typeof(IIdGenerator<Guid>),
-            typeof(IInvariantValidator<TodoListItem>),
-            typeof(IValidationCriterion<TodoListItem>),
-            typeof(IResolvedItem<TodoListItem>),
-            typeof(IItemWithErrors<TodoListItem>),
-        };
-
-
         [Test]
-        public void UnityContainer_AfterDependencyRegistration_ContainsAllContracts()
+        public void ValidateConfiguration_NoBootstrappersInBootstrap_ThrowsException()
         {
-            var exportedTypes = GetTypesExportedFromAssembly();
-            var actualTypes = new List<Type>();
-            var container = MockUnityContainer(actualTypes);
+            var bootstrap = MockBootstrap(Array.Empty<IBootstrapper>());
 
-            DependenciesConfig.RegisterAllDependencies(container);
-            var unexpectedTypes = actualTypes
-                .Except(exportedTypes)
-                .ToArray();
-            var missingTypes = exportedTypes
-                .Except(actualTypes)
-                .ToArray();
-
-            Assert.That(unexpectedTypes, Is.Empty, "There are more types registered to the container than expected.");
-            Assert.That(missingTypes, Is.Empty, "Some of the types are not registered.");
+            Assert.Throws<InvalidOperationException>(
+                () => bootstrap.ValidateConfiguration());
         }
 
 
-        private static Type[] GetTypesExportedFromAssembly()
-            => typeof(IBootstrapper)
-                .Assembly
-                .ExportedTypes
-                .Where(contract => contract.IsInterface)
-                .Except(s_ignoredTypes)
-                .Except(s_explicitGenericTypes.Select(type => type.GetGenericTypeDefinition()))
-                .Union(s_explicitTypes)
-                .Union(s_explicitGenericTypes)
-                .ToArray();
+        [Test]
+        public void ValidateConfiguration_AllBootstrappersValidInUnityContainer_ReturnsContainer()
+        {
+            var bootstrapper = Substitute.For<IBootstrapper>();
+            var bootstrappers = new [] { bootstrapper };
+            var bootstrap = MockBootstrap(bootstrappers);
+
+            var result = bootstrap.ValidateConfiguration();
+
+            bootstrapper.Received(1).ValidateConfiguration(bootstrap.Container);
+            Assert.That(result, Is.EqualTo(bootstrap));
+        }
 
 
-        private static IUnityContainer MockUnityContainer(ICollection<Type> actualTypes)
+        [Test]
+        public void ValidateConfiguration_SomeBootstrappersThrowException_ThrowsAggregateException()
+        {
+            var bootstrapper1 = Substitute.For<IBootstrapper>();
+            var bootstrapper2 = Substitute.For<IBootstrapper>();
+            var bootstrappers = new[] {bootstrapper1, bootstrapper2};
+            var bootstrap = MockBootstrap(bootstrappers);
+            bootstrapper1
+                .When(b => b.ValidateConfiguration(bootstrap.Container))
+                .Do(b => throw new Exception());
+
+            Assert.Throws<AggregateException>(
+                () => bootstrap.ValidateConfiguration());
+        }
+
+
+        private static Bootstrap MockBootstrap(ICollection<IBootstrapper> bootstrappers)
         {
             var container = Substitute.For<IUnityContainer>();
-            container
-                .RegisterType(Arg.Any<Type>(), Arg.Any<Type>(), Arg.Any<string>(), Arg.Any<LifetimeManager>(), Arg.Any<InjectionMember[]>())
-                .Returns(callInfo =>
-                {
-                    var typeFrom = callInfo.ArgAt<Type>(0);
-                    var typeTo = callInfo.ArgAt<Type>(1);
+            var bootstrap = Bootstrap.Create(container, bootstrappers);
 
-                    actualTypes.Add(typeFrom ?? typeTo);
-
-                    return container;
-                });
-
-            return container;
+            return bootstrap;
         }
     }
 }
