@@ -7,11 +7,9 @@ using MyOnboardingApp.Contracts.Generators;
 using MyOnboardingApp.Contracts.Models;
 using MyOnboardingApp.Contracts.Registration;
 using MyOnboardingApp.Contracts.Validation;
-using NSubstitute;
+using MyOnboardingApp.TestUtils.Mocks;
 using NUnit.Framework;
 using Unity;
-using Unity.Lifetime;
-using Unity.Registration;
 
 namespace MyOnboardingApp.Api.Tests
 {
@@ -38,7 +36,7 @@ namespace MyOnboardingApp.Api.Tests
         public void UnityContainer_AfterDependencyRegistration_ContainsAllContracts()
         {
             var exportedTypes = GetTypesExportedFromAssembly();
-            var (bootstrap, registeredTypes) = MockUnityContainer();
+            var (bootstrap, registeredTypes) = UnityContainerMock.CreateMock();
 
             bootstrap
                 .RegisterAllDependencies();
@@ -50,8 +48,11 @@ namespace MyOnboardingApp.Api.Tests
                 .Except(registeredTypes)
                 .ToArray();
 
-            Assert.That(unexpectedTypes, Is.Empty, "There are more types registered to the container than expected.");
-            Assert.That(missingTypes, Is.Empty, "Some of the types are not registered.");
+            Assert.Multiple(() =>
+            {
+                Assert.That(unexpectedTypes, Is.Empty, "There are more types registered to the container than expected.");
+                Assert.That(missingTypes, Is.Empty, "Some of the types are not registered.");
+            });
         }
 
 
@@ -63,11 +64,14 @@ namespace MyOnboardingApp.Api.Tests
             var bootstrap = Bootstrap
                 .Create(new UnityContainer(), registeredBootstrappers);
 
-            Assert.DoesNotThrow(() => bootstrap
-                .RegisterAllDependencies()
-                .ValidateConfiguration()
-            );
-            Assert.That(registeredBootstrappers, Is.Not.Empty);
+            Assert.Multiple(() =>
+            {
+                Assert.DoesNotThrow(() => bootstrap
+                    .RegisterAllDependencies()
+                    .ValidateConfiguration()
+                );
+                Assert.That(registeredBootstrappers, Is.Not.Empty);
+            });
         }
 
 
@@ -84,29 +88,6 @@ namespace MyOnboardingApp.Api.Tests
                 .Except(s_ignoredTypes)
                 .Union(s_explicitTypes)
                 .ToArray();
-        }
-
-
-        private static (Bootstrap bootstrap, ICollection<Type> registeredTypes) MockUnityContainer()
-        {
-            var registeredTypes = new List<Type>();
-
-            var container = Substitute.For<IUnityContainer>();
-            container
-                .RegisterType(Arg.Any<Type>(), Arg.Any<Type>(), Arg.Any<string>(), Arg.Any<LifetimeManager>(), Arg.Any<InjectionMember[]>())
-                .Returns(callInfo =>
-                {
-                    var typeFrom = callInfo.ArgAt<Type>(0);
-                    var typeTo = callInfo.ArgAt<Type>(1);
-
-                    registeredTypes.Add(typeFrom ?? typeTo);
-
-                    return container;
-                });
-
-            var bootstrap = Bootstrap.Create(container, new List<IBootstrapper>());
-
-            return (bootstrap, registeredTypes);
         }
     }
 }

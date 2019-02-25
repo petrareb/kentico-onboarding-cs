@@ -125,7 +125,7 @@ namespace MyOnboardingApp.Api.Controllers
         }
 
 
-        public InvalidModelStateResult BadRequest(IItemWithErrors<TodoListItem> item)
+        private InvalidModelStateResult BadRequest(IItemWithErrors<TodoListItem> item)
         {
             foreach (var error in item.Errors)
             {
