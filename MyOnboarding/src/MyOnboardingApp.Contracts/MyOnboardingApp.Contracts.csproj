@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dependencies\Bootstrap.cs" />
     <Compile Include="Dependencies\IRegistrableBootstrap.cs" />
     <Compile Include="Dependencies\IValidatedBootstrap.cs" />
     <Compile Include="ErrorFactories\IErrorFactory.cs" />

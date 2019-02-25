@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MyOnboardingApp.Contracts.Dependencies;
 using MyOnboardingApp.Contracts.Registration;
 using NSubstitute;
 using NUnit.Framework;
@@ -29,8 +30,11 @@ namespace MyOnboardingApp.Api.Tests
 
             var result = bootstrap.ValidateConfiguration();
 
-            bootstrapper.Received(1).ValidateConfiguration(bootstrap.Container);
-            Assert.That(result, Is.EqualTo(bootstrap));
+            Assert.Multiple(() =>
+            {
+                bootstrapper.Received(1).ValidateConfiguration(bootstrap.Container);
+                Assert.That(result, Is.EqualTo(bootstrap));
+            });
         }
 
 
