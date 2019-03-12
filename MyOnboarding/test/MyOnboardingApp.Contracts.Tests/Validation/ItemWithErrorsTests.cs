@@ -14,40 +14,37 @@ namespace MyOnboardingApp.Contracts.Tests.Validation
         [Test]
         public void Create_ItemAndErrorCollectionSpecified_ReturnsInvalidatedItem()
         {
-            var testItem = new TodoListItem
-            {
-                Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                Text = string.Empty,
-                CreationTime = new DateTime(2000, 01, 01),
-                LastUpdateTime = new DateTime(2000, 01, 01)
-            };
             var error = new Error(ErrorCode.DataValidationError, "Text is empty.", "text");
             var errors = new [] { error };
-            var expectedResult = ItemVariantsFactory
-                .CreateItemVariants(testItem, errors)
-                .ItemWithErrors;
+            var (testItem, _, expectedResult) = ItemVariantsFactory
+                .CreateItemVariants(
+                    new Guid("00000000-0000-0000-0000-000000000001"),
+                    string.Empty,
+                    new DateTime(2000, 01, 01),
+                    errors
+                );
 
             var result = ItemWithErrors.Create(testItem, errors);
 
-            Assert.That(result.WasOperationSuccessful, Is.False);
-            Assert.That(result, Is.EqualTo(expectedResult).UsingItemWithErrorsEqualityComparer());
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.WasOperationSuccessful, Is.False);
+                Assert.That(result, Is.EqualTo(expectedResult).UsingItemWithErrorsEqualityComparer());
+            });
         }
 
 
         [Test]
         public void Create_ItemAndEmptyErrorCollectionSpecified_ReturnsValidatedItem()
         {
-            var testItem = new TodoListItem
-            {
-                Id = new Guid("00000000-0000-0000-0000-000000000002"),
-                Text = "Text",
-                CreationTime = new DateTime(2001, 01, 01),
-                LastUpdateTime = new DateTime(2001, 01, 01)
-            };
-            var errors = new Error[] {};
-            var expectedResult = ItemVariantsFactory
-                .CreateItemVariants(testItem, errors)
-                .ItemWithErrors;
+            var errors = Array.Empty<Error>();
+            var (testItem, _, expectedResult) = ItemVariantsFactory
+                .CreateItemVariants(
+                    new Guid("00000000-0000-0000-0000-000000000002"),
+                    "Text",
+                    new DateTime(2001, 01, 01),
+                    errors
+                );
 
             var result = ItemWithErrors.Create(testItem, errors);
 

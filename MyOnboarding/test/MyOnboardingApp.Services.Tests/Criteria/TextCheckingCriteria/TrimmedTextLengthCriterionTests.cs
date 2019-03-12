@@ -24,12 +24,11 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
         public void Validate_ItemWithShorterTextSpecified_ReturnsCollectionWithError()
         {
             const int length = TrimmedTextLengthCriterion.MinLength - 1;
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000001"),
-                text: new string('a', length),
-                creationTime: new DateTime(2015, 01, 01),
-                lastUpdateTime: new DateTime(2015, 02, 02)
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000001"),
+                new string('a', length),
+                new DateTime(2015, 01, 01),
+                new DateTime(2015, 02, 02));
             var expectedErrorLocation = new[]
             {
                 nameof(testItem.Text)
@@ -46,12 +45,11 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
         [Test]
         public void Validate_ItemWithLongerTextSpecified_ReturnsCollectionWithError()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000002"),
-                text: new string('a', TrimmedTextLengthCriterion.MaxLength + 1),
-                creationTime: new DateTime(2015, 01, 01),
-                lastUpdateTime: new DateTime(2015, 02, 02)
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000002"),
+                new string('a', TrimmedTextLengthCriterion.MaxLength + 1),
+                new DateTime(2015, 01, 01),
+                new DateTime(2015, 02, 02));
             var expectedErrorLocation = new[]
             {
                 nameof(testItem.Text)
@@ -68,12 +66,11 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
         [Test]
         public void Validate_ItemWithEmptyTextSpecified_ReturnsCollectionWithError()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000003"),
-                text: string.Empty,
-                creationTime: new DateTime(2015, 01, 01),
-                lastUpdateTime: new DateTime(2015, 02, 02)
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000003"),
+                string.Empty,
+                new DateTime(2015, 01, 01),
+                new DateTime(2015, 02, 02));
             var expectedErrorLocation = new[]
             {
                 nameof(testItem.Text)
@@ -90,12 +87,11 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
         [Test]
         public void Validate_ItemWithMinimalTextSpecified_ReturnsEmptyErrorCollection()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000004"),
-                text: new string('a', TrimmedTextLengthCriterion.MinLength),
-                creationTime: new DateTime(2015, 01, 01),
-                lastUpdateTime: new DateTime(2015, 02, 02)
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000004"),
+                new string('a', TrimmedTextLengthCriterion.MinLength),
+                new DateTime(2015, 01, 01),
+                new DateTime(2015, 02, 02));
             var expectedErrorLocations = new string[] { };
 
             var result = _textCriterion
@@ -109,12 +105,11 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
         [Test]
         public void Validate_ItemWithMaximalTextSpecified_ReturnsEmptyErrorCollection()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000005"),
-                text: new string('a', TrimmedTextLengthCriterion.MaxLength),
-                creationTime: new DateTime(2015, 01, 01),
-                lastUpdateTime: new DateTime(2015, 02, 02)
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000005"),
+                new string('a', TrimmedTextLengthCriterion.MaxLength),
+                new DateTime(2015, 01, 01),
+                new DateTime(2015, 02, 02));
             var expectedErrorLocation = new string[] { };
 
             var result = _textCriterion
