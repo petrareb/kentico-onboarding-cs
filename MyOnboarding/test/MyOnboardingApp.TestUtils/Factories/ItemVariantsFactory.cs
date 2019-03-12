@@ -7,9 +7,11 @@ using MyOnboardingApp.Contracts.Validation;
 
 namespace MyOnboardingApp.TestUtils.Factories
 {
+    using ItemVariantsTuple = Tuple<TodoListItem, IResolvedItem<TodoListItem>, IItemWithErrors<TodoListItem>>;
+
     public static class ItemVariantsFactory
     {
-        public static (TodoListItem Item, IResolvedItem<TodoListItem> ResolvedItem, IItemWithErrors<TodoListItem> ItemWithErrors) CreateItemVariants(
+        public static ItemVariantsTuple CreateItemVariants(
             string id, string text, string creationTime = "1900-01-01 0:00", string lastUpdateTime = "1900-01-01 0:00", IEnumerable<Error> errors = null)
         {
             var identifier = Guid.Parse(id);
@@ -20,17 +22,17 @@ namespace MyOnboardingApp.TestUtils.Factories
         }
 
 
-        public static (TodoListItem Item, IResolvedItem<TodoListItem> ResolvedItem, IItemWithErrors<TodoListItem>
-            ItemWithErrors) CreateItemVariants(string id, string text, string creationTime = "1900-01-01 0:00", IEnumerable<Error> errors = null) 
+        public static ItemVariantsTuple CreateItemVariants(
+            string id, string text, string creationTime = "1900-01-01 0:00", IEnumerable<Error> errors = null) 
                 => CreateItemVariants(id, text, creationTime, creationTime, errors);
 
 
-        public static (TodoListItem Item, IResolvedItem<TodoListItem> ResolvedItem, IItemWithErrors<TodoListItem> ItemWithErrors)
-            CreateItemVariants(Guid id, string text, DateTime creationTime, IEnumerable<Error> errors = null)
+        public static ItemVariantsTuple CreateItemVariants(
+            Guid id, string text, DateTime creationTime, IEnumerable<Error> errors = null)
                 => CreateItemVariants(id, text, creationTime, creationTime, errors);
 
 
-        public static (TodoListItem Item, IResolvedItem<TodoListItem> ResolvedItem, IItemWithErrors<TodoListItem> ItemWithErrors) CreateItemVariants(
+        public static ItemVariantsTuple CreateItemVariants(
             Guid id, string text, DateTime? creationTime = null, DateTime? lastUpdateTime = null, IEnumerable<Error> errors = null)
         {
             var item = new TodoListItem
@@ -42,32 +44,10 @@ namespace MyOnboardingApp.TestUtils.Factories
             };
 
             var resolvedItem = ResolvedItem.Create(item);
+            var itemWithErrors = ItemWithErrors.Create(item, errors);
 
-            var readonlyErrors = errors.MakeReadOnly();
-            var itemWithErrors = ItemWithErrors.Create(item, readonlyErrors);
-
-            return (item, resolvedItem, itemWithErrors);
+            return new ItemVariantsTuple(item, resolvedItem, itemWithErrors);
         }
-
-
-        public static (TodoListItem Item, IResolvedItem<TodoListItem> ResolvedItem, IItemWithErrors<TodoListItem>
-            ItemWithErrors) CreateItemVariants(
-                TodoListItem item,
-                IEnumerable<Error> errors = null)
-        {
-            var resolvedItem = ResolvedItem.Create(item);
-
-            var readonlyErrors = errors.MakeReadOnly();
-            var itemWithErrors = ItemWithErrors.Create(item, readonlyErrors);
-
-            return (item, resolvedItem, itemWithErrors);
-        }
-
-
-        private static IReadOnlyCollection<TItem> MakeReadOnly<TItem>(this IEnumerable<TItem> collection)
-            => (collection ?? Enumerable.Empty<TItem>())
-                .ToList()
-                .AsReadOnly();
 
 
         private static DateTime ParseToDateTime(this string date)

@@ -23,12 +23,11 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
         [Test]
         public void Validate_ItemWithNullTextSpecified_ReturnsCollectionWithErrors()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000002"),
-                text: null,
-                creationTime: new DateTime(2015, 01, 01),
-                lastUpdateTime: new DateTime(2015, 02, 02)
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000002"),
+                null,
+                new DateTime(2015, 01, 01),
+                new DateTime(2015, 02, 02));
             var expectedErrorLocations = new[]
             {
                 nameof(testItem.Text),
@@ -41,20 +40,22 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
                 .GetErrorLocationsUsingFakeErrorFactory(testItem)
                 .ToArray();
 
-            Assert.That(result, Is.Not.Empty);
-            Assert.That(result, Is.EquivalentTo(expectedErrorLocations));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.Not.Empty);
+                Assert.That(result, Is.EquivalentTo(expectedErrorLocations));
+            });
         }
 
 
         [Test]
         public void Validate_ItemWithTextOfTabsSpecified_ReturnsCollectionWithErrors()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000005"),
-                text: "                ",
-                creationTime: new DateTime(2015, 01, 01),
-                lastUpdateTime: new DateTime(2015, 02, 02)
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000005"),
+                "                ",
+                new DateTime(2015, 01, 01),
+                new DateTime(2015, 02, 02));
             var expectedErrorLocations = new[]
             {
                 nameof(testItem.Text)
@@ -64,20 +65,22 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
                 .GetErrorLocationsUsingFakeErrorFactory(testItem)
                 .ToArray();
 
-            Assert.That(result, Is.Not.Empty);
-            Assert.That(result, Is.EqualTo(expectedErrorLocations));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.Not.Empty);
+                Assert.That(result, Is.EqualTo(expectedErrorLocations));
+            });
         }
 
 
         [Test]
         public void Validate_ItemWithTextWithNewLineSpecified_ReturnsCollectionWithErrors()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000006"),
-                text: "\n",
-                creationTime: new DateTime(2015, 01, 01),
-                lastUpdateTime: new DateTime(2015, 02, 02)
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000006"),
+                "\n",
+                new DateTime(2015, 01, 01),
+                new DateTime(2015, 02, 02));
             var expectedErrorLocations = new[]
             {
                 nameof(testItem.Text)
@@ -87,20 +90,22 @@ namespace MyOnboardingApp.Services.Tests.Criteria.TextCheckingCriteria
                 .GetErrorLocationsUsingFakeErrorFactory(testItem)
                 .ToArray();
 
-            Assert.That(result, Is.Not.Empty);
-            Assert.That(result, Is.EquivalentTo(expectedErrorLocations));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.Not.Empty);
+                Assert.That(result, Is.EquivalentTo(expectedErrorLocations));
+            });
         }
 
       
         [Test]
         public void Validate_ItemWithTextWithNotOnlyWhiteSpacesSpecified_ReturnsCollectionWithoutErrors()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000007"),
-                text: "\naaa   ",
-                creationTime: new DateTime(2015, 01, 01),
-                lastUpdateTime: new DateTime(2015, 02, 02)
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000007"),
+                "\naaa   ",
+                new DateTime(2015, 01, 01),
+                new DateTime(2015, 02, 02));
             var expectedErrorLocations = new string[] {};
 
             var result = _textCriterion

@@ -23,12 +23,11 @@ namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
         [Test]
         public void Validate_ValidItemSpecified_ReturnsEmptyCollection()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000001"),
-                text: "test item",
-                creationTime: new DateTime(2015, 01, 01),
-                lastUpdateTime: new DateTime(2015, 02, 02)
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000001"),
+                "test item",
+                new DateTime(2015, 01, 01),
+                new DateTime(2015, 02, 02));
             var expectedErrorLocation = new string[] { };
 
             var result = _dateCriterion
@@ -42,12 +41,11 @@ namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
         [Test]
         public void Validate_CreationTimeBiggerThanLastUpdateTimeSpecified_ReturnsCollectionWithError()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000002"),
-                text: "test",
-                creationTime: new DateTime(2015, 01, 01),
-                lastUpdateTime: new DateTime(2010, 01, 01)
-                ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000002"),
+                "test",
+                new DateTime(2015, 01, 01),
+                new DateTime(2010, 01, 01));
             var expectedErrorLocation = new[]
             {
                 nameof(testItem.CreationTime)
@@ -64,12 +62,11 @@ namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
         [Test]
         public void Validate_CreationTimeSameAsLastUpdateTimeSpecified_ReturnsEmptyCollection()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000003"),
-                text: "test",
-                creationTime: new DateTime(2010, 01, 01),
-                lastUpdateTime: new DateTime(2010, 01, 01)
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000003"),
+                "test",
+                new DateTime(2010, 01, 01),
+                new DateTime(2010, 01, 01));
             var expectedErrorLocation = new string[] {};
 
             var result = _dateCriterion
@@ -83,12 +80,11 @@ namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
         [Test]
         public void Validate_CreationTimeIsMinValue_ReturnsCollectionWithError()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000004"),
-                text: "test",
-                creationTime: DateTime.MinValue,
-                lastUpdateTime: new DateTime(2010, 01, 01)
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000004"),
+                "test",
+                DateTime.MinValue,
+                new DateTime(2010, 01, 01));
             var expectedErrorLocation = new[]
             {
                 nameof(testItem.CreationTime)
@@ -105,12 +101,11 @@ namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
         [Test]
         public void Validate_CreationTimeAndLastUpdateTimeAreMaxValue_ReturnsCollectionWithErrors()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
                 id: new Guid("00000000-0000-0000-0000-000000000005"),
                 text: "test",
                 creationTime: DateTime.MaxValue,
-                lastUpdateTime: DateTime.MaxValue
-            ).Item;
+                lastUpdateTime: DateTime.MaxValue);
             var expectedErrorLocation = new[]
             {
                 nameof(testItem.CreationTime),
@@ -128,12 +123,11 @@ namespace MyOnboardingApp.Services.Tests.Criteria.DateCheckingCriteria
         [Test]
         public void Validate_CreationTimeAndLastUpdateTimeAreMinValue_ReturnsCollectionWithErrors()
         {
-            var testItem = ItemVariantsFactory.CreateItemVariants(
-                id: new Guid("00000000-0000-0000-0000-000000000006"),
-                text: "test",
-                creationTime: DateTime.MinValue,
-                lastUpdateTime: DateTime.MinValue
-            ).Item;
+            var (testItem, _, _) = ItemVariantsFactory.CreateItemVariants(
+                new Guid("00000000-0000-0000-0000-000000000006"),
+                "test",
+                DateTime.MinValue,
+                DateTime.MinValue);
             var expectedErrorLocation = new[]
             {
                 nameof(testItem.CreationTime),
