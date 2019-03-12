@@ -29,24 +29,25 @@ namespace MyOnboardingApp.Services.Tests.Services
         public async Task DeleteItemAsync_ExistingIdSpecified_ReturnsCorrectItemWithNoErrors()
         {
             var idToDelete = new Guid("00000000-0000-0000-0000-000000000001");
-            var itemToDelete = new TodoListItem
-            {
-                Id = idToDelete,
-                Text = "test",
-                CreationTime = new DateTime(2015, 01, 01),
-                LastUpdateTime = new DateTime(2015, 02, 02)
-            };
+            var (itemToDelete, expectedResult, _) = ItemVariantsFactory
+                .CreateItemVariants(
+                idToDelete,
+                "test",
+                new DateTime(2015, 01, 01),
+                new DateTime(2015, 02, 02));
             _repository
                 .DeleteItemAsync(idToDelete)
                 .Returns(itemToDelete);
-            var expectedResult = ItemVariantsFactory
-                .CreateItemVariants(itemToDelete)
-                .ResolvedItem;
-
+            
             var resultItem = await _deleteService.DeleteItemAsync(idToDelete);
 
-            await _repository.Received(1).DeleteItemAsync(idToDelete);
-            Assert.That(resultItem, Is.EqualTo(expectedResult).UsingResolvedItemEqualityComparer());
+            Assert.Multiple(async () =>
+            {
+                await _repository
+                    .Received(1)
+                    .DeleteItemAsync(idToDelete);
+                Assert.That(resultItem, Is.EqualTo(expectedResult).UsingResolvedItemEqualityComparer());
+            });
         }
 
 
@@ -60,8 +61,13 @@ namespace MyOnboardingApp.Services.Tests.Services
 
             var resultItem = await _deleteService.DeleteItemAsync(idToDelete);
 
-            await _repository.Received(1).DeleteItemAsync(idToDelete);
-            Assert.That(resultItem.WasOperationSuccessful, Is.False);
+            Assert.Multiple(async () =>
+            {
+                await _repository
+                    .Received(1)
+                    .DeleteItemAsync(idToDelete);
+                Assert.That(resultItem.WasOperationSuccessful, Is.False);
+            });
         }
     }
 }

@@ -16,17 +16,15 @@ namespace MyOnboardingApp.Services.Services
 
         protected abstract Task StoreToDatabase(TodoListItem completedItem);
 
-        protected abstract (Guid id, DateTime creationTime, DateTime lastUpdateTime) GetGeneratedData(TodoListItem originalItem);
 
-
-        protected async Task<IItemWithErrors<TodoListItem>> TryCompleteAndStoreItemAsync(TodoListItem item)
+        protected async Task<IItemWithErrors<TodoListItem>> TryCompleteAndStoreItemAsync(TodoListItem changingItem, ItemInitializingData initializingData)
         {
-            if (item == null)
+            if (changingItem == null)
             {
-                throw new ArgumentNullException(nameof(item), "Item to complete must not be null.");
+                throw new ArgumentNullException(nameof(changingItem), "Item to complete must not be null.");
             }
 
-            var completedItem = TryCompleteItem(item);
+            var completedItem = TryCompleteItem(changingItem, initializingData);
             if (!completedItem.WasOperationSuccessful)
             {
                 return completedItem;
@@ -36,28 +34,43 @@ namespace MyOnboardingApp.Services.Services
 
             return completedItem;
         }
+        
 
-
-        private IItemWithErrors<TodoListItem> TryCompleteItem(TodoListItem inputItem)
+        private IItemWithErrors<TodoListItem> TryCompleteItem(TodoListItem changingItem, ItemInitializingData initializingData)
         {
-            var completeItem = CompleteItem(inputItem);
+            var completeItem = CompleteItem(changingItem, initializingData);
             var validatedCompleteItem = _invariantValidator.Validate(completeItem);
             return validatedCompleteItem;
         }
 
 
-        private TodoListItem CompleteItem(TodoListItem item)
+        private static TodoListItem CompleteItem(TodoListItem changingItem, ItemInitializingData initializingData)
         {
-            var text = item.Text?.Trim();
-            var (id, creationTime, lastUpdateTime) = GetGeneratedData(item);
+            var text = changingItem.Text?.Trim();
 
             return new TodoListItem
             {
-                Id = id,
+                Id = initializingData.Id,
                 Text = text,
-                CreationTime = creationTime,
-                LastUpdateTime = lastUpdateTime
+                CreationTime = initializingData.CreationTime,
+                LastUpdateTime = initializingData.LastUpdateTime
             };
+        }
+
+
+        protected struct ItemInitializingData
+        {
+            public Guid Id { get; }
+            public DateTime CreationTime { get; }
+            public DateTime LastUpdateTime { get; }
+
+
+            public ItemInitializingData(Guid id, DateTime creationTime,  DateTime lastModificationTime)
+            {
+                Id = id;
+                CreationTime = creationTime;
+                LastUpdateTime = lastModificationTime;
+            }
         }
     }
 }

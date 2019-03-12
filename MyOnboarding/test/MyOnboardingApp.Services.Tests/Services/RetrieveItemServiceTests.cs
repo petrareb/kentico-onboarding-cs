@@ -27,20 +27,21 @@ namespace MyOnboardingApp.Services.Tests.Services
         public async Task Get_IdSpecified_ReturnsCorrectItemWithNoErrors()
         {
             var requestedId = new Guid("00000000-0000-0000-0000-000000000007");
-            var expectedItem = new TodoListItem
-            {
-                Text = "Test Item",
-                Id = requestedId,
-                CreationTime = new DateTime(2010, 01, 01),
-                LastUpdateTime = new DateTime(2010, 01, 01)
-            };
-            var expectedResult = ItemVariantsFactory.CreateItemVariants(expectedItem).ResolvedItem;
+            var (expectedItem, expectedResult, _) = ItemVariantsFactory.CreateItemVariants(
+                requestedId,
+                "Test Item",
+                new DateTime(2010, 01, 01));
             _repository.GetItemByIdAsync(requestedId).Returns(expectedItem);
 
             var result = await _service.GetItemByIdAsync(requestedId);
 
-            await _repository.Received(1).GetItemByIdAsync(requestedId);
-            Assert.That(result, Is.EqualTo(expectedResult).UsingResolvedItemEqualityComparer());
+            Assert.Multiple(async () =>
+            {
+                await _repository
+                    .Received(1)
+                    .GetItemByIdAsync(requestedId);
+                Assert.That(result, Is.EqualTo(expectedResult).UsingResolvedItemEqualityComparer());
+            });
         }
 
 
@@ -52,11 +53,14 @@ namespace MyOnboardingApp.Services.Tests.Services
 
             var result = await _service.GetItemByIdAsync(requestedId);
 
-            Assert.Throws<InvalidOperationException>(() =>
+            Assert.Multiple(() =>
             {
-                var _ = result.Item;
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    var _ = result.Item;
+                });
+                Assert.That(result.WasOperationSuccessful, Is.False);
             });
-            Assert.That(result.WasOperationSuccessful, Is.False);
         }
     }
 }

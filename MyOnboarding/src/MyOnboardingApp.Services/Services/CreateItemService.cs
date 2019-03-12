@@ -24,20 +24,26 @@ namespace MyOnboardingApp.Services.Services
         }
 
 
-        public async Task<IResolvedItem<TodoListItem>> AddNewItemAsync(TodoListItem newItem)
-            => await TryCompleteAndStoreItemAsync(newItem);
+        public async Task<IItemWithErrors<TodoListItem>> AddNewItemAsync(TodoListItem newItem)
+        {
+            var initializingData = GetGeneratedData();
+            return await TryCompleteAndStoreItemAsync(newItem, initializingData);
+        }
 
 
         protected override async Task StoreToDatabase(TodoListItem completedItem)
             => await _repository.AddNewItemAsync(completedItem);
 
 
-        protected override (Guid id, DateTime creationTime, DateTime lastUpdateTime) GetGeneratedData(TodoListItem originalItem)
+        private ItemInitializingData GetGeneratedData()
         {
             var id = _idGenerator.GetNewId();
             var currentDateTime = _dateTimeGenerator.GetCurrentDateTime();
 
-            return (id, currentDateTime, currentDateTime);
+            return new ItemInitializingData(
+                id, 
+                creationTime: currentDateTime, 
+                lastModificationTime: currentDateTime);
         }
     }
 }

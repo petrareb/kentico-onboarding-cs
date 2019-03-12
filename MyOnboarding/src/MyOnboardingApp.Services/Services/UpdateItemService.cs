@@ -29,8 +29,14 @@ namespace MyOnboardingApp.Services.Services
                 throw new ArgumentNullException(nameof(replacingItem), "Item to complete must not be null.");
             }
 
-            var item = CompleteItemAccordingToExisting(replacingItem, existingItem.Item);
-            return await TryCompleteAndStoreItemAsync(item);
+            if (existingItem == null || !existingItem.WasOperationSuccessful)
+            {
+                throw new ArgumentException("Existing item does not actually exist.", nameof(existingItem));
+            }
+
+            var initData = GetGeneratedData(existingItem);
+
+            return await TryCompleteAndStoreItemAsync(replacingItem, initData);
         }
 
 
@@ -38,15 +44,10 @@ namespace MyOnboardingApp.Services.Services
             => await _repository.ReplaceItemAsync(completedItem);
 
 
-        protected override (Guid id, DateTime creationTime, DateTime lastUpdateTime) GetGeneratedData(TodoListItem originalItem)
-            => (originalItem.Id, originalItem.CreationTime, _dateTimeGenerator.GetCurrentDateTime());
-
-
-        private static TodoListItem CompleteItemAccordingToExisting(TodoListItem replacingItem, TodoListItem existingItem)
-        {
-            replacingItem.CreationTime = existingItem.CreationTime;
-            replacingItem.LastUpdateTime = existingItem.LastUpdateTime;
-            return replacingItem;
-        }
+        private ItemInitializingData GetGeneratedData(IResolvedItem<TodoListItem> resolvedItem)
+            => new ItemInitializingData(
+                resolvedItem.Item.Id, 
+                resolvedItem.Item.CreationTime, 
+                lastModificationTime: _dateTimeGenerator.GetCurrentDateTime());
     }
 }
